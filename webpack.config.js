@@ -24,11 +24,11 @@ module.exports = {
             "@core": path.resolve(__dirname, "src/core")
         }
     },
+    target: "web",
     devtool: isDev ? "source-map" : false,
     devServer: {
         contentBase: path.resolve(__dirname, './dist'),
         port: 3000,
-        hot: isDev
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -56,7 +56,10 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {},
+                    },
                     "css-loader",
                     "sass-loader",
                 ], 
