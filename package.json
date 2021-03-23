@@ -1,0 +1,18 @@
+{
+  "name": "excel-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack",
+    "build": "webpack --mode production"
+  },
+  "author": "psuvorov",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "webpack": "^5.27.2",
+    "webpack-cli": "^4.5.0"
+  }
+}
