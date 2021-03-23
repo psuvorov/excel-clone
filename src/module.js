@@ -1,7 +1,7 @@
 console.log("Hello from module.js");
 
 async function start() {
-    await Promise.resolve();
+    return "Hello from async fn!!!";
 }
 
-start();
+start().then(r => console.log(r));
