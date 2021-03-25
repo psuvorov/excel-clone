@@ -1,3 +1,5 @@
+import {$} from "@core/domWrapper";
+
 /**
  * 
  */
@@ -8,23 +10,27 @@ export class Spreadsheet {
      * @param {{}} options
      */
     constructor(selector, options) {
-        /** @type {HTMLElement} */
-        this.$el = document.querySelector(selector);
+        /** @type {DomWrapper} */
+        this.$el = $(selector);
 
         /** @type {SpreadsheetComponent[]} */
         this.components = options.components || [];
     }
 
+
     /**
      * 
-     * @return {HTMLDivElement}
+     * @return {DomWrapper}
      */
     getRoot() {
-        const $root = document.createElement("div");
+        const $root = $.create("div", "spreadsheet");
         
-        this.components.forEach((Component) => {
-            const component = new Component();
-            $root.insertAdjacentHTML("beforeend", component.toHtml());
+        this.components.forEach((/** @type {SpreadsheetComponent} */Component) => {
+            const $el = $.create("div", Component.className);
+            
+            const component = new Component($el);
+            $el.html(component.toHtml());
+            $root.append($el);
         });
         
         return $root;

@@ -12,7 +12,8 @@
     "indent": "off",
     "comma-dangle": "off",
     "no-trailing-spaces": "off",
-    "max-len": "off"
+    "max-len": "off",
+    "curly": "off"
   },
   "extends": ["eslint:recommended", "google"]
 }
