@@ -13,10 +13,10 @@ export class Spreadsheet {
         /** @type {DomWrapper} */
         this.$el = $(selector);
 
+        this.componentsRaw = options.components || [];
         /** @type {SpreadsheetComponent[]} */
-        this.components = options.components || [];
+        this.components = [];
     }
-
 
     /**
      * 
@@ -25,12 +25,14 @@ export class Spreadsheet {
     getRoot() {
         const $root = $.create("div", "spreadsheet");
         
-        this.components.forEach((/** @type {SpreadsheetComponent} */Component) => {
+        this.componentsRaw.forEach((/** @type {SpreadsheetComponent} */ Component) => {
             const $el = $.create("div", Component.className);
             
             const component = new Component($el);
             $el.html(component.toHtml());
             $root.append($el);
+
+            this.components.push(component);
         });
         
         return $root;
@@ -41,5 +43,6 @@ export class Spreadsheet {
      */
     render() {
         this.$el.append(this.getRoot());
+        this.components.forEach(x => x.init());
     }
 }

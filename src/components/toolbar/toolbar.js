@@ -30,4 +30,12 @@ export class Toolbar extends SpreadsheetComponent {
                     <i class="material-icons">format_align_center</i>
                 </div>`;
     }
+
+    /**
+     * 
+     * @param {{}} event
+     */
+    onClick(event) {
+        console.log("Toolbar: onClick", event);
+    }
 }

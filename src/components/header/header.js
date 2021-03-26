@@ -21,4 +21,12 @@ export class Header extends SpreadsheetComponent {
                     </div>
                 </div>`;
     }
+
+    /**
+     * 
+     * @param {{}} event
+     */
+    onClick(event) {
+        console.log("Header: onInput", event);
+    }
 }

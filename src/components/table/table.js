@@ -47,4 +47,12 @@ export class Table extends SpreadsheetComponent {
                     </div>
                 </div>`;
     }
+
+    /**
+     * 
+     * @param {{}} event
+     */
+    onClick(event) {
+        console.log("Table: onClick", event);
+    }
 }

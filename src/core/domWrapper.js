@@ -6,7 +6,7 @@ class DomWrapper {
      * @param {string | HTMLElement} queryObject
      */
     constructor(queryObject) {
-        this.$nativeELement = typeof(queryObject) === "string" ? document.querySelector(queryObject) : queryObject;
+        this.$nativeElement = typeof(queryObject) === "string" ? document.querySelector(queryObject) : queryObject;
     }
 
     /**
@@ -16,10 +16,10 @@ class DomWrapper {
      */
     html(html ) {
         if (typeof(html) === "string") {
-            this.$nativeELement.innerHTML = html;
+            this.$nativeElement.innerHTML = html;
             return this;
         }
-        this.$nativeELement.outerHTML.trim();
+        this.$nativeElement.outerHTML.trim();
         
         return this;
     }
@@ -35,11 +35,20 @@ class DomWrapper {
 
     /**
      * 
+     * @param {any} eventType
+     * @param {any} callback
+     */
+    on(eventType, callback) {
+        this.$nativeElement.addEventListener(eventType, callback);
+    }
+
+    /**
+     * 
      * @param {DomWrapper} element
      * @return {DomWrapper}
      */
     append(element) {
-        this.$nativeELement.append(element.$nativeELement);
+        this.$nativeElement.append(element.$nativeElement);
         
         return this;
     }
