@@ -4,8 +4,20 @@ import {SpreadsheetComponent} from "@core/spreadsheetComponent";
  * 
  */
 export class Toolbar extends SpreadsheetComponent {
-    static className = "spreadsheet__toolbar";
     
+    static className = "spreadsheet__toolbar";
+
+    /**
+     * 
+     * @param {DomWrapper} $root
+     */
+    constructor($root) {
+        super($root, {
+            name: "Toolbar",
+            listeners: ["click"]
+        });
+    }
+
     /**
      *
      * @return {string}
@@ -36,6 +48,6 @@ export class Toolbar extends SpreadsheetComponent {
      * @param {{}} event
      */
     onClick(event) {
-        console.log("Toolbar: onClick", event);
+        console.log("Toolbar: onClick", event.target);
     }
 }

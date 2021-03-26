@@ -44,6 +44,15 @@ class DomWrapper {
 
     /**
      * 
+     * @param {any} eventType
+     * @param {any} callback
+     */
+    off(eventType, callback) {
+        this.$nativeElement.removeEventListener(eventType, callback);
+    }
+
+    /**
+     * 
      * @param {DomWrapper} element
      * @return {DomWrapper}
      */
