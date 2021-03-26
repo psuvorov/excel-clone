@@ -4,7 +4,6 @@ import {SpreadsheetComponent} from "@core/spreadsheetComponent";
  * 
  */
 export class Toolbar extends SpreadsheetComponent {
-    
     static className = "spreadsheet__toolbar";
 
     /**
