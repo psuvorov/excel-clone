@@ -24,7 +24,7 @@ function createTableHeader(colCount) {
                         <div class="row-data">`;
     
     for (let i = 1; i <= colCount; i++) {
-        res += `<div class="column">${getColumnTitle(i)}</div>`;
+        res += `<div class="column"><div class="column-title">${getColumnTitle(i)}</div><div class="col-resize"></div></div>`;
     }
     res += `</div></div>`;
     
@@ -56,7 +56,7 @@ function getColumnTitle(columnNumber) {
  */
 function createSingleRow(rowNumber, colCount) {
     let res = `<div class="row">
-                    <div class="row-info">${rowNumber}</div>
+                    <div class="row-info"><div class="row-number">${rowNumber}</div><div class="row-resize"><div class="handler"></div></div></div>
                     <div class="row-data">
                         `;
     

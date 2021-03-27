@@ -13,7 +13,8 @@
     "comma-dangle": "off",
     "no-trailing-spaces": "off",
     "max-len": "off",
-    "curly": "off"
+    "curly": "off",
+    "linebreak-style": "off"
   },
   "extends": ["eslint:recommended", "google"]
 }
