@@ -3,7 +3,7 @@
  */
 class DomWrapper {
     /**
-     * @param {string | HTMLElement} queryObject
+     * @param {string | HTMLElement | EventTarget} queryObject
      */
     constructor(queryObject) {
         this.$nativeElement = typeof(queryObject) === "string" ? document.querySelector(queryObject) : queryObject;
@@ -61,10 +61,43 @@ class DomWrapper {
         
         return this;
     }
+
+    /**
+     * 
+     * @return {DOMStringMap}
+     */
+    get data() {
+        return this.$nativeElement.dataset;
+    }
+
+    /**
+     * 
+     * @param {string} selector
+     * @return {DomWrapper} 
+     */
+    closest(selector) {
+        return $(this.$nativeElement.closest(selector));
+    }
+
+    /**
+     * @param {string} selector
+     * @return {NodeListOf<Element>}
+     */
+    findAll(selector) {
+        return this.$nativeElement.querySelectorAll(selector);
+    }
+
+    /**
+     * 
+     * @return {DOMRect}
+     */
+    getCoords() {
+        return this.$nativeElement.getBoundingClientRect();
+    }
 }
 
 /**
- * @param {string | HTMLElement} queryObject
+ * @param {string | HTMLElement | EventTarget} queryObject
  * @return {DomWrapper}
  */
 export function $(queryObject) {

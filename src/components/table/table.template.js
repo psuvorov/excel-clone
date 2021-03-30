@@ -3,7 +3,7 @@
  * @param {number} colCount
  * @return {string}
  */
-export function createTable(rowCount = 150, colCount = 30) {
+export function createTable(rowCount = 15, colCount = 30) {
     let res = createTableHeader(colCount);
     
     for (let i = 1; i <= rowCount; i++) {
@@ -24,7 +24,8 @@ function createTableHeader(colCount) {
                         <div class="row-data">`;
     
     for (let i = 1; i <= colCount; i++) {
-        res += `<div class="column"><div class="column-title">${getColumnTitle(i)}</div><div class="col-resize"></div></div>`;
+        const columnTitle = getColumnTitle(i);
+        res += `<div class="column" data-header-name="${columnTitle}" data-resizable="true"><div class="column-title">${columnTitle}</div><div data-resize="col" class="col-resize"></div></div>`;
     }
     res += `</div></div>`;
     
@@ -56,12 +57,13 @@ function getColumnTitle(columnNumber) {
  */
 function createSingleRow(rowNumber, colCount) {
     let res = `<div class="row">
-                    <div class="row-info"><div class="row-number">${rowNumber}</div><div class="row-resize"><div class="handler"></div></div></div>
+                    <div class="row-info"><div class="row-number">${rowNumber}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>
                     <div class="row-data">
                         `;
     
-    for (let i = 0; i < colCount; i++) {
-        res += `<div class="cell" contenteditable="true"></div>`;
+    for (let i = 1; i <= colCount; i++) {
+        const columnTitle = getColumnTitle(i);
+        res += `<div class="cell" data-cell-header-name="${columnTitle}" contenteditable="true"></div>`;
     }
     res += `</div></div>`;
     
