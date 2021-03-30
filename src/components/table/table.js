@@ -62,7 +62,7 @@ export class Table extends SpreadsheetComponent {
 
         const onMouseMoveEventHandler = e => {
             const delta = e.pageX - coords.right;
-            resizableElement.$nativeElement.style.width = (coords.width + delta) + "px";
+            resizableElement.css({"width": (coords.width + delta) + "px"});
 
             columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.width = (coords.width + delta) + "px";
@@ -83,7 +83,7 @@ export class Table extends SpreadsheetComponent {
 
         const onMouseMoveEventHandler = e => {
             const delta = e.pageY - coords.bottom;
-            resizableElement.$nativeElement.style.height = (coords.height + delta) + "px";
+            resizableElement.css({"height": (coords.height + delta) + "px"});
 
             rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.height = (coords.height + delta) + "px";

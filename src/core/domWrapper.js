@@ -94,6 +94,16 @@ class DomWrapper {
     getCoords() {
         return this.$nativeElement.getBoundingClientRect();
     }
+
+
+    /**
+     * 
+     * @param {Object.<string, string>} styles
+     */
+    css(styles) {
+        Object.keys(styles)
+            .forEach(x => this.$nativeElement.style[x] = styles[x]);
+    }
 }
 
 /**
