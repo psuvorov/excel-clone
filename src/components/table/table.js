@@ -43,22 +43,55 @@ export class Table extends SpreadsheetComponent {
         if (event.target.dataset.resize) {
             const $resizer = $(event.target);
             const $parent = $resizer.closest('[data-resizable="true"]');
-            const coords = $parent.getCoords();
-
-            const columnCellToResizeEls = this.$root.findAll(`[data-cell-header-name="${$parent.data.headerName}"]`);
+            const resizerType = $resizer.data.resize;
             
-            const onMouseMoveEventHandler = e => {
-                const delta = e.pageX - coords.right;
-                $parent.$nativeElement.style.width = (coords.width + delta) + "px";
-                
-                columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
-                    cellEl.style.width = (coords.width + delta) + "px";
-                });
-            };
-
-            document.addEventListener("mousemove", onMouseMoveEventHandler);
-            document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMouseMoveEventHandler));
+            if (resizerType === "col")
+                this.resizeColumn($parent);
+            else
+                this.resizeRow($parent);
         }
+    }
+
+    /**
+     * 
+     * @param {DomWrapper} resizableElement
+     */
+    resizeColumn(resizableElement) {
+        const coords = resizableElement.getCoords();
+        const columnCellToResizeEls = this.$root.findAll(`[data-cell-header-name="${resizableElement.data.headerName}"]`);
+
+        const onMouseMoveEventHandler = e => {
+            const delta = e.pageX - coords.right;
+            resizableElement.$nativeElement.style.width = (coords.width + delta) + "px";
+
+            columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+                cellEl.style.width = (coords.width + delta) + "px";
+            });
+        };
+
+        document.addEventListener("mousemove", onMouseMoveEventHandler);
+        document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMouseMoveEventHandler));
+    }
+
+    /**
+     *
+     * @param {DomWrapper} resizableElement
+     */
+    resizeRow(resizableElement) {
+        const coords = resizableElement.getCoords();
+        const rowCellToResizeEls = this.$root.findAll(`[data-cell-row-number="${resizableElement.data.rowNumber}"]`);
+
+        const onMouseMoveEventHandler = e => {
+            const delta = e.pageY - coords.bottom;
+            resizableElement.$nativeElement.style.height = (coords.height + delta) + "px";
+
+            rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+                cellEl.style.height = (coords.height + delta) + "px";
+            });
+        };
+
+        document.addEventListener("mousemove", onMouseMoveEventHandler);
+        document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMouseMoveEventHandler));
     }
 
     /**

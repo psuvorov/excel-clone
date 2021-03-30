@@ -56,14 +56,14 @@ function getColumnTitle(columnNumber) {
  * @return {string}
  */
 function createSingleRow(rowNumber, colCount) {
-    let res = `<div class="row">
+    let res = `<div class="row" data-row-number="${rowNumber}" data-resizable="true">
                     <div class="row-info"><div class="row-number">${rowNumber}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>
                     <div class="row-data">
                         `;
     
     for (let i = 1; i <= colCount; i++) {
         const columnTitle = getColumnTitle(i);
-        res += `<div class="cell" data-cell-header-name="${columnTitle}" contenteditable="true"></div>`;
+        res += `<div class="cell" data-cell-row-number="${rowNumber}" data-cell-header-name="${columnTitle}" contenteditable="true"></div>`;
     }
     res += `</div></div>`;
     
