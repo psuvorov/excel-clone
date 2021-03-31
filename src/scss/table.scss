@@ -27,6 +27,7 @@
       
       .row-number {
         position: absolute;
+        pointer-events: none;
       }
       
       .row-resize {
@@ -69,6 +70,7 @@
         .column-title {
           flex-grow: 1;
           text-align: center;
+          pointer-events: none;
         }
 
         .col-resize {
