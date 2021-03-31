@@ -46,17 +46,18 @@ export class Table extends SpreadsheetComponent {
             const resizerType = $resizer.data.resize;
             
             if (resizerType === "col")
-                this.resizeColumn($parent);
+                this.resizeColumn($parent, $resizer);
             else
-                this.resizeRow($parent);
+                this.resizeRow($parent, $resizer);
         }
     }
 
     /**
-     * 
+     *
      * @param {DomWrapper} resizableElement
+     * @param {DomWrapper} resizer
      */
-    resizeColumn(resizableElement) {
+    resizeColumn(resizableElement, resizer) {
         const coords = resizableElement.getCoords();
         const columnCellToResizeEls = this.$root.findAll(`[data-cell-header-name="${resizableElement.data.headerName}"]`);
 
@@ -76,8 +77,9 @@ export class Table extends SpreadsheetComponent {
     /**
      *
      * @param {DomWrapper} resizableElement
+     * @param {DomWrapper} resizer
      */
-    resizeRow(resizableElement) {
+    resizeRow(resizableElement, resizer) {
         const coords = resizableElement.getCoords();
         const rowCellToResizeEls = this.$root.findAll(`[data-cell-row-number="${resizableElement.data.rowNumber}"]`);
 
