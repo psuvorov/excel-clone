@@ -36,15 +36,16 @@
         align-items: flex-end;
         
         .handler {
-          width: 100%;
+          width: $info-cell-width;
           height: 3px;
           background-color: #3c74ff;
           cursor: row-resize;
           position: absolute;
           opacity: 0;
+          z-index: 1000;
           
           &:hover {
-            opacity: 1 !important;
+            opacity: 1;
           }
         }
       }
@@ -64,7 +65,6 @@
         border-top: 0;
         border-left: 0;
         height: 100%;
-        //position: relative;
         
         .column-title {
           flex-grow: 1;
@@ -73,16 +73,16 @@
 
         .col-resize {
           width: 3px;
-          height: 100%;
+          height: $row-height;
           background-color: #3c74ff;
           cursor: col-resize;
           position: absolute;
-          z-index: 1000;
           top: 0;
           opacity: 0;
+          z-index: 1000;
           
           &:hover {
-            opacity: 1 !important;
+            opacity: 1;
           }
         }
       }
@@ -98,7 +98,6 @@
         color: #111;white-space: nowrap;
         outline: none;
         
-
         &.selected {
           border: none;
           outline: 2px solid #3c74ff;

@@ -95,14 +95,19 @@ class DomWrapper {
         return this.$nativeElement.getBoundingClientRect();
     }
 
-
     /**
      * 
      * @param {Object.<string, string>} styles
      */
     css(styles) {
         Object.keys(styles)
-            .forEach(x => this.$nativeElement.style[x] = styles[x]);
+            .forEach(x => {
+                if (styles[x] === "") {
+                    this.$nativeElement.style.removeProperty(x);
+                } else {
+                    this.$nativeElement.style[x] = styles[x];
+                }
+            });
     }
 }
 

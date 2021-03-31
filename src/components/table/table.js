@@ -58,20 +58,35 @@ export class Table extends SpreadsheetComponent {
      * @param {DomWrapper} resizer
      */
     resizeColumn(resizableElement, resizer) {
-        const coords = resizableElement.getCoords();
+        const resizableElementCoords = resizableElement.getCoords();
         const columnCellToResizeEls = this.$root.findAll(`[data-cell-header-name="${resizableElement.data.headerName}"]`);
 
+        resizer.css({"height": "100%"});
+        
         const onMouseMoveEventHandler = e => {
-            const delta = e.pageX - coords.right;
-            resizableElement.css({"width": (coords.width + delta) + "px"});
-
-            columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
-                cellEl.style.width = (coords.width + delta) + "px";
+            const delta = e.pageX - resizer.getCoords().right;
+            resizer.css({
+                "left": (resizer.getCoords().x + delta) + "px",
+                "opacity": 1
             });
         };
 
         document.addEventListener("mousemove", onMouseMoveEventHandler);
-        document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMouseMoveEventHandler));
+        document.addEventListener("mouseup", () => {
+            document.removeEventListener("mousemove", onMouseMoveEventHandler);
+            resizer.css({
+                "height": "",
+                "opacity": ""
+            });
+
+            const delta = resizer.getCoords().right - resizableElementCoords.right;
+            
+            resizableElement.css({"width": (resizableElementCoords.width + delta) + "px"});
+            
+            columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+                cellEl.style.width = (resizableElementCoords.width + delta) + "px";
+            });
+        });
     }
 
     /**
@@ -80,20 +95,36 @@ export class Table extends SpreadsheetComponent {
      * @param {DomWrapper} resizer
      */
     resizeRow(resizableElement, resizer) {
-        const coords = resizableElement.getCoords();
+        const resizableElementCoords = resizableElement.getCoords();
         const rowCellToResizeEls = this.$root.findAll(`[data-cell-row-number="${resizableElement.data.rowNumber}"]`);
 
-        const onMouseMoveEventHandler = e => {
-            const delta = e.pageY - coords.bottom;
-            resizableElement.css({"height": (coords.height + delta) + "px"});
+        resizer.css({"width": "100%"});
 
-            rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
-                cellEl.style.height = (coords.height + delta) + "px";
+        const onMouseMoveEventHandler = e => {
+            const delta = e.pageY - resizer.getCoords().bottom;
+            resizer.css({
+                "top": (parseInt(window.getComputedStyle(resizer.$nativeElement).top) + delta) + "px",
+                "opacity": 1
             });
         };
 
         document.addEventListener("mousemove", onMouseMoveEventHandler);
-        document.addEventListener("mouseup", () => document.removeEventListener("mousemove", onMouseMoveEventHandler));
+        document.addEventListener("mouseup", () => {
+            document.removeEventListener("mousemove", onMouseMoveEventHandler);
+            
+            resizer.css({
+                "width": "",
+                "opacity": ""
+            });
+
+            const delta = resizer.getCoords().bottom - resizableElementCoords.bottom;
+
+            resizableElement.css({"height": (resizableElementCoords.height + delta) + "px"});
+
+            rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+                cellEl.style.height = (resizableElementCoords.height + delta) + "px";
+            });
+        });
     }
 
     /**
