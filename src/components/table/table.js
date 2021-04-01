@@ -42,19 +42,22 @@ export class Table extends SpreadsheetComponent {
 
     /**
      * 
-     * @param {Event} event
+     * @param {MouseEvent} event
      */
     onClick(event) {
         const target = event.target;
         if (target.classList.contains("cell")) {
-            console.log(target.dataset.cellHeaderName + target.dataset.cellRowNumber + " selected");
-            this.tableSelection.selectCell($(target));
+            if (event.shiftKey) {
+                this.tableSelection.selectCells($(target));
+            } else {
+                this.tableSelection.selectCell($(target));
+            }
         }
     }
 
     /**
      * 
-     * @param {Event} event
+     * @param {MouseEvent} event
      */
     onMousedown(event) {
         if (event.target.dataset.resize) {
@@ -146,20 +149,16 @@ export class Table extends SpreadsheetComponent {
 
     /**
      * 
-     * @param {Event} event
+     * @param {MouseEvent} event
      */
     onMouseup(event) {
-        if (event.target.dataset.resize) {
-            console.log("End resizing ", event.target.dataset.resize);
-        }
+        
     }
 
     /**
-     * @param {Event} event
+     * @param {MouseEvent} event
      */
     onMousemove(event) {
-        if (event.target.dataset.resize) {
-            console.log("Start moving ", event.target.dataset.resize);
-        }
+        
     }
 }

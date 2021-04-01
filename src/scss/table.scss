@@ -29,6 +29,10 @@
       &:hover {
         background-color: #9fd5b7;
       }
+
+      &.selected {
+        background-color: #d6d6d6;
+      }
       
       .row-number {
         position: absolute;
@@ -78,6 +82,10 @@
           background-color: #9fd5b7;
         }
         
+        &.selected {
+          background-color: #d6d6d6;
+        }
+        
         .column-title {
           flex-grow: 1;
           text-align: center;
@@ -116,6 +124,7 @@
         &.selected {
           border: none;
           outline: 2px solid #237447;
+          outline-offset: -2px;
           z-index: 2;
         }
       }
