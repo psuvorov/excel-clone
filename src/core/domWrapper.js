@@ -80,6 +80,15 @@ class DomWrapper {
     }
 
     /**
+     * 
+     * @param {string} selector
+     * @return {Element}
+     */
+    find(selector) {
+        return this.$nativeElement.querySelector(selector);
+    }
+
+    /**
      * @param {string} selector
      * @return {NodeListOf<Element>}
      */
@@ -108,6 +117,22 @@ class DomWrapper {
                     this.$nativeElement.style[x] = styles[x];
                 }
             });
+    }
+
+    /**
+     * 
+     * @param {string} className
+     */
+    addClass(className) {
+        this.$nativeElement.classList.add(className);
+    }
+
+    /**
+     * 
+     * @param {string} className
+     */
+    removeClass(className) {
+        this.$nativeElement.classList.remove(className);
     }
 }
 

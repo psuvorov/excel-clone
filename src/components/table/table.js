@@ -1,6 +1,7 @@
 import {SpreadsheetComponent} from "@core/spreadsheetComponent";
 import {createTable} from "@/components/table/table.template";
 import {$} from "@core/domWrapper";
+import {TableSelection} from "@/components/table/tableSelection";
 
 /**
  * 
@@ -17,6 +18,18 @@ export class Table extends SpreadsheetComponent {
         super($root, {
             listeners: ["click", "mousedown", "mousemove", "mouseup"]
         });
+
+        this.tableSelection = new TableSelection();
+    }
+
+    /**
+     * 
+     */
+    init() {
+        super.init();
+        
+        const $cell = $(this.$root.find("[data-cell-header-name='A'][data-cell-row-number='1']"));
+        this.tableSelection.selectCell($cell);
     }
 
     /**
@@ -32,7 +45,11 @@ export class Table extends SpreadsheetComponent {
      * @param {Event} event
      */
     onClick(event) {
-        
+        const target = event.target;
+        if (target.classList.contains("cell")) {
+            console.log(target.dataset.cellHeaderName + target.dataset.cellRowNumber + " selected");
+            this.tableSelection.selectCell($(target));
+        }
     }
 
     /**
