@@ -58,9 +58,11 @@ export class TableSelection {
     }
 
     /**
+     * @param {DomWrapper} $firstCell
      * @param {DomWrapper} $secondCell
      */
-    selectCells($secondCell) {
+    selectCells($firstCell, $secondCell) {
+        // Deselect the previous group of cells
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.remove(TableSelection.selectedCellClassName);
         }, (/** @type {HTMLElement} */currentRow) => {
@@ -70,18 +72,19 @@ export class TableSelection {
         });
         
         this.selectedRange = {
-            col1: +this.currentSelectedCell.data.cellColumnNumber < +$secondCell.data.cellColumnNumber ? 
-                this.currentSelectedCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
-            row1: +this.currentSelectedCell.data.cellRowNumber < +$secondCell.data.cellRowNumber ?
-                this.currentSelectedCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
-            col2: +this.currentSelectedCell.data.cellColumnNumber > +$secondCell.data.cellColumnNumber ?
-                this.currentSelectedCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
-            row2: +this.currentSelectedCell.data.cellRowNumber > +$secondCell.data.cellRowNumber ?
-                this.currentSelectedCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
+            col1: +$firstCell.data.cellColumnNumber < +$secondCell.data.cellColumnNumber ?
+                $firstCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
+            row1: +$firstCell.data.cellRowNumber < +$secondCell.data.cellRowNumber ?
+                $firstCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
+            col2: +$firstCell.data.cellColumnNumber > +$secondCell.data.cellColumnNumber ?
+                $firstCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
+            row2: +$firstCell.data.cellRowNumber > +$secondCell.data.cellRowNumber ?
+                $firstCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
         };
         
-        // 1. Set border for the whole selection perimeter
+        // TODO: Set border for the whole selection perimeter
         
+        // Select a new group of cells
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.add(TableSelection.selectedCellClassName);
         }, (/** @type {HTMLElement} */currentRow) => {

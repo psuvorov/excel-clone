@@ -47,8 +47,11 @@ export class Table extends SpreadsheetComponent {
     onClick(event) {
         const target = event.target;
         if (target.classList.contains("cell")) {
-            if (event.shiftKey) {
-                this.tableSelection.selectCells($(target));
+            const firstCell = this.tableSelection.currentSelectedCell;
+            
+            if (event.shiftKey && firstCell) {
+                const secondCell = $(target);
+                this.tableSelection.selectCells(firstCell, secondCell);
             } else {
                 this.tableSelection.selectSingleCell($(target));
             }
