@@ -25,7 +25,7 @@ function createTableHeader(colCount) {
     
     for (let i = 1; i <= colCount; i++) {
         const columnTitle = getColumnTitle(i);
-        res += `<div class="column" data-header-name="${columnTitle}" data-resizable="true"><div class="column-title">${columnTitle}</div><div data-resize="col" class="col-resize"></div></div>`;
+        res += `<div class="column" data-column-number="${i}" data-resizable="true"><div class="column-title">${columnTitle}</div><div data-resize="col" class="col-resize"></div></div>`;
     }
     res += `</div></div>`;
     
@@ -62,8 +62,7 @@ function createSingleRow(rowNumber, colCount) {
                         `;
     
     for (let i = 1; i <= colCount; i++) {
-        const columnTitle = getColumnTitle(i);
-        res += `<div class="cell" data-cell-row-number="${rowNumber}" data-cell-header-name="${columnTitle}" contenteditable="true"></div>`;
+        res += `<div class="cell" data-cell-row-number="${rowNumber}" data-cell-column-number="${i}" contenteditable="true"></div>`;
     }
     res += `</div></div>`;
     

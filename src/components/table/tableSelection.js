@@ -45,12 +45,12 @@ export class TableSelection {
      */
     selectCells($cell) {
         this.selectedRange = {
-            col1: this.currentSelectedCell.data.cellHeaderName < $cell.data.cellHeaderName ? 
-                this.currentSelectedCell.data.cellHeaderName : $cell.data.cellHeaderName,
+            col1: +this.currentSelectedCell.data.cellColumnNumber < +$cell.data.cellColumnNumber ? 
+                this.currentSelectedCell.data.cellColumnNumber : $cell.data.cellColumnNumber,
             row1: +this.currentSelectedCell.data.cellRowNumber < +$cell.data.cellRowNumber ?
                 this.currentSelectedCell.data.cellRowNumber : $cell.data.cellRowNumber,
-            col2: this.currentSelectedCell.data.cellHeaderName > $cell.data.cellHeaderName ?
-                this.currentSelectedCell.data.cellHeaderName : $cell.data.cellHeaderName,
+            col2: +this.currentSelectedCell.data.cellColumnNumber > +$cell.data.cellColumnNumber ?
+                this.currentSelectedCell.data.cellColumnNumber : $cell.data.cellColumnNumber,
             row2: +this.currentSelectedCell.data.cellRowNumber > +$cell.data.cellRowNumber ?
                 this.currentSelectedCell.data.cellRowNumber : $cell.data.cellRowNumber,
         };
@@ -68,19 +68,19 @@ export class TableSelection {
         // TODO: Introduce data attribute for table element
         const spreadsheetEl = document.querySelector(".spreadsheet__table");
 
-        const startingColumn = spreadsheetEl.querySelector(`[data-header-name="${this.selectedRange.col1}"]`);
+        const startingColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col1}"]`);
         const startingRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row1}"]`);
-        const endColumn = spreadsheetEl.querySelector(`[data-header-name="${this.selectedRange.col2}"]`);
+        const endColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col2}"]`);
         const endRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row2}"]`);
 
         let currentRow = startingRow;
-        while (+currentRow.dataset.rowNumber <= +endRow.dataset.rowNumber) {
+        while (currentRow && +currentRow.dataset.rowNumber <= +endRow.dataset.rowNumber) {
             let currentColumn = startingColumn;
 
             const currentRowNumber = currentRow.dataset.rowNumber;
-            while (currentColumn.dataset.headerName <= endColumn.dataset.headerName) {
-                const currentColumnName = currentColumn.dataset.headerName;
-                const currentCell = spreadsheetEl.querySelector(`[data-cell-header-name="${currentColumnName}"][data-cell-row-number="${currentRowNumber}"]`);
+            while (currentColumn && +currentColumn.dataset.columnNumber <= +endColumn.dataset.columnNumber) {
+                const currentColumnNumber = currentColumn.dataset.columnNumber;
+                const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`);
                 cb(currentCell);
                 
                 currentColumn = currentColumn.nextElementSibling;

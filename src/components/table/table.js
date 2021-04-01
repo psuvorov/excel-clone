@@ -28,7 +28,7 @@ export class Table extends SpreadsheetComponent {
     init() {
         super.init();
         
-        const $cell = $(this.$root.find("[data-cell-header-name='A'][data-cell-row-number='1']"));
+        const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
         this.tableSelection.selectCell($cell);
     }
 
@@ -79,7 +79,7 @@ export class Table extends SpreadsheetComponent {
      */
     resizeColumn(resizableElement, resizer) {
         const resizableElementCoords = resizableElement.getCoords();
-        const columnCellToResizeEls = this.$root.findAll(`[data-cell-header-name="${resizableElement.data.headerName}"]`);
+        const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${resizableElement.data.columnNumber}"]`);
 
         resizer.css({"height": "100%"});
         
