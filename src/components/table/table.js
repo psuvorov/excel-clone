@@ -29,7 +29,7 @@ export class Table extends SpreadsheetComponent {
         super.init();
         
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
-        this.tableSelection.selectCell($cell);
+        this.tableSelection.selectSingleCell($cell);
     }
 
     /**
@@ -50,7 +50,7 @@ export class Table extends SpreadsheetComponent {
             if (event.shiftKey) {
                 this.tableSelection.selectCells($(target));
             } else {
-                this.tableSelection.selectCell($(target));
+                this.tableSelection.selectSingleCell($(target));
             }
         }
     }

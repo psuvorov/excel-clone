@@ -32,6 +32,7 @@
 
       &.selected {
         background-color: #d6d6d6;
+        border-right: 3px solid #237447;
       }
       
       .row-number {
@@ -84,6 +85,7 @@
         
         &.selected {
           background-color: #d6d6d6;
+          border-bottom: 3px solid #237447;
         }
         
         .column-title {
@@ -122,10 +124,8 @@
         cursor: default;
         
         &.selected {
-          border: none;
-          outline: 2px solid #237447;
-          outline-offset: -2px;
-          z-index: 2;
+          //z-index: 2;
+          background-color: #eceeef;
         }
       }
     }

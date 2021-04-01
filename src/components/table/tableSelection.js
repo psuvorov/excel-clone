@@ -2,7 +2,7 @@
  * 
  */
 export class TableSelection {
-    static selectedClassName = "selected";
+    static selectedCellClassName = "selected";
     
     /**
      * 
@@ -19,52 +19,88 @@ export class TableSelection {
      * 
      * @param {DomWrapper} $cell
      */
-    selectCell($cell) {
-        this.clearSelection();
-        this.currentSelectedCell = $cell;
-        $cell.addClass(TableSelection.selectedClassName);
-    }
+    selectSingleCell($cell) {
+        // TODO: Introduce data attribute for table element
+        const spreadsheetEl = document.querySelector(".spreadsheet__table");
+        
+        const clearSelection = () => {
+            if (this.currentSelectedCell) {
+                const selectedColumn = spreadsheetEl.querySelector(`[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
+                const selectedRow = spreadsheetEl.querySelector(`[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
 
-    /**
-     * 
-     */
-    clearSelection() {
-        if (this.currentSelectedCell) {
-            this.currentSelectedCell.removeClass(TableSelection.selectedClassName);
-            this.currentSelectedCell = null;
-        }
-        if (this.selectedRange) {
-            this.iterateOverSelectedCells((currentCell) => {
-                currentCell.classList.remove(TableSelection.selectedClassName);
-            });
-        }
-    }
-
-    /**
-     * @param {DomWrapper} $cell
-     */
-    selectCells($cell) {
-        this.selectedRange = {
-            col1: +this.currentSelectedCell.data.cellColumnNumber < +$cell.data.cellColumnNumber ? 
-                this.currentSelectedCell.data.cellColumnNumber : $cell.data.cellColumnNumber,
-            row1: +this.currentSelectedCell.data.cellRowNumber < +$cell.data.cellRowNumber ?
-                this.currentSelectedCell.data.cellRowNumber : $cell.data.cellRowNumber,
-            col2: +this.currentSelectedCell.data.cellColumnNumber > +$cell.data.cellColumnNumber ?
-                this.currentSelectedCell.data.cellColumnNumber : $cell.data.cellColumnNumber,
-            row2: +this.currentSelectedCell.data.cellRowNumber > +$cell.data.cellRowNumber ?
-                this.currentSelectedCell.data.cellRowNumber : $cell.data.cellRowNumber,
+                selectedColumn.classList.remove("selected");
+                selectedRow.querySelector(".row-info").classList.remove("selected");
+                
+                this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
+                this.currentSelectedCell = null;
+            }
+            if (this.selectedRange) {
+                this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
+                    currentCell.classList.remove(TableSelection.selectedCellClassName);
+                }, (/** @type {HTMLElement} */currentRow) => {
+                    currentRow.querySelector(".row-info").classList.remove("selected");
+                }, (/** @type {HTMLElement} */currentColumn) => {
+                    currentColumn.classList.remove("selected");
+                });
+                this.selectedRange = null;
+            }
         };
+        clearSelection();
+        
+        this.currentSelectedCell = $cell;
+        $cell.addClass(TableSelection.selectedCellClassName);
 
-        this.iterateOverSelectedCells((currentCell) => {
-            currentCell.classList.add(TableSelection.selectedClassName);
+        const selectedColumn = spreadsheetEl.querySelector(`[data-column-number="${$cell.data.cellColumnNumber}"]`);
+        const selectedRow = spreadsheetEl.querySelector(`[data-row-number="${$cell.data.cellRowNumber}"]`);
+
+        selectedColumn.classList.add("selected");
+        selectedRow.querySelector(".row-info").classList.add("selected");
+    }
+
+    /**
+     * @param {DomWrapper} $secondCell
+     */
+    selectCells($secondCell) {
+        this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
+            currentCell.classList.remove(TableSelection.selectedCellClassName);
+        }, (/** @type {HTMLElement} */currentRow) => {
+            currentRow.querySelector(".row-info").classList.remove("selected");
+        }, (/** @type {HTMLElement} */currentColumn) => {
+            currentColumn.classList.remove("selected");
+        });
+        
+        this.selectedRange = {
+            col1: +this.currentSelectedCell.data.cellColumnNumber < +$secondCell.data.cellColumnNumber ? 
+                this.currentSelectedCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
+            row1: +this.currentSelectedCell.data.cellRowNumber < +$secondCell.data.cellRowNumber ?
+                this.currentSelectedCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
+            col2: +this.currentSelectedCell.data.cellColumnNumber > +$secondCell.data.cellColumnNumber ?
+                this.currentSelectedCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
+            row2: +this.currentSelectedCell.data.cellRowNumber > +$secondCell.data.cellRowNumber ?
+                this.currentSelectedCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
+        };
+        
+        // 1. Set border for the whole selection perimeter
+        
+        this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
+            currentCell.classList.add(TableSelection.selectedCellClassName);
+        }, (/** @type {HTMLElement} */currentRow) => {
+            currentRow.querySelector(".row-info").classList.add("selected");
+        }, (/** @type {HTMLElement} */currentColumn) => {
+            currentColumn.classList.add("selected");
         });
     }
 
     /**
-     * 
-     * @param {Function} cb
+     *
+     * @param {Function} currentCellCb
+     * @param {Function} currentRowCb
+     * @param {Function} currentColumnCb
      */
-    iterateOverSelectedCells(cb) {
+    iterateOverSelectedCells(currentCellCb, currentRowCb, currentColumnCb) {
+        if (!this.selectedRange)
+            return;
+        
         // TODO: Introduce data attribute for table element
         const spreadsheetEl = document.querySelector(".spreadsheet__table");
 
@@ -75,39 +111,21 @@ export class TableSelection {
 
         let currentRow = startingRow;
         while (currentRow && +currentRow.dataset.rowNumber <= +endRow.dataset.rowNumber) {
+            currentRowCb(currentRow);
+            
             let currentColumn = startingColumn;
 
             const currentRowNumber = currentRow.dataset.rowNumber;
             while (currentColumn && +currentColumn.dataset.columnNumber <= +endColumn.dataset.columnNumber) {
+                currentColumnCb(currentColumn);
+                
                 const currentColumnNumber = currentColumn.dataset.columnNumber;
                 const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`);
-                cb(currentCell);
+                currentCellCb(currentCell);
                 
                 currentColumn = currentColumn.nextElementSibling;
             }
             currentRow = currentRow.nextElementSibling;
         }
     }
-
-
-    /**
-     * 
-     * @param {string} columnTitle
-     * @param {string} rowNumber
-     */
-    // highlightCellCaption(columnTitle, rowNumber) {
-    //     const columnHeader = document.querySelector(`[data-header-name='${columnTitle}']`);
-    //     columnHeader.classList.add("selected");
-    //
-    //     const rowHeader = document.querySelector(`[data-row-number='${rowNumber}']`);
-    //     rowHeader.classList.add("selected");
-    // }
-
-    // /**
-    //  * 
-    //  * @return {{row1: string, col2: string, row2: string, col1: string} | null}
-    //  */
-    // getSelectedRange() {
-    //     return this.selectedRange;
-    // }
 }
