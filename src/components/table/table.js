@@ -64,35 +64,55 @@ export class Table extends SpreadsheetComponent {
 
             if (event.shiftKey && firstCell) {
                 const secondCell = $(target);
-                this.tableSelection.selectCells(firstCell, secondCell);
+                this.tableSelection.selectCells(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
+                    +secondCell.data.cellColumnNumber, +secondCell.data.cellRowNumber);
             } else {
                 this.tableSelection.selectSingleCell($(target));
             }
         }
+
+        /**
+         * 
+         * @param {DomWrapper} firstCell
+         * @param {DomWrapper} lastCell
+         */
+        const selectRowOrColumn = (firstCell, lastCell) => {
+            const firstCellColumnNumber = +firstCell.data.cellColumnNumber;
+            const firstCellRowNumber = +firstCell.data.cellRowNumber;
+            let secondCellColumnNumber = +lastCell.data.cellColumnNumber;
+            let secondCellRowNumber = +lastCell.data.cellRowNumber;
+
+            if (event.shiftKey) {
+                const selectedRange = this.tableSelection.selectedRange;
+                secondCellColumnNumber = selectedRange.col2;
+                secondCellRowNumber = selectedRange.row2;
+            }
+
+            this.tableSelection.clearSelection();
+            this.tableSelection.selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber);
+        }; 
         
-        // Select whole row
+        // Select whole row(s)
         const rowInfoEl = target.closest(".row-info");
         if (rowInfoEl) {
             const $row = $(rowInfoEl.closest(".row"));
             const $rowData = $row.find(".row-data");
-            const firstCell = $rowData.firstElementChild;
-            const lastCell = $rowData.lastElementChild;
-            
-            this.tableSelection.clearSelection();
-            this.tableSelection.selectCells($(firstCell), $(lastCell));
+            const firstCell = $($rowData.firstElementChild);
+            const lastCell = $($rowData.lastElementChild);
+
+            selectRowOrColumn(firstCell, lastCell);
         }
         
-        // Select whole column
+        // Select whole column(s)
         const columnEl = target.closest(".column");
         if (columnEl) {
             const columnNumber = $(columnEl).data.columnNumber;
             const cells = this.$root.findAll(`.cell[data-cell-column-number="${columnNumber}"]`);
 
-            const firstCell = cells[0];
-            const lastCell = cells[cells.length - 1];
+            const firstCell = $(cells[0]);
+            const lastCell = $(cells[cells.length - 1]);
 
-            this.tableSelection.clearSelection();
-            this.tableSelection.selectCells($(firstCell), $(lastCell));
+            selectRowOrColumn(firstCell, lastCell);
         }
     }
     

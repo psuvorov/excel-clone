@@ -10,7 +10,7 @@ export class TableSelection {
     constructor() {
         /**
          * 
-         * @type {{row1: string, col2: string, row2: string, col1: string} | null}
+         * @type {{row1: number, col2: number, row2: number, col1: number} | null}
          */
         this.selectedRange = null;
 
@@ -62,10 +62,13 @@ export class TableSelection {
     }
 
     /**
-     * @param {DomWrapper} $firstCell
-     * @param {DomWrapper} $secondCell
+     * 
+     * @param {number} firstCellColumnNumber
+     * @param {number} firstCellRowNumber
+     * @param {number} secondCellColumnNumber
+     * @param {number} secondCellRowNumber
      */
-    selectCells($firstCell, $secondCell) {
+    selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) {
         // Deselect the previous group of cells
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.remove(TableSelection.selectedCellClassName);
@@ -76,14 +79,10 @@ export class TableSelection {
         });
         
         this.selectedRange = {
-            col1: +$firstCell.data.cellColumnNumber < +$secondCell.data.cellColumnNumber ?
-                $firstCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
-            row1: +$firstCell.data.cellRowNumber < +$secondCell.data.cellRowNumber ?
-                $firstCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
-            col2: +$firstCell.data.cellColumnNumber > +$secondCell.data.cellColumnNumber ?
-                $firstCell.data.cellColumnNumber : $secondCell.data.cellColumnNumber,
-            row2: +$firstCell.data.cellRowNumber > +$secondCell.data.cellRowNumber ?
-                $firstCell.data.cellRowNumber : $secondCell.data.cellRowNumber,
+            col1: Math.min(firstCellColumnNumber, secondCellColumnNumber),
+            row1: Math.min(firstCellRowNumber, secondCellRowNumber),
+            col2: Math.max(firstCellColumnNumber, secondCellColumnNumber),
+            row2: Math.max(firstCellRowNumber, secondCellRowNumber),
         };
         
         // TODO: Set border for the whole selection perimeter
