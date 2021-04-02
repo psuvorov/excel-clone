@@ -2,21 +2,13 @@
 @import "mixins";
 
 .spreadsheet__toolbar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: $header-height;
-  height: $toolbar-height;
   border-top: 1px solid $border-color;
   border-bottom: 1px solid $border-color;
   padding: 7px 10px;
   display: flex;
-  
+  flex: 0 1 $toolbar-height;
   
   .button {
     @include button(green); 
   }
-  
-  
-  
 }

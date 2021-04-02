@@ -3,12 +3,14 @@
  * @param {number} colCount
  * @return {string}
  */
-export function createTable(rowCount = 15, colCount = 30) {
-    let res = createTableHeader(colCount);
+export function createTable(rowCount = 100, colCount = 30) {
+    let res = `<div class="table-wrapper">`;
     
+    res += createTableHeader(colCount);
     for (let i = 1; i <= rowCount; i++) {
         res += createSingleRow(i, colCount);
     }
+    res += `</div>`;
     
     return res;
 }

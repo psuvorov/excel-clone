@@ -2,130 +2,130 @@
 @import "mixins";
 
 .spreadsheet__table {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: $header-height + $toolbar-height + $formula-height;
-  overflow-x: auto;
-  padding-bottom: 2px;
+  overflow: auto;
+  flex: 1 1 auto;
   
-  .row {
-    display: flex;
-    flex-direction: row;
-    min-height: 16px;
-    height: $row-height;
+  .table-wrapper {
+    position: relative;
     
-    .row-info {
+    .row {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-width: $info-cell-width;
-      height: 100%;
-      border: 1px solid $border-color;
-      background-color: #f8f9fa;
-      border-top: none;
-      cursor: pointer;
-      
-      &:hover {
-        background-color: #9fd5b7;
-      }
+      flex-direction: row;
+      min-height: 16px;
+      height: $row-height;
 
-      &.selected {
-        background-color: #d6d6d6;
-        border-right: 3px solid #237447;
-      }
-      
-      .row-number {
-        position: absolute;
-        pointer-events: none;
-        user-select: none;
-      }
-      
-      .row-resize {
-        width: 100%;
-        height: 100%;
+      .row-info {
         display: flex;
-        align-items: flex-end;
-        
-        .handler {
-          width: $info-cell-width;
-          height: 3px;
-          background-color: #237447;
-          cursor: row-resize;
-          position: absolute;
-          opacity: 0;
-          z-index: 1000;
-          
-          &:hover {
-            opacity: 1;
-          }
-        }
-      }
-    }
-
-    .row-data {
-      display: flex;
-      
-      .column {
-        display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
-        background-color: #f8f9fa;
-        min-width: 40px;
-        width: $cell-width;
-        border: 1px solid $border-color;
-        border-top: 0;
-        border-left: 0;
+        min-width: $info-cell-width;
         height: 100%;
+        border: 1px solid $border-color;
+        background-color: #f8f9fa;
+        border-top: none;
         cursor: pointer;
 
         &:hover {
           background-color: #9fd5b7;
         }
-        
+
         &.selected {
           background-color: #d6d6d6;
-          border-bottom: 3px solid #237447;
+          border-right: 3px solid #237447;
         }
-        
-        .column-title {
-          flex-grow: 1;
-          text-align: center;
+
+        .row-number {
+          position: absolute;
           pointer-events: none;
           user-select: none;
         }
 
-        .col-resize {
-          width: 3px;
-          height: $row-height;
-          background-color: #237447;
-          cursor: col-resize;
-          position: absolute;
-          top: 0;
-          opacity: 0;
-          z-index: 1000;
-          
-          &:hover {
-            opacity: 1;
+        .row-resize {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: flex-end;
+
+          .handler {
+            width: $info-cell-width;
+            height: 3px;
+            background-color: #237447;
+            cursor: row-resize;
+            position: absolute;
+            opacity: 0;
+            z-index: 1000;
+
+            &:hover {
+              opacity: 1;
+            }
           }
         }
       }
-      
-      .cell {
-        min-width: 40px;
-        width: $cell-width;
-        padding: 2px;
-        height: 100%;
-        border: 1px solid #e2e3e3;
-        border-top: 0;
-        border-left: 0;
-        color: #111;white-space: nowrap;
-        outline: none;
-        cursor: default;
-        
-        &.selected {
-          //z-index: 2;
-          background-color: #eceeef;
+
+      .row-data {
+        display: flex;
+
+        .column {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          background-color: #f8f9fa;
+          min-width: 40px;
+          width: $cell-width;
+          border: 1px solid $border-color;
+          border-top: 0;
+          border-left: 0;
+          height: 100%;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #9fd5b7;
+          }
+
+          &.selected {
+            background-color: #d6d6d6;
+            border-bottom: 3px solid #237447;
+          }
+
+          .column-title {
+            flex-grow: 1;
+            text-align: center;
+            pointer-events: none;
+            user-select: none;
+          }
+
+          .col-resize {
+            width: 3px;
+            height: $row-height;
+            background-color: #237447;
+            cursor: col-resize;
+            position: absolute;
+            top: 0;
+            opacity: 0;
+            z-index: 1000;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+        }
+
+        .cell {
+          min-width: 40px;
+          width: $cell-width;
+          padding: 2px;
+          height: 100%;
+          border: 1px solid #e2e3e3;
+          border-top: 0;
+          border-left: 0;
+          color: #111;white-space: nowrap;
+          outline: none;
+          cursor: default;
+
+          &.selected {
+            //z-index: 2;
+            background-color: #eceeef;
+          }
         }
       }
     }

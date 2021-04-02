@@ -2,15 +2,10 @@
 @import "mixins";
 
 .spreadsheet__header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: $header-height;
   padding: 8px 4px 0;
   display: flex;
   justify-content: space-between;
-  
+  flex: 0 1 $header-height;
   
   .input {
     padding: 2px 7px;
