@@ -17,8 +17,6 @@ export class Table extends SpreadsheetComponent {
         super($root, {
             listeners: ["mousedown", "mousemove", "mouseup"]
         });
-
-//         this.tableSelection = new TableSelection();
     }
 
     /**
