@@ -88,8 +88,9 @@ export class Table extends SpreadsheetComponent {
         
         const onMouseMoveEventHandler = e => {
             const delta = e.pageX - resizer.getCoords().right;
+            
             resizer.css({
-                "left": (resizer.getCoords().x + delta) + "px",
+                "left": (parseInt(window.getComputedStyle(resizer.$nativeElement).left) + delta) + "px",
                 "opacity": 1
             });
         };
@@ -103,13 +104,13 @@ export class Table extends SpreadsheetComponent {
             });
 
             const delta = resizer.getCoords().right - resizableElementCoords.right;
-            
+
             resizableElement.css({"width": (resizableElementCoords.width + delta) + "px"});
-            
+
             columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.width = (resizableElementCoords.width + delta) + "px";
             });
-        });
+        }, {once: true});
     }
 
     /**
@@ -147,7 +148,7 @@ export class Table extends SpreadsheetComponent {
             rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.height = (resizableElementCoords.height + delta) + "px";
             });
-        });
+        }, {once: true});
     }
 
     /**
