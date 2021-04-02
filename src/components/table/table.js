@@ -72,20 +72,37 @@ export class Table extends SpreadsheetComponent {
         }
 
         /**
-         * 
-         * @param {DomWrapper} firstCell
-         * @param {DomWrapper} lastCell
+         *
+         * @param {number} firstCellColumnNumber
+         * @param {number} firstCellRowNumber
+         * @param {number} secondCellColumnNumber
+         * @param {number} secondCellRowNumber
          */
-        const selectRowOrColumn = (firstCell, lastCell) => {
-            const firstCellColumnNumber = +firstCell.data.cellColumnNumber;
-            const firstCellRowNumber = +firstCell.data.cellRowNumber;
-            let secondCellColumnNumber = +lastCell.data.cellColumnNumber;
-            let secondCellRowNumber = +lastCell.data.cellRowNumber;
+        const selectRowOrColumn = (firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) => {
+            let selectionType;
+            let selectableColumn;
+            let selectableRow;
+            if (firstCellColumnNumber === secondCellColumnNumber) {
+                selectionType = "column";
+                selectableColumn = firstCellColumnNumber;
+            } else {
+                selectionType = "row";
+                selectableRow = firstCellRowNumber;
+            }
+            
+            // Unset Selected Pivot in case changed selection type
+            if (this.tableSelection.selectedPivot && this.tableSelection.selectedPivot.type !== selectionType)
+                this.tableSelection.selectedPivot = null;
 
-            if (event.shiftKey) {
-                const selectedRange = this.tableSelection.selectedRange;
-                secondCellColumnNumber = selectedRange.col2;
-                secondCellRowNumber = selectedRange.row2;
+            if (event.shiftKey && this.tableSelection.selectedPivot) {
+                if (selectionType === "column") {
+                    firstCellColumnNumber = this.tableSelection.selectedPivot.number;
+                } else {
+                    firstCellRowNumber = this.tableSelection.selectedPivot.number;
+                }
+            } else {
+                // If it's just a regular click, set Selected Pivot 
+                this.tableSelection.selectedPivot = {type: selectionType, number: selectionType === "column" ? selectableColumn : selectableRow};
             }
 
             this.tableSelection.clearSelection();
@@ -100,7 +117,8 @@ export class Table extends SpreadsheetComponent {
             const firstCell = $($rowData.firstElementChild);
             const lastCell = $($rowData.lastElementChild);
 
-            selectRowOrColumn(firstCell, lastCell);
+            selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
+                +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
         }
         
         // Select whole column(s)
@@ -112,7 +130,8 @@ export class Table extends SpreadsheetComponent {
             const firstCell = $(cells[0]);
             const lastCell = $(cells[cells.length - 1]);
 
-            selectRowOrColumn(firstCell, lastCell);
+            selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber,
+                +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
         }
     }
     

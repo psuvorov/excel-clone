@@ -10,9 +10,15 @@ export class TableSelection {
     constructor() {
         /**
          * 
-         * @type {{row1: number, col2: number, row2: number, col1: number} | null}
+         * @type {{row1: number, col2: number, row2: number, col1: number}}
          */
         this.selectedRange = null;
+
+        /**
+         * 
+         * @type {{type: string, number: number}}
+         */
+        this.selectedPivot = null;
 
         // TODO: Introduce data attribute for table element
         this.spreadsheetEl = document.querySelector(".spreadsheet__table");
@@ -24,6 +30,9 @@ export class TableSelection {
      */
     selectSingleCell($cell) {
         this.clearSelection();
+        // If we select a single cell after selected row / column, unset Selected Pivot 
+        // in a sense we don't want to select the second row / column. 
+        this.selectedPivot = null;
         
         this.currentSelectedCell = $cell;
         $cell.addClass(TableSelection.selectedCellClassName);
