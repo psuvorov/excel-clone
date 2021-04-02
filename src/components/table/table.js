@@ -16,7 +16,7 @@ export class Table extends SpreadsheetComponent {
      */
     constructor($root) {
         super($root, {
-            listeners: ["click", "mousedown", "mousemove", "mouseup"]
+            listeners: ["mousedown", "mousemove", "mouseup"]
         });
 
         this.tableSelection = new TableSelection();
@@ -44,26 +44,10 @@ export class Table extends SpreadsheetComponent {
      * 
      * @param {MouseEvent} event
      */
-    onClick(event) {
-        const target = event.target;
-        if (target.classList.contains("cell")) {
-            const firstCell = this.tableSelection.currentSelectedCell;
-            
-            if (event.shiftKey && firstCell) {
-                const secondCell = $(target);
-                this.tableSelection.selectCells(firstCell, secondCell);
-            } else {
-                this.tableSelection.selectSingleCell($(target));
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param {MouseEvent} event
-     */
     onMousedown(event) {
-        if (event.target.dataset.resize) {
+        const target = event.target;
+        
+        if (target.dataset.resize) {
             const $resizer = $(event.target);
             const $parent = $resizer.closest('[data-resizable="true"]');
             const resizerType = $resizer.data.resize;
@@ -72,6 +56,17 @@ export class Table extends SpreadsheetComponent {
                 this.resizeColumn($parent, $resizer);
             else
                 this.resizeRow($parent, $resizer);
+        }
+
+        if (target.classList.contains("cell")) {
+            const firstCell = this.tableSelection.currentSelectedCell;
+
+            if (event.shiftKey && firstCell) {
+                const secondCell = $(target);
+                this.tableSelection.selectCells(firstCell, secondCell);
+            } else {
+                this.tableSelection.selectSingleCell($(target));
+            }
         }
     }
 
