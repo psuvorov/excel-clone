@@ -13,6 +13,9 @@ export class TableSelection {
          * @type {{row1: string, col2: string, row2: string, col1: string} | null}
          */
         this.selectedRange = null;
+
+        // TODO: Introduce data attribute for table element
+        this.spreadsheetEl = document.querySelector(".spreadsheet__table");
     }
 
     /**
@@ -20,41 +23,42 @@ export class TableSelection {
      * @param {DomWrapper} $cell
      */
     selectSingleCell($cell) {
-        // TODO: Introduce data attribute for table element
-        const spreadsheetEl = document.querySelector(".spreadsheet__table");
-        
-        const clearSelection = () => {
-            if (this.currentSelectedCell) {
-                const selectedColumn = spreadsheetEl.querySelector(`[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
-                const selectedRow = spreadsheetEl.querySelector(`[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
-
-                selectedColumn.classList.remove("selected");
-                selectedRow.querySelector(".row-info").classList.remove("selected");
-                
-                this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
-                this.currentSelectedCell = null;
-            }
-            if (this.selectedRange) {
-                this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
-                    currentCell.classList.remove(TableSelection.selectedCellClassName);
-                }, (/** @type {HTMLElement} */currentRow) => {
-                    currentRow.querySelector(".row-info").classList.remove("selected");
-                }, (/** @type {HTMLElement} */currentColumn) => {
-                    currentColumn.classList.remove("selected");
-                });
-                this.selectedRange = null;
-            }
-        };
-        clearSelection();
+        this.clearSelection();
         
         this.currentSelectedCell = $cell;
         $cell.addClass(TableSelection.selectedCellClassName);
 
-        const selectedColumn = spreadsheetEl.querySelector(`[data-column-number="${$cell.data.cellColumnNumber}"]`);
-        const selectedRow = spreadsheetEl.querySelector(`[data-row-number="${$cell.data.cellRowNumber}"]`);
+        const selectedColumn = this.spreadsheetEl.querySelector(`[data-column-number="${$cell.data.cellColumnNumber}"]`);
+        const selectedRow = this.spreadsheetEl.querySelector(`[data-row-number="${$cell.data.cellRowNumber}"]`);
 
         selectedColumn.classList.add("selected");
         selectedRow.querySelector(".row-info").classList.add("selected");
+    }
+
+    /**
+     * 
+     */
+    clearSelection() {
+        if (this.currentSelectedCell) {
+            const selectedColumn = this.spreadsheetEl.querySelector(`[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
+            const selectedRow = this.spreadsheetEl.querySelector(`[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
+
+            selectedColumn.classList.remove("selected");
+            selectedRow.querySelector(".row-info").classList.remove("selected");
+
+            this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
+            this.currentSelectedCell = null;
+        }
+        if (this.selectedRange) {
+            this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
+                currentCell.classList.remove(TableSelection.selectedCellClassName);
+            }, (/** @type {HTMLElement} */currentRow) => {
+                currentRow.querySelector(".row-info").classList.remove("selected");
+            }, (/** @type {HTMLElement} */currentColumn) => {
+                currentColumn.classList.remove("selected");
+            });
+            this.selectedRange = null;
+        }
     }
 
     /**

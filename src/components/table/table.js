@@ -9,7 +9,6 @@ import {TableSelection} from "@/components/table/tableSelection";
 export class Table extends SpreadsheetComponent {
     static className = "spreadsheet__table";
 
-
     /**
      * 
      * @param {DomWrapper} $root
@@ -19,7 +18,7 @@ export class Table extends SpreadsheetComponent {
             listeners: ["mousedown", "mousemove", "mouseup"]
         });
 
-        this.tableSelection = new TableSelection();
+//         this.tableSelection = new TableSelection();
     }
 
     /**
@@ -29,6 +28,8 @@ export class Table extends SpreadsheetComponent {
         super.init();
         
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
+        this.tableSelection = new TableSelection();
+        
         this.tableSelection.selectSingleCell($cell);
     }
 
@@ -47,6 +48,7 @@ export class Table extends SpreadsheetComponent {
     onMousedown(event) {
         const target = event.target;
         
+        // Resize columns and rows
         if (target.dataset.resize) {
             const $resizer = $(event.target);
             const $parent = $resizer.closest('[data-resizable="true"]');
@@ -56,8 +58,9 @@ export class Table extends SpreadsheetComponent {
                 this.resizeColumn($parent, $resizer);
             else
                 this.resizeRow($parent, $resizer);
-        }
-
+        } 
+        
+        // Cell(s) selection
         if (target.classList.contains("cell")) {
             const firstCell = this.tableSelection.currentSelectedCell;
 
@@ -68,8 +71,33 @@ export class Table extends SpreadsheetComponent {
                 this.tableSelection.selectSingleCell($(target));
             }
         }
-    }
+        
+        // Select whole row
+        const rowInfoEl = target.closest(".row-info");
+        if (rowInfoEl) {
+            const $row = $(rowInfoEl.closest(".row"));
+            const $rowData = $row.find(".row-data");
+            const firstCell = $rowData.firstElementChild;
+            const lastCell = $rowData.lastElementChild;
+            
+            this.tableSelection.clearSelection();
+            this.tableSelection.selectCells($(firstCell), $(lastCell));
+        }
+        
+        // Select whole column
+        const columnEl = target.closest(".column");
+        if (columnEl) {
+            const columnNumber = $(columnEl).data.columnNumber;
+            const cells = this.$root.findAll(`.cell[data-cell-column-number="${columnNumber}"]`);
 
+            const firstCell = cells[0];
+            const lastCell = cells[cells.length - 1];
+
+            this.tableSelection.clearSelection();
+            this.tableSelection.selectCells($(firstCell), $(lastCell));
+        }
+    }
+    
     /**
      *
      * @param {DomWrapper} resizableElement
