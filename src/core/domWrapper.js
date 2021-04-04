@@ -98,6 +98,15 @@ class DomWrapper {
 
     /**
      * 
+     * @return {DomWrapper}
+     */
+    focus() {
+        this.$nativeElement.focus();
+        return this;
+    }
+
+    /**
+     * 
      * @return {DOMRect}
      */
     getCoords() {

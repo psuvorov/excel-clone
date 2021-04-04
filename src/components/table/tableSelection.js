@@ -35,7 +35,7 @@ export class TableSelection {
         this.selectedPivot = null;
         
         this.currentSelectedCell = $cell;
-        $cell.addClass(TableSelection.selectedCellClassName);
+        $cell.focus().addClass(TableSelection.selectedCellClassName);
 
         const selectedColumn = this.spreadsheetEl.querySelector(`[data-column-number="${$cell.data.cellColumnNumber}"]`);
         const selectedRow = this.spreadsheetEl.querySelector(`[data-row-number="${$cell.data.cellRowNumber}"]`);
