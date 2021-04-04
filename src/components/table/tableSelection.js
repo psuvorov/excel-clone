@@ -29,6 +29,9 @@ export class TableSelection {
      * @param {DomWrapper} $cell
      */
     selectSingleCell($cell) {
+        if (!$cell)
+            return;
+        
         this.clearSelection();
         // If we select a single cell after selected row / column, unset Selected Pivot 
         // in a sense we don't want to select the second row / column. 

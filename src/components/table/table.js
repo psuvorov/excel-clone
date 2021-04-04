@@ -15,7 +15,7 @@ export class Table extends SpreadsheetComponent {
      */
     constructor($root) {
         super($root, {
-            listeners: ["mousedown", "mousemove", "mouseup"]
+            listeners: ["mousedown", "mousemove", "mouseup", "keydown"]
         });
     }
 
@@ -224,5 +224,72 @@ export class Table extends SpreadsheetComponent {
      */
     onMousemove(event) {
         
+    }
+
+    /**
+     * 
+     * @param {KeyboardEvent} event
+     */
+    onKeydown(event) {
+        const allowedKeys = [
+            "Enter",
+            "Tab",
+            "ArrowUp",
+            "ArrowRight",
+            "ArrowDown",
+            "ArrowLeft",
+            "Home"
+        ];
+        
+        if (!allowedKeys.includes(event.key))
+            return;
+
+        /**
+         *
+         * @param {string} key
+         * @param {boolean} shiftPressed
+         * @param {boolean} ctrlPressed
+         */
+        const getNextCell = (key, shiftPressed, ctrlPressed) => {
+            const selectedCell = this.tableSelection.currentSelectedCell;
+            const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
+            const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
+            
+            let nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber];
+            if (key === "Enter") {
+                if (shiftPressed) {
+                    nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
+                } else {
+                    nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
+                }
+            } else if (key === "Tab") {
+                if (shiftPressed) {
+                    nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
+                } else {
+                    nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
+                }
+            } else if (key === "ArrowUp") {
+                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
+            } else if (key === "ArrowRight") {
+                nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
+            } else if (key === "ArrowDown") {
+                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
+            } else if (key === "ArrowLeft") {
+                nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
+            } else if (key === "Home") {
+                if (ctrlPressed) {
+                    nextCellCoords = [1, 1];
+                } else {
+                    nextCellCoords = [1, selectedCellRowNumber];
+                }
+            }
+
+            const nextCell = $(this.$root.find(`[data-cell-column-number="${nextCellCoords[0]}"][data-cell-row-number="${nextCellCoords[1]}"]`));
+            this.tableSelection.selectSingleCell(nextCell);
+        };
+        
+        event.preventDefault();
+        
+        getNextCell(event.key, event.shiftKey, event.ctrlKey);
     }
 }

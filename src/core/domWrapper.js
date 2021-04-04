@@ -150,6 +150,9 @@ class DomWrapper {
  * @return {DomWrapper}
  */
 export function $(queryObject) {
+    if (!queryObject)
+        return null;
+    
     return new DomWrapper(queryObject);
 }
 
