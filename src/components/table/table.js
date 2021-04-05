@@ -45,6 +45,16 @@ export class Table extends SpreadsheetComponent {
     }
 
     /**
+     * 
+     */
+    dispose() {
+        super.dispose();
+        
+        this.observable.dispose(EventNames.formulaInput);
+        this.observable.dispose(EventNames.selectNextCellAfterFormulaInput);
+    }
+
+    /**
      *
      * @return {string}
      */

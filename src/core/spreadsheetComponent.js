@@ -37,7 +37,5 @@ export class SpreadsheetComponent extends DomListener {
      */
     dispose() {
        this.removeDomListeners();
-       
-       this.observable.dispose(EventNames.formulaInput);
     }
 }

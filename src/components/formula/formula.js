@@ -47,7 +47,9 @@ export class Formula extends SpreadsheetComponent {
      */
     dispose() {
         super.dispose();
+        
         this.observable.dispose(EventNames.singleCellSelect);
+        this.observable.dispose(EventNames.cellInput);
     }
 
     /**
