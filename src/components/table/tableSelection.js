@@ -8,6 +8,12 @@ export class TableSelection {
 
     /**
      * 
+     * @type {DomWrapper}
+     */
+    initialMouseSelectedCell = null;
+
+    /**
+     * 
      * @param {Observable} observable
      */
     constructor(observable) {

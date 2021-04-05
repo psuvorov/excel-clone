@@ -90,7 +90,9 @@ export class Table extends SpreadsheetComponent {
                 this.tableSelection.selectCells(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
                     +secondCell.data.cellColumnNumber, +secondCell.data.cellRowNumber);
             } else {
-                this.tableSelection.selectSingleCell($(target));
+                const cell = $(target);
+                this.tableSelection.selectSingleCell(cell);
+                this.tableSelection.initialMouseSelectedCell = cell;
             }
         }
 
@@ -239,14 +241,21 @@ export class Table extends SpreadsheetComponent {
      * @param {MouseEvent} event
      */
     onMouseup(event) {
-        
+        if (this.tableSelection.initialMouseSelectedCell)
+            this.tableSelection.initialMouseSelectedCell = null;
     }
 
     /**
      * @param {MouseEvent} event
      */
     onMousemove(event) {
-        
+        if (this.tableSelection.initialMouseSelectedCell && event.target.classList.contains("cell")) {
+            const hoveredCell = $(event.target);
+
+            const initialCell = this.tableSelection.initialMouseSelectedCell;
+            this.tableSelection.selectCells(+initialCell.data.cellColumnNumber, +initialCell.data.cellRowNumber,
+                +hoveredCell.data.cellColumnNumber, +hoveredCell.data.cellRowNumber);
+        }
     }
 
     /**
@@ -292,8 +301,8 @@ export class Table extends SpreadsheetComponent {
      */
     getNextCell(key, shiftPressed= false, ctrlPressed= false) {
         const selectedCell = this.tableSelection.currentSelectedCell;
-        const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
         const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
+        const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
 
         let nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber];
         if (key === "Enter") {
