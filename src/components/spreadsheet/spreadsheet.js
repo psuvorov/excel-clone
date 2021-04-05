@@ -50,4 +50,11 @@ export class Spreadsheet {
         this.$el.append(this.getRoot());
         this.components.forEach(x => x.init());
     }
+
+    /**
+     * 
+     */
+    dispose() {
+        this.components.forEach(x => x.dispose());
+    }
 }
