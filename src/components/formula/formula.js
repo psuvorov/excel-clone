@@ -1,4 +1,5 @@
 import {SpreadsheetComponent} from "@core/spreadsheetComponent";
+import {EventNames} from "@core/resources";
 
 /**
  * 
@@ -7,14 +8,46 @@ export class Formula extends SpreadsheetComponent {
     static className = "spreadsheet__formula";
 
     /**
-     * 
+     *
      * @param {DomWrapper} $root
+     * @param {Observable} observable
      */
-    constructor($root) {
-        super($root, {
+    constructor($root, observable) {
+        super($root, observable, {
             name: "Formula",
-            listeners: ['input', 'click']
+            listeners: ["keydown", "input"]
         });
+    }
+
+
+    /**
+     * 
+     */
+    init() {
+        super.init();
+        const $inputBar = this.$root.find(".input");
+        
+        this.observable.subscribe(EventNames.singleCellSelect, cellTextContent => {
+            if (cellTextContent === null)
+                cellTextContent = "";
+            
+            $inputBar.textContent = cellTextContent;
+        });
+
+        this.observable.subscribe(EventNames.cellInput, cellTextContent => {
+            if (cellTextContent === null)
+                cellTextContent = "";
+
+            $inputBar.textContent = cellTextContent;
+        });
+    }
+
+    /**
+     * 
+     */
+    dispose() {
+        super.dispose();
+        this.observable.dispose(EventNames.singleCellSelect);
     }
 
     /**
@@ -28,16 +61,26 @@ export class Formula extends SpreadsheetComponent {
 
     /**
      * 
-     * @param {{}} event
+     * @param {InputEvent} event
      */
     onInput(event) {
+        if (event.data === null) {
+            event.preventDefault();
+            return;
+        }
         
+        const inputText = event.target.textContent.trim();
+        
+        this.observable.notify(EventNames.formulaInput, inputText);
     }
 
     /**
-     * @param {{}} event 
+     * 
+     * @param {KeyboardEvent} event
      */
-    onClick(event) {
-        
+    onKeydown(event) {
+        if (event.key === "Enter") {
+            this.observable.notify(EventNames.selectNextCellAfterFormulaInput, null);
+        }
     }
 }

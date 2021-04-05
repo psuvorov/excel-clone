@@ -1,18 +1,24 @@
+import {EventNames} from "@core/resources";
+
 /**
  * 
  */
 export class TableSelection {
     static selectedCellClassName = "selected";
-    
+
     /**
      * 
+     * @param {Observable} observable
      */
-    constructor() {
+    constructor(observable) {
         /**
          * 
          * @type {{row1: number, col2: number, row2: number, col1: number}}
          */
         this.selectedRange = null;
+
+        /** @type {DomWrapper} */
+        this.currentSelectedCell = null;
 
         /**
          * 
@@ -22,6 +28,8 @@ export class TableSelection {
 
         // TODO: Introduce data attribute for table element
         this.spreadsheetEl = document.querySelector(".spreadsheet__table");
+
+        this.observable = observable;
     }
 
     /**
@@ -37,6 +45,7 @@ export class TableSelection {
         // in a sense we don't want to select the second row / column. 
         this.selectedPivot = null;
         
+        
         this.currentSelectedCell = $cell;
         $cell.focus().addClass(TableSelection.selectedCellClassName);
 
@@ -45,6 +54,8 @@ export class TableSelection {
 
         selectedColumn.classList.add("selected");
         selectedRow.querySelector(".row-info").classList.add("selected");
+
+        this.observable.notify(EventNames.singleCellSelect, $cell.textContent);
     }
 
     /**

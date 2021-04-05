@@ -107,6 +107,22 @@ class DomWrapper {
 
     /**
      * 
+     * @param {string} text
+     */
+    set textContent(text) {
+        this.$nativeElement.textContent = text;
+    }
+
+    /**
+     * 
+     * @return {string}
+     */
+    get textContent() {
+        return this.$nativeElement.textContent;
+    }
+
+    /**
+     * 
      * @return {DOMRect}
      */
     getCoords() {

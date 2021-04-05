@@ -1,4 +1,6 @@
 import {$} from "@core/domWrapper";
+import {Observable} from "@core/observable";
+
 
 /**
  * 
@@ -14,8 +16,11 @@ export class Spreadsheet {
         this.$el = $(selector);
 
         this.componentsRaw = options.components || [];
+        
         /** @type {SpreadsheetComponent[]} */
         this.components = [];
+        
+        this.observable = new Observable();
     }
 
     /**
@@ -28,7 +33,7 @@ export class Spreadsheet {
         this.componentsRaw.forEach((/** @type {SpreadsheetComponent} */ Component) => {
             const $el = $.create("div", Component.className);
             
-            const component = new Component($el);
+            const component = new Component($el, this.observable);
             $el.html(component.toHtml());
             $root.append($el);
 

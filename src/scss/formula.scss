@@ -16,12 +16,21 @@
   }
   
   .input {
-    padding: 4px;
+    padding: 0 4px;
     font-size: 12px;
     outline: none;
     width: 100%;
-    height: 100%;
+    height: 20px;
+    line-height: 20px;
     color: black;
+    
+    br, div {
+      display: none;
+    }
+    
+    * {
+      display: inline;
+    }
   }
   
 }

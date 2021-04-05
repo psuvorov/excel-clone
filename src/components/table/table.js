@@ -2,6 +2,7 @@ import {SpreadsheetComponent} from "@core/spreadsheetComponent";
 import {createTable} from "@/components/table/table.template";
 import {$} from "@core/domWrapper";
 import {TableSelection} from "@/components/table/tableSelection";
+import {EventNames} from "@core/resources";
 
 /**
  * 
@@ -10,12 +11,14 @@ export class Table extends SpreadsheetComponent {
     static className = "spreadsheet__table";
 
     /**
-     * 
+     *
      * @param {DomWrapper} $root
+     * @param {Observable} observable
      */
-    constructor($root) {
-        super($root, {
-            listeners: ["mousedown", "mousemove", "mouseup", "keydown"]
+    constructor($root, observable) {
+        super($root, observable, {
+            name: "Table",
+            listeners: ["mousedown", "mousemove", "mouseup", "keydown", "input"]
         });
     }
 
@@ -26,9 +29,19 @@ export class Table extends SpreadsheetComponent {
         super.init();
         
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
-        this.tableSelection = new TableSelection();
+        this.tableSelection = new TableSelection(this.observable);
         
         this.tableSelection.selectSingleCell($cell);
+        
+        this.observable.subscribe(EventNames.formulaInput, inputText => {
+            this.tableSelection.currentSelectedCell.textContent = inputText;
+        });
+
+        this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
+            const nextCell = this.getNextCell("Enter");
+
+            this.tableSelection.selectSingleCell(nextCell);
+        });
     }
 
     /**
@@ -244,52 +257,63 @@ export class Table extends SpreadsheetComponent {
         if (!allowedKeys.includes(event.key))
             return;
 
-        /**
-         *
-         * @param {string} key
-         * @param {boolean} shiftPressed
-         * @param {boolean} ctrlPressed
-         */
-        const getNextCell = (key, shiftPressed, ctrlPressed) => {
-            const selectedCell = this.tableSelection.currentSelectedCell;
-            const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
-            const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
-            
-            let nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber];
-            if (key === "Enter") {
-                if (shiftPressed) {
-                    nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
-                } else {
-                    nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
-                }
-            } else if (key === "Tab") {
-                if (shiftPressed) {
-                    nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
-                } else {
-                    nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
-                }
-            } else if (key === "ArrowUp") {
-                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
-            } else if (key === "ArrowRight") {
-                nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
-            } else if (key === "ArrowDown") {
-                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
-            } else if (key === "ArrowLeft") {
-                nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
-            } else if (key === "Home") {
-                if (ctrlPressed) {
-                    nextCellCoords = [1, 1];
-                } else {
-                    nextCellCoords = [1, selectedCellRowNumber];
-                }
-            }
-
-            const nextCell = $(this.$root.find(`[data-cell-column-number="${nextCellCoords[0]}"][data-cell-row-number="${nextCellCoords[1]}"]`));
-            this.tableSelection.selectSingleCell(nextCell);
-        };
-        
         event.preventDefault();
         
-        getNextCell(event.key, event.shiftKey, event.ctrlKey);
+        const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
+        
+        this.tableSelection.selectSingleCell(nextCell);
+    }
+
+    /**
+     * @param {InputEvent} event
+     */
+    onInput(event) {
+        const inputText = event.target.textContent.trim();
+        
+        this.observable.notify(EventNames.cellInput, inputText);
+    }
+
+    /**
+     *
+     * @param {string} key
+     * @param {boolean} shiftPressed
+     * @param {boolean} ctrlPressed
+     * @return {DomWrapper}
+     */
+    getNextCell(key, shiftPressed= false, ctrlPressed= false) {
+        const selectedCell = this.tableSelection.currentSelectedCell;
+        const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
+        const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
+
+        let nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber];
+        if (key === "Enter") {
+            if (shiftPressed) {
+                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
+            } else {
+                nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
+            }
+        } else if (key === "Tab") {
+            if (shiftPressed) {
+                nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
+            } else {
+                nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
+            }
+        } else if (key === "ArrowUp") {
+            nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber - 1];
+        } else if (key === "ArrowRight") {
+            nextCellCoords = [selectedCellColumnNumber + 1, selectedCellRowNumber];
+        } else if (key === "ArrowDown") {
+            nextCellCoords = [selectedCellColumnNumber, selectedCellRowNumber + 1];
+        } else if (key === "ArrowLeft") {
+            nextCellCoords = [selectedCellColumnNumber - 1, selectedCellRowNumber];
+        } else if (key === "Home") {
+            if (ctrlPressed) {
+                nextCellCoords = [1, 1];
+            } else {
+                nextCellCoords = [1, selectedCellRowNumber];
+            }
+        }
+
+        return $(this.$root.find(`[data-cell-column-number="${nextCellCoords[0]}"][data-cell-row-number="${nextCellCoords[1]}"]`));
     }
 }

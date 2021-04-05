@@ -7,11 +7,12 @@ export class Toolbar extends SpreadsheetComponent {
     static className = "spreadsheet__toolbar";
 
     /**
-     * 
+     *
      * @param {DomWrapper} $root
+     * @param {Observable} observable
      */
-    constructor($root) {
-        super($root, {
+    constructor($root, observable) {
+        super($root, observable, {
             name: "Toolbar",
             listeners: ["click"]
         });

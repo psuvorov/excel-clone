@@ -126,6 +126,14 @@
             //z-index: 2;
             background-color: #eceeef;
           }
+
+          br, div {
+            display: none;
+          }
+
+          * {
+            display: inline;
+          }
         }
       }
     }

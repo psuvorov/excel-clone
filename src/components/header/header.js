@@ -5,7 +5,17 @@ import {SpreadsheetComponent} from "@core/spreadsheetComponent";
  */
 export class Header extends SpreadsheetComponent {
     static className = "spreadsheet__header";
-    
+
+    /**
+     *
+     * @param {DomWrapper} $root
+     * @param {Observable} observable
+     * @param {{}} options
+     */
+    constructor($root, observable, options) {
+        super($root, observable, options);
+    }
+
     /**
      *
      * @return {string}
