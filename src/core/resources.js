@@ -7,7 +7,8 @@ export const EventNames = {
     formulaInput: "formulaInput",
     cellInput: "cellInput",
     singleCellSelect: "singleCellSelect",
-    selectNextCellAfterFormulaInput: "selectNextCellAfterFormulaInput"
+    selectNextCellAfterFormulaInput: "selectNextCellAfterFormulaInput",
+    emptySelectedCells: "emptySelectedCells" 
 };
 
 /**

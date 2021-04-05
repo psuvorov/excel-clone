@@ -1,3 +1,4 @@
+import {$} from "@core/domWrapper";
 import {EventNames} from "@core/resources";
 
 /**
@@ -36,6 +37,14 @@ export class TableSelection {
         this.spreadsheetEl = document.querySelector(".spreadsheet__table");
 
         this.observable = observable;
+
+        this.observable.subscribe(EventNames.emptySelectedCells, () => {
+            this.iterateOverSelectedCells((currentCell) => {
+                $(currentCell).textContent = "";
+            });
+            this.currentSelectedCell.textContent = "";
+            this.observable.notify(EventNames.cellInput, "");
+        });
     }
 
     /**
@@ -132,7 +141,7 @@ export class TableSelection {
      * @param {Function} currentRowCb
      * @param {Function} currentColumnCb
      */
-    iterateOverSelectedCells(currentCellCb, currentRowCb, currentColumnCb) {
+    iterateOverSelectedCells(currentCellCb, currentRowCb = null, currentColumnCb = null) {
         if (!this.selectedRange)
             return;
         
@@ -146,13 +155,15 @@ export class TableSelection {
 
         let currentRow = startingRow;
         while (currentRow && +currentRow.dataset.rowNumber <= +endRow.dataset.rowNumber) {
-            currentRowCb(currentRow);
+            if (currentRowCb)
+                currentRowCb(currentRow);
             
             let currentColumn = startingColumn;
 
             const currentRowNumber = currentRow.dataset.rowNumber;
             while (currentColumn && +currentColumn.dataset.columnNumber <= +endColumn.dataset.columnNumber) {
-                currentColumnCb(currentColumn);
+                if (currentColumnCb)
+                    currentColumnCb(currentColumn);
                 
                 const currentColumnNumber = currentColumn.dataset.columnNumber;
                 const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`);

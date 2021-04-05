@@ -82,7 +82,7 @@ export class Formula extends SpreadsheetComponent {
      */
     onKeydown(event) {
         if (event.key === "Enter") {
-            this.observable.notify(EventNames.selectNextCellAfterFormulaInput, null);
+            this.observable.notify(EventNames.selectNextCellAfterFormulaInput);
         }
     }
 }

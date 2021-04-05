@@ -41,7 +41,7 @@ export class Observable {
      * @param {string} eventName
      * @param {any} eventData
      */
-    notify(eventName, eventData) {
+    notify(eventName, eventData = null) {
         if (!isAllowedEventName(eventName))
             throw new Error(ErrorMessages.wrongEventType.toString());
         

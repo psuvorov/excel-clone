@@ -273,14 +273,14 @@ export class Table extends SpreadsheetComponent {
             "Home"
         ];
         
-        if (!allowedKeys.includes(event.key))
-            return;
+        if (allowedKeys.includes(event.key)) {
+            event.preventDefault();
 
-        event.preventDefault();
-        
-        const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
-        
-        this.tableSelection.selectSingleCell(nextCell);
+            const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
+            this.tableSelection.selectSingleCell(nextCell);
+        } else if (event.key === "Delete") {
+            this.observable.notify(EventNames.emptySelectedCells);
+        }
     }
 
     /**
