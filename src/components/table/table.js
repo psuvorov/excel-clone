@@ -59,7 +59,9 @@ export class Table extends SpreadsheetComponent {
      * @return {string}
      */
     toHtml() {
-        return createTable();
+        this.rowCount = 100;
+        this.columnCount = 30;
+        return createTable(this.rowCount, this.columnCount);
     }
 
     /**
@@ -136,7 +138,7 @@ export class Table extends SpreadsheetComponent {
         
         // Select whole row(s)
         const rowInfoEl = target.closest(".row-info");
-        if (rowInfoEl) {
+        if (rowInfoEl && rowInfoEl.childElementCount > 0) {
             const $row = $(rowInfoEl.closest(".row"));
             const $rowData = $row.find(".row-data");
             const firstCell = $($rowData.firstElementChild);
@@ -144,6 +146,9 @@ export class Table extends SpreadsheetComponent {
 
             selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
                 +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
+        } else if (rowInfoEl && rowInfoEl.childElementCount === 0) {
+            selectRowOrColumn(1, 1,
+                this.columnCount, this.rowCount);
         }
         
         // Select whole column(s)

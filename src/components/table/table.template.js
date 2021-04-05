@@ -3,7 +3,7 @@
  * @param {number} colCount
  * @return {string}
  */
-export function createTable(rowCount = 100, colCount = 30) {
+export function createTable(rowCount, colCount) {
     let res = `<div class="table-wrapper">`;
     
     res += createTableHeader(colCount);
