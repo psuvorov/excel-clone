@@ -57,7 +57,7 @@ export class Formula extends SpreadsheetComponent {
      * @return {string}
      */
     toHtml() {
-        return `<div class="info">fx</div>
+        return `<div class="info">f</div>
                 <div class="input" contenteditable="true" spellcheck="false"></div>`;
     }
 
