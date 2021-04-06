@@ -81,6 +81,8 @@ export class Table extends SpreadsheetComponent {
                 this.resizeColumn($parent, $resizer);
             else
                 this.resizeRow($parent, $resizer);
+            
+            return;
         } 
         
         // Cell(s) selection
@@ -176,9 +178,15 @@ export class Table extends SpreadsheetComponent {
 
         resizer.css({"height": "100%"});
         
+        const hoveredColumns = {};
+        
         const onMouseMoveEventHandler = e => {
-            const delta = e.pageX - resizer.getCoords().right;
+            if (e.target.classList.contains("column")) {
+                hoveredColumns[$(e.target).data.columnNumber] = e.target;
+                e.target.style.pointerEvents = "none";
+            }
             
+            const delta = e.pageX - resizer.getCoords().right;
             resizer.css({
                 "left": (parseInt(window.getComputedStyle(resizer.$nativeElement).left) + delta) + "px",
                 "opacity": 1
@@ -200,6 +208,8 @@ export class Table extends SpreadsheetComponent {
             columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.width = (resizableElementCoords.width + delta) + "px";
             });
+
+            Object.keys(hoveredColumns).forEach(k => hoveredColumns[k].style.removeProperty("pointer-events"));
         }, {once: true});
     }
 
@@ -213,8 +223,19 @@ export class Table extends SpreadsheetComponent {
         const rowCellToResizeEls = this.$root.findAll(`[data-cell-row-number="${resizableElement.data.rowNumber}"]`);
 
         resizer.css({"width": "100%"});
+        
+        const hoveredRows = {};
 
         const onMouseMoveEventHandler = e => {
+            console.log(e.target.closest(".row"));
+            const hoveredRow = $(e.target.closest(".row"));
+            if (hoveredRow.$nativeElement) {
+                const rowNumber = hoveredRow.data.rowNumber;
+                const rowInfo = hoveredRow.find(".row-info");
+                hoveredRows[rowNumber] = rowInfo;
+                rowInfo.style.pointerEvents = "none";
+            }
+            
             const delta = e.pageY - resizer.getCoords().bottom;
             resizer.css({
                 "top": (parseInt(window.getComputedStyle(resizer.$nativeElement).top) + delta) + "px",
@@ -238,6 +259,8 @@ export class Table extends SpreadsheetComponent {
             rowCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
                 cellEl.style.height = (resizableElementCoords.height + delta) + "px";
             });
+            
+            Object.keys(hoveredRows).forEach(k => hoveredRows[k].style.removeProperty("pointer-events"));
         }, {once: true});
     }
 
