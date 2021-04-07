@@ -5,18 +5,18 @@
  */
 export function createTable(rowCount, colCount) {
     let res = `<div class="table-header">${createTableHeader(colCount)}</div>
-                <div class="table-body"><div class="column-row-info">`;
+                <div class="table-body"><div class="column-row-info-container"><div class="column-row-info">`;
 
     for (let i = 1; i <= rowCount; i++) {
         res += `<div class="row-info"><div class="row-number">${i}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>`;
     }
     
-    res += `</div><div class="table-wrapper">`;
+    res += `</div></div><div class="table-wrapper">`;
     
     for (let i = 1; i <= rowCount; i++) {
         res += createSingleRow(i, colCount);
     }
-    res += `</div></div>`;
+    res += `</div><div class="column-row-info-patch"></div></div>`;
     
     return res;
 }
@@ -35,7 +35,7 @@ function createTableHeader(colCount) {
         const columnTitle = getColumnTitle(i);
         res += `<div class="column" data-column-number="${i}" data-resizable="true"><div class="column-title">${columnTitle}</div><div data-resize="col" class="col-resize"></div></div>`;
     }
-    res += `</div></div>`;
+    res += `</div><div class="row-column-info-patch"></div></div>`;
     
     return res;
 }
