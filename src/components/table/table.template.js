@@ -4,13 +4,19 @@
  * @return {string}
  */
 export function createTable(rowCount, colCount) {
-    let res = `<div class="table-wrapper">`;
+    let res = `<div class="table-header">${createTableHeader(colCount)}</div>
+                <div class="table-body"><div class="column-row-info">`;
+
+    for (let i = 1; i <= rowCount; i++) {
+        res += `<div class="row-info"><div class="row-number">${i}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>`;
+    }
     
-    res += createTableHeader(colCount);
+    res += `</div><div class="table-wrapper">`;
+    
     for (let i = 1; i <= rowCount; i++) {
         res += createSingleRow(i, colCount);
     }
-    res += `</div>`;
+    res += `</div></div>`;
     
     return res;
 }
@@ -59,7 +65,6 @@ function getColumnTitle(columnNumber) {
  */
 function createSingleRow(rowNumber, colCount) {
     let res = `<div class="row" data-row-number="${rowNumber}" data-resizable="true">
-                    <div class="row-info"><div class="row-number">${rowNumber}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>
                     <div class="row-data">
                         `;
     
