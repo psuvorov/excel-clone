@@ -31,7 +31,7 @@ export class Table extends SpreadsheetComponent {
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
         this.tableSelection = new TableSelection(this.observable);
         
-        this.tableSelection.selectSingleCell($cell);
+        // this.tableSelection.selectSingleCell($cell);
         
         this.observable.subscribe(EventNames.formulaInput, inputText => {
             this.tableSelection.currentSelectedCell.textContent = inputText;
@@ -41,6 +41,25 @@ export class Table extends SpreadsheetComponent {
             const nextCell = this.getNextCell("Enter");
 
             this.tableSelection.selectSingleCell(nextCell);
+        });
+        
+        let lastScrollLeft = 0;
+        let lastScrollTop = 0;
+        this.$root.find(".table-wrapper").addEventListener("scroll", (event) => {
+            // TODO: Needs to rework this fragment
+            const columnRowInfo = event.target.closest(".table-body").querySelector(".column-row-info");
+            const rowColumnInfo = this.$root.find(".table-header .row-data");
+            
+            const tableWrapperScrollLeft = event.target.scrollLeft;
+            const tableWrapperScrollTop = event.target.scrollTop;
+            if (lastScrollLeft !== tableWrapperScrollLeft) {
+                rowColumnInfo.style.marginLeft = (40 - tableWrapperScrollLeft) + "px";
+                lastScrollLeft = tableWrapperScrollLeft;
+            }
+            if (lastScrollTop !== tableWrapperScrollTop) {
+                columnRowInfo.style.marginTop = -tableWrapperScrollTop + "px";
+                lastScrollTop = tableWrapperScrollTop;
+            }
         });
     }
 
