@@ -25,7 +25,7 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          min-width: $info-cell-width;
+          width: $info-cell-width;
           height: 18px;
           border: 1px solid $border-color;
           background-color: #f8f9fa;
@@ -58,9 +58,9 @@
               height: 3px;
               background-color: #237447;
               cursor: row-resize;
-              position: absolute;
+              position: fixed;
               opacity: 0;
-              z-index: 1000;
+              z-index: 1;
 
               &:hover {
                 opacity: 1;
@@ -140,7 +140,7 @@
             position: absolute;
             top: 0;
             opacity: 0;
-            z-index: 1000;
+            z-index: 1;
 
             &:hover {
               opacity: 1;
@@ -161,7 +161,6 @@
           cursor: default;
 
           &.selected {
-            //z-index: 2;
             background-color: #eceeef;
           }
 
@@ -188,9 +187,6 @@
 
   .table-wrapper {
     overflow: auto;
-    //margin-left: 40px;
-    
-    
   }
 
   .column-row-info-patch {
