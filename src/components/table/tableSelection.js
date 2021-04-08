@@ -64,12 +64,12 @@ export class TableSelection {
         this.currentSelectedCell = $cell;
         $cell.focus().addClass(TableSelection.selectedCellClassName);
 
-        const selectedColumn = this.spreadsheetEl.querySelector(`[data-column-number="${$cell.data.cellColumnNumber}"]`);
-        const selectedRow = this.spreadsheetEl.querySelector(`[data-row-number="${$cell.data.cellRowNumber}"]`);
+        const selectedColumn = this.spreadsheetEl.querySelector(`.table-header .column[data-column-number="${$cell.data.cellColumnNumber}"]`);
+        const selectedRow = this.spreadsheetEl.querySelector(`.column-row-info .row-info[data-row-number="${$cell.data.cellRowNumber}"]`);
 
         selectedColumn.classList.add("selected");
-        selectedRow.querySelector(".row-info").classList.add("selected");
-
+        selectedRow.classList.add("selected");
+        
         this.observable.notify(EventNames.singleCellSelect, $cell.textContent);
     }
 
@@ -78,11 +78,11 @@ export class TableSelection {
      */
     clearSelection() {
         if (this.currentSelectedCell) {
-            const selectedColumn = this.spreadsheetEl.querySelector(`[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
-            const selectedRow = this.spreadsheetEl.querySelector(`[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
+            const selectedColumn = this.spreadsheetEl.querySelector(`.table-header .column[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
+            const selectedRow = this.spreadsheetEl.querySelector(`.column-row-info .row-info[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
 
             selectedColumn.classList.remove("selected");
-            selectedRow.querySelector(".row-info").classList.remove("selected");
+            selectedRow.classList.remove("selected");
 
             this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
             this.currentSelectedCell = null;
@@ -91,7 +91,7 @@ export class TableSelection {
             this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
                 currentCell.classList.remove(TableSelection.selectedCellClassName);
             }, (/** @type {HTMLElement} */currentRow) => {
-                currentRow.querySelector(".row-info").classList.remove("selected");
+                currentRow.classList.remove("selected");
             }, (/** @type {HTMLElement} */currentColumn) => {
                 currentColumn.classList.remove("selected");
             });
@@ -111,7 +111,7 @@ export class TableSelection {
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.remove(TableSelection.selectedCellClassName);
         }, (/** @type {HTMLElement} */currentRow) => {
-            currentRow.querySelector(".row-info").classList.remove("selected");
+            currentRow.classList.remove("selected");
         }, (/** @type {HTMLElement} */currentColumn) => {
             currentColumn.classList.remove("selected");
         });
@@ -129,7 +129,7 @@ export class TableSelection {
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.add(TableSelection.selectedCellClassName);
         }, (/** @type {HTMLElement} */currentRow) => {
-            currentRow.querySelector(".row-info").classList.add("selected");
+            currentRow.classList.add("selected");
         }, (/** @type {HTMLElement} */currentColumn) => {
             currentColumn.classList.add("selected");
         });

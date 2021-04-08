@@ -31,7 +31,7 @@ export class Table extends SpreadsheetComponent {
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
         this.tableSelection = new TableSelection(this.observable);
         
-        // this.tableSelection.selectSingleCell($cell);
+        this.tableSelection.selectSingleCell($cell);
         
         this.observable.subscribe(EventNames.formulaInput, inputText => {
             this.tableSelection.currentSelectedCell.textContent = inputText;
@@ -160,8 +160,8 @@ export class Table extends SpreadsheetComponent {
         // Select whole row(s)
         const rowInfoEl = target.closest(".row-info");
         if (rowInfoEl && rowInfoEl.childElementCount > 0) {
-            const $row = $(rowInfoEl.closest(".row"));
-            const $rowData = $row.find(".row-data");
+            const $row = $(rowInfoEl.closest(".table-body")).find(`.table-wrapper .row[data-row-number="${rowInfoEl.dataset.rowNumber}"]`); // $(rowInfoEl.closest(".row"));
+            const $rowData = $row.querySelector(".row-data");
             const firstCell = $($rowData.firstElementChild);
             const lastCell = $($rowData.lastElementChild);
 

@@ -8,7 +8,7 @@ export function createTable(rowCount, colCount) {
                 <div class="table-body"><div class="column-row-info-container"><div class="column-row-info">`;
 
     for (let i = 1; i <= rowCount; i++) {
-        res += `<div class="row-info"><div class="row-number">${i}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>`;
+        res += `<div class="row-info" data-row-number="${i}"><div class="row-number">${i}</div><div class="row-resize"><div data-resize="row" class="handler"></div></div></div>`;
     }
     
     res += `</div></div><div class="table-wrapper">`;
