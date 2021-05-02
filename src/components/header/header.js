@@ -9,11 +9,17 @@ export class Header extends SpreadsheetComponent {
     /**
      *
      * @param {DomWrapper} $root
-     * @param {Observable} observable
      * @param {{}} options
      */
-    constructor($root, observable, options) {
-        super($root, observable, options);
+    constructor($root, options) {
+        super($root, options);
+    }
+
+    /**
+     *
+     */
+    loadState() {
+        super.loadState();
     }
 
     /**

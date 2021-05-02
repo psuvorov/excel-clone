@@ -10,13 +10,12 @@ export class Formula extends SpreadsheetComponent {
     /**
      *
      * @param {DomWrapper} $root
-     * @param {Observable} observable
+     * @param {any} options
      */
-    constructor($root, observable) {
-        super($root, observable, {
-            name: "Formula",
-            listeners: ["keydown", "input"]
-        });
+    constructor($root, options) {
+        options.name = "Formula";
+        options.listeners = ["keydown", "input"];
+        super($root, options);
     }
 
 
@@ -40,6 +39,13 @@ export class Formula extends SpreadsheetComponent {
 
             $inputBar.textContent = cellTextContent;
         });
+    }
+
+    /**
+     *
+     */
+    loadState() {
+        super.loadState();
     }
 
     /**

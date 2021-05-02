@@ -9,13 +9,19 @@ export class Toolbar extends SpreadsheetComponent {
     /**
      *
      * @param {DomWrapper} $root
-     * @param {Observable} observable
+     * @param {any} options
      */
-    constructor($root, observable) {
-        super($root, observable, {
-            name: "Toolbar",
-            listeners: ["click"]
-        });
+    constructor($root, options) {
+        options.name = "Toolbar";
+        options.listeners = ["click"];
+        super($root, options);
+    }
+
+    /**
+     * 
+     */
+    loadState() {
+        super.loadState();
     }
 
     /**

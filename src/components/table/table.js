@@ -3,6 +3,7 @@ import {createTable} from "@/components/table/table.template";
 import {$} from "@core/domWrapper";
 import {TableSelection} from "@/components/table/tableSelection";
 import {EventNames} from "@core/resources";
+import * as actions from "@/redux/actions";
 
 /**
  * 
@@ -13,13 +14,13 @@ export class Table extends SpreadsheetComponent {
     /**
      *
      * @param {DomWrapper} $root
-     * @param {Observable} observable
+     * @param {any} options
      */
-    constructor($root, observable) {
-        super($root, observable, {
-            name: "Table",
-            listeners: ["mousedown", "mousemove", "mouseup", "keydown", "input"]
-        });
+    constructor($root, options) {
+        options.name = "Table";
+        options.listeners = ["mousedown", "mousemove", "mouseup", "keydown", "input"];
+        super($root, options);
+        this.store = options.store;
     }
 
     /**
@@ -60,6 +61,24 @@ export class Table extends SpreadsheetComponent {
                 columnRowInfo.style.marginTop = -tableWrapperScrollTop + "px";
                 lastScrollTop = tableWrapperScrollTop;
             }
+        });
+    }
+
+    /**
+     * 
+     */
+    loadState() {
+        super.loadState();
+        
+        const appState = this.store.getState();
+        
+        const tableState = appState[this.options.name.toLowerCase()];
+        Object.keys(tableState.columnWidths).forEach(columnNumber => {
+            const columnElement = $(this.$root.find(`.table-header [data-column-number="${columnNumber}"]`));
+            const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
+            const columnWidth = tableState.columnWidths[columnNumber];
+            
+            this.setColumnWidth(columnElement, columnCellToResizeEls, columnWidth);
         });
     }
 
@@ -190,12 +209,12 @@ export class Table extends SpreadsheetComponent {
     
     /**
      *
-     * @param {DomWrapper} resizableElement
+     * @param {DomWrapper} columnElement
      * @param {DomWrapper} resizer
      */
-    resizeColumn(resizableElement, resizer) {
-        const resizableElementCoords = resizableElement.getCoords();
-        const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${resizableElement.data.columnNumber}"]`);
+    resizeColumn(columnElement, resizer) {
+        const columnElementCoords = columnElement.getCoords();
+        const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
 
         resizer.css({"height": "100vh"});
         
@@ -222,16 +241,30 @@ export class Table extends SpreadsheetComponent {
                 "opacity": ""
             });
 
-            const delta = resizer.getCoords().right - resizableElementCoords.right;
-
-            resizableElement.css({"width": (resizableElementCoords.width + delta) + "px"});
-
-            columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
-                cellEl.style.width = (resizableElementCoords.width + delta) + "px";
-            });
-
+            const delta = resizer.getCoords().right - columnElementCoords.right;
+            
+            const newWidth = columnElementCoords.width + delta;
+            
+            this.setColumnWidth(columnElement, columnCellToResizeEls, newWidth);
+            
             Object.keys(hoveredColumns).forEach(k => hoveredColumns[k].style.removeProperty("pointer-events"));
         }, {once: true});
+    }
+
+    /**
+     * 
+     * @param {DomWrapper} columnElement
+     * @param {NodeListOf<Element>} columnCellToResizeEls
+     * @param {number} width
+     */
+    setColumnWidth(columnElement, columnCellToResizeEls, width) {
+        columnElement.css({"width": width + "px"});
+
+        columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+            cellEl.style.width = width + "px";
+        });
+
+        this.store.dispatch(actions.tableResize(columnElement.data.columnNumber, width));
     }
 
     /**

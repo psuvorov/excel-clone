@@ -9,18 +9,16 @@ export class Spreadsheet {
     /**
      * 
      * @param {string} selector
-     * @param {{}} options
+     * @param {any} options
      */
     constructor(selector, options) {
         /** @type {DomWrapper} */
         this.$el = $(selector);
-
+        this.options = options;
         this.componentsRaw = options.components || [];
-        
         /** @type {SpreadsheetComponent[]} */
         this.components = [];
-        
-        this.observable = new Observable();
+        options.observable = new Observable();
     }
 
     /**
@@ -33,7 +31,7 @@ export class Spreadsheet {
         this.componentsRaw.forEach((/** @type {SpreadsheetComponent} */ Component) => {
             const $el = $.create("div", Component.className);
             
-            const component = new Component($el, this.observable);
+            const component = new Component($el, this.options);
             $el.html(component.toHtml());
             $root.append($el);
 

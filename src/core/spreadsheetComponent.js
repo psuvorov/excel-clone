@@ -8,13 +8,15 @@ export class SpreadsheetComponent extends DomListener {
     /**
      *
      * @param {DomWrapper} $root
-     * @param {Observable} observable
      * @param {{}} options
      */
-    constructor($root, observable, options= {}) {
+    constructor($root, options= {}) {
         super($root, options.listeners);
         this.name = options.name || '';
-        this.observable = observable;
+        this.observable = options.observable;
+        this.store = options.store;
+        // TODO: make it accessible as a one single object 
+        this.options = options;
     }
 
     /**
@@ -30,6 +32,14 @@ export class SpreadsheetComponent extends DomListener {
      */
     init() {
         this.initDomListeners();
+        this.loadState();
+    }
+
+    /**
+     * 
+     */
+    loadState() {
+        
     }
 
     /**
