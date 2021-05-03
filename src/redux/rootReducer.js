@@ -1,4 +1,4 @@
-import {TABLE_RESIZE} from "@/redux/actions";
+import {COLUMN_RESIZE, ROW_RESIZE} from "@/redux/actions";
 
 /**
  * 
@@ -8,11 +8,17 @@ import {TABLE_RESIZE} from "@/redux/actions";
  */
 export function rootReducer(state, action) {
     switch (action.type) {
-        case TABLE_RESIZE: {
+        case COLUMN_RESIZE: {
             const prevState = {...state};
-            prevState.table.columnWidths[action.data.columnId] = action.data.newColumnWidth;
+            prevState.table.columnWidths[action.data.columnNumber] = action.data.newColumnWidth;
             
             return prevState; 
+        }
+        case ROW_RESIZE: {
+            const prevState = {...state};
+            prevState.table.rowHeights[action.data.rowNumber] = action.data.newRowHeight;
+
+            return prevState;
         }
         default:
             return state;

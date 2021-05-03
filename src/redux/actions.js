@@ -1,4 +1,5 @@
-export const TABLE_RESIZE = 'TABLE_RESIZE';
+export const COLUMN_RESIZE = 'COLUMN_RESIZE';
+export const ROW_RESIZE = 'ROW_RESIZE';
 
 /**
  *
@@ -6,12 +7,28 @@ export const TABLE_RESIZE = 'TABLE_RESIZE';
  * @param {number} newColumnWidth
  * @return {any}
  */
-export function tableResize(columnNumber, newColumnWidth) {
+export function columnResize(columnNumber, newColumnWidth) {
     return {
-        type: TABLE_RESIZE,
+        type: COLUMN_RESIZE,
         data: {
-            columnId: columnNumber,
+            columnNumber,
             newColumnWidth
+        }
+    };
+}
+
+/**
+ *
+ * @param {string} rowNumber
+ * @param {number} newRowHeight
+ * @return {any}
+ */
+export function rowResize(rowNumber, newRowHeight) {
+    return {
+        type: ROW_RESIZE,
+        data: {
+            rowNumber,
+            newRowHeight
         }
     };
 }

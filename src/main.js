@@ -15,7 +15,7 @@ const getApplicationState = () => {
     return {
         table: {
             columnWidths: {},
-            rowWidths: {}
+            rowHeights: {}
         }
     };
 };

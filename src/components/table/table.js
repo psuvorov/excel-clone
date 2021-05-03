@@ -73,12 +73,33 @@ export class Table extends SpreadsheetComponent {
         const appState = this.store.getState();
         
         const tableState = appState[this.options.name.toLowerCase()];
+        this.restoreColumnWidths(tableState);
+        this.restoreRowHeights(tableState);
+    }
+
+    /**
+     * 
+     * @param {{}} tableState
+     */
+    restoreColumnWidths(tableState) {
         Object.keys(tableState.columnWidths).forEach(columnNumber => {
             const columnElement = $(this.$root.find(`.table-header [data-column-number="${columnNumber}"]`));
             const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
             const columnWidth = tableState.columnWidths[columnNumber];
-            
+
             this.setColumnWidth(columnElement, columnCellToResizeEls, columnWidth);
+        });
+    }
+
+    /**
+     * 
+     * @param {{}} tableState
+     */
+    restoreRowHeights(tableState) {
+        Object.keys(tableState.rowHeights).forEach(rowNumber => {
+            const rowElement = $(this.$root.find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
+            const rowHeight = tableState.rowHeights[rowNumber];
+            this.setRowHeight(rowElement, rowHeight);
         });
     }
 
@@ -264,17 +285,16 @@ export class Table extends SpreadsheetComponent {
             cellEl.style.width = width + "px";
         });
 
-        this.store.dispatch(actions.tableResize(columnElement.data.columnNumber, width));
+        this.store.dispatch(actions.columnResize(columnElement.data.columnNumber, width));
     }
 
     /**
      *
-     * @param {DomWrapper} resizableElement
+     * @param {DomWrapper} rowElement
      * @param {DomWrapper} resizer
      */
-    resizeRow(resizableElement, resizer) {
-        const resizableElementCoords = resizableElement.getCoords();
-        const rowCellToResizeEls = this.$root.findAll(`[data-cell-row-number="${resizableElement.data.rowNumber}"]`);
+    resizeRow(rowElement, resizer) {
+        const resizableElementCoords = rowElement.getCoords();
 
         resizer.css({"width": "100%"});
         
@@ -305,14 +325,26 @@ export class Table extends SpreadsheetComponent {
             });
 
             const delta = resizer.getCoords().bottom - resizableElementCoords.bottom;
+            const newHeight = resizableElementCoords.height + delta;
 
-            const rowNumber = resizableElement.data.rowNumber;
-            resizableElement.css({"height": (resizableElementCoords.height + delta) + "px"});
-            const rowInfo = $(resizableElement.closest(".table-body").find(`.column-row-info .row-info[data-row-number="${rowNumber}"]`));
-            rowInfo.css({"height": (resizableElementCoords.height + delta) + "px"});
+            this.setRowHeight(rowElement, newHeight);
 
             Object.keys(hoveredRows).forEach(k => hoveredRows[k].style.removeProperty("pointer-events"));
         }, {once: true});
+    }
+
+    /**
+     * 
+     * @param {DomWrapper} rowElement
+     * @param {number} height
+     */
+    setRowHeight(rowElement, height) {
+        const rowNumber = rowElement.data.rowNumber;
+        rowElement.css({"height": height + "px"});
+        const rowInfo = $(rowElement.closest(".table-body").find(`.column-row-info .row-info[data-row-number="${rowNumber}"]`));
+        rowInfo.css({"height": height + "px"});
+
+        this.store.dispatch(actions.rowResize(rowElement.data.rowNumber, height));
     }
 
     /**
