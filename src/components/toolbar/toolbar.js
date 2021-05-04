@@ -26,14 +26,6 @@ export class Toolbar extends SpreadsheetBaseComponent {
 
     /**
      *
-     * @param {any} changes
-     */
-    storeChanged(changes) {
-        console.log('changes', changes);
-    }
-
-    /**
-     *
      * @return {string}
      */
     toHtml() {

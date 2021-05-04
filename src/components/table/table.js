@@ -89,15 +89,6 @@ export class Table extends SpreadsheetBaseComponent {
         this.restoreTableContent(tableState);
     }
 
-
-    /**
-     *
-     * @param {any} changes
-     */
-    storeChanged(changes) {
-        console.log('changes', changes);
-    }
-
     /**
      * 
      * @param {{}} tableState

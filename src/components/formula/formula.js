@@ -1,6 +1,5 @@
 import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
 import {EventNames} from "@core/resources";
-import {changeCellContent} from "@/redux/actions";
 
 /**
  * 
@@ -50,15 +49,6 @@ export class Formula extends SpreadsheetBaseComponent {
      */
     loadState() {
         super.loadState();
-    }
-
-
-    /**
-     * 
-     * @param {any} changes
-     */
-    storeChanged(changes) {
-        console.log('changes', changes);
     }
 
     /**

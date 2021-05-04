@@ -25,14 +25,6 @@ export class Header extends SpreadsheetBaseComponent {
 
     /**
      *
-     * @param {any} changes
-     */
-    storeChanged(changes) {
-        console.log('changes', changes);
-    }
-
-    /**
-     *
      * @return {string}
      */
     toHtml() {

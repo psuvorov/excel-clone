@@ -44,14 +44,6 @@ export class SpreadsheetBaseComponent extends DomListener {
 
     /**
      * 
-     * @param {any} changes
-     */
-    storeChanged(changes) {
-        
-    }
-
-    /**
-     * 
      */
     dispose() {
        this.removeDomListeners();
