@@ -1,10 +1,10 @@
-import {SpreadsheetComponent} from "@core/spreadsheetComponent";
+import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
 import {EventNames} from "@core/resources";
 
 /**
  * 
  */
-export class Formula extends SpreadsheetComponent {
+export class Formula extends SpreadsheetBaseComponent {
     static className = "spreadsheet__formula";
 
     /**
@@ -17,7 +17,6 @@ export class Formula extends SpreadsheetComponent {
         options.listeners = ["keydown", "input"];
         super($root, options);
     }
-
 
     /**
      * 

@@ -16,7 +16,7 @@ export class Spreadsheet {
         this.$el = $(selector);
         this.options = options;
         this.componentsRaw = options.components || [];
-        /** @type {SpreadsheetComponent[]} */
+        /** @type {SpreadsheetBaseComponent[]} */
         this.components = [];
         options.observable = new Observable();
     }
@@ -28,7 +28,7 @@ export class Spreadsheet {
     getRoot() {
         const $root = $.create("div", "spreadsheet");
         
-        this.componentsRaw.forEach((/** @type {SpreadsheetComponent} */ Component) => {
+        this.componentsRaw.forEach((/** @type {SpreadsheetBaseComponent} */ Component) => {
             const $el = $.create("div", Component.className);
             
             const component = new Component($el, this.options);

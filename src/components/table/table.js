@@ -1,4 +1,4 @@
-import {SpreadsheetComponent} from "@core/spreadsheetComponent";
+import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
 import {createTable} from "@/components/table/table.template";
 import {$} from "@core/domWrapper";
 import {TableSelection} from "@/components/table/tableSelection";
@@ -8,7 +8,7 @@ import * as actions from "@/redux/actions";
 /**
  * 
  */
-export class Table extends SpreadsheetComponent {
+export class Table extends SpreadsheetBaseComponent {
     static className = "spreadsheet__table";
 
     /**

@@ -1,9 +1,9 @@
-import {SpreadsheetComponent} from "@core/spreadsheetComponent";
+import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
 
 /**
  * 
  */
-export class Header extends SpreadsheetComponent {
+export class Header extends SpreadsheetBaseComponent {
     static className = "spreadsheet__header";
 
     /**

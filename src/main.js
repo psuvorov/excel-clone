@@ -1,4 +1,4 @@
-import {Spreadsheet} from "@/components/spreadsheet/spreadsheet";
+import {Spreadsheet} from "@/core/spreadsheet";
 import {Header} from "@/components/header/header";
 import {Toolbar} from "@/components/toolbar/toolbar";
 import {Formula} from "@/components/formula/formula";
@@ -27,9 +27,7 @@ store.subscribe(() => {
     localStorage.setItem("appState", JSON.stringify(appState));
 });
 
-const spreadsheet = new Spreadsheet("#app", {
+new Spreadsheet("#app", {
     components: [Header, Toolbar, Formula, Table],
     store
-});
-
-spreadsheet.render();
+}).render();

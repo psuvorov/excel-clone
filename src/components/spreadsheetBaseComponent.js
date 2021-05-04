@@ -1,10 +1,9 @@
 import {DomListener} from "@core/domListener";
-import {EventNames} from "@core/resources";
 
 /**
  *
  */
-export class SpreadsheetComponent extends DomListener {
+export class SpreadsheetBaseComponent extends DomListener {
     /**
      *
      * @param {DomWrapper} $root
