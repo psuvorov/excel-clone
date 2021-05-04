@@ -1,5 +1,7 @@
 import {$} from "@core/domWrapper";
 import {EventNames} from "@core/resources";
+import {Table} from "@/components/table/table";
+import {changeCellContent} from "@/redux/actions";
 
 /**
  * 
@@ -14,10 +16,11 @@ export class TableSelection {
     initialMouseSelectedCell = null;
 
     /**
-     * 
+     *
+     * @param {any} store
      * @param {Observable} observable
      */
-    constructor(observable) {
+    constructor(store, observable) {
         /**
          * 
          * @type {{row1: number, col2: number, row2: number, col1: number}}
@@ -34,15 +37,19 @@ export class TableSelection {
         this.selectedPivot = null;
 
         // TODO: Introduce data attribute for table element
-        this.spreadsheetEl = document.querySelector(".spreadsheet__table");
+        this.spreadsheetEl = document.querySelector(`.spreadsheet__${Table.componentName}`);
 
         this.observable = observable;
+        this.store = store;
 
-        this.observable.subscribe(EventNames.emptySelectedCells, () => {
-            this.iterateOverSelectedCells((currentCell) => {
-                $(currentCell).textContent = "";
+        this.observable.subscribe(EventNames.clearSelectedCells, () => {
+            this.iterateOverSelectedCells((currentCellEl) => {
+                const currentCell = $(currentCellEl);
+                currentCell.textContent = "";
+                this.store.dispatch(changeCellContent(+currentCell.data.cellColumnNumber, +currentCell.data.cellRowNumber, ""));
             });
             this.currentSelectedCell.textContent = "";
+            this.store.dispatch(changeCellContent(+this.currentSelectedCell.data.cellColumnNumber, +this.currentSelectedCell.data.cellRowNumber, ""));
             this.observable.notify(EventNames.cellInput, "");
         });
     }

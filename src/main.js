@@ -13,9 +13,16 @@ const getApplicationState = () => {
         return JSON.parse(state);
 
     return {
-        table: {
-            columnWidths: {},
-            rowHeights: {}
+        [`${Header.componentName}`]: {
+            
+        },
+        [`${Toolbar.componentName}`]: {
+            
+        },
+        [`${Table.componentName}`]: {
+            [`${Table.stateProperties.columnWidths}`]: {},
+            [`${Table.stateProperties.rowHeights}`]: {},
+            [`${Table.stateProperties.cellContents}`]: {}
         }
     };
 };

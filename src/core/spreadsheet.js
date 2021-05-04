@@ -1,5 +1,6 @@
 import {$} from "@core/domWrapper";
 import {Observable} from "@core/observable";
+import {StoreSubscriber} from "@core/storeSubscriber";
 
 
 /**
@@ -19,6 +20,7 @@ export class Spreadsheet {
         /** @type {SpreadsheetBaseComponent[]} */
         this.components = [];
         options.observable = new Observable();
+        options.subscriber = new StoreSubscriber(this.options.store);
     }
 
     /**
@@ -46,6 +48,7 @@ export class Spreadsheet {
      */
     render() {
         this.$el.append(this.getRoot());
+        this.options.subscriber.subscribeComponents(this.components);
         this.components.forEach(x => x.init());
     }
 
@@ -53,6 +56,7 @@ export class Spreadsheet {
      * 
      */
     dispose() {
+        this.options.subscriber.unsubscribeFromStore();
         this.components.forEach(x => x.dispose());
     }
 }

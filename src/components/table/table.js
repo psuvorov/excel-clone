@@ -4,12 +4,21 @@ import {$} from "@core/domWrapper";
 import {TableSelection} from "@/components/table/tableSelection";
 import {EventNames} from "@core/resources";
 import * as actions from "@/redux/actions";
+import {Formula} from "@/components/formula/formula";
+import {changeCellContent} from "@/redux/actions";
 
 /**
  * 
  */
 export class Table extends SpreadsheetBaseComponent {
-    static className = "spreadsheet__table";
+    static componentName = "table";
+    static className = `spreadsheet__${Table.componentName}`;
+    
+    static stateProperties = {
+        columnWidths: 'columnWidths',
+        rowHeights: 'rowHeights',
+        cellContents: 'cellContents',
+    };
 
     /**
      *
@@ -17,7 +26,7 @@ export class Table extends SpreadsheetBaseComponent {
      * @param {any} options
      */
     constructor($root, options) {
-        options.name = "Table";
+        options.subscribedTo = [Formula.stateProperties.formulaBarText];
         options.listeners = ["mousedown", "mousemove", "mouseup", "keydown", "input"];
         super($root, options);
         this.store = options.store;
@@ -30,12 +39,16 @@ export class Table extends SpreadsheetBaseComponent {
         super.init();
         
         const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
-        this.tableSelection = new TableSelection(this.observable);
+        this.tableSelection = new TableSelection(this.store, this.observable);
         
         this.tableSelection.selectSingleCell($cell);
         
         this.observable.subscribe(EventNames.formulaInput, inputText => {
             this.tableSelection.currentSelectedCell.textContent = inputText;
+            
+            const cellColumnNumber = +this.tableSelection.currentSelectedCell.data.cellColumnNumber;
+            const cellRowNumber = +this.tableSelection.currentSelectedCell.data.cellRowNumber;
+            this.options.store.dispatch(changeCellContent(cellColumnNumber, cellRowNumber, inputText));
         });
 
         this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
@@ -68,13 +81,21 @@ export class Table extends SpreadsheetBaseComponent {
      * 
      */
     loadState() {
-        super.loadState();
-        
         const appState = this.store.getState();
         
-        const tableState = appState[this.options.name.toLowerCase()];
+        const tableState = appState[Table.componentName];
         this.restoreColumnWidths(tableState);
         this.restoreRowHeights(tableState);
+        this.restoreTableContent(tableState);
+    }
+
+
+    /**
+     *
+     * @param {any} changes
+     */
+    storeChanged(changes) {
+        console.log('changes', changes);
     }
 
     /**
@@ -100,6 +121,20 @@ export class Table extends SpreadsheetBaseComponent {
             const rowElement = $(this.$root.find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
             const rowHeight = tableState.rowHeights[rowNumber];
             this.setRowHeight(rowElement, rowHeight);
+        });
+    }
+
+    /**
+     * 
+     * @param {{}} tableState
+     */
+    restoreTableContent(tableState) {
+        Object.keys(tableState.cellContents).forEach(columnNumber => {
+            Object.keys(tableState.cellContents[columnNumber]).forEach(rowNumber => {
+                const cellValue = tableState.cellContents[columnNumber][rowNumber];
+                if (cellValue)
+                    this.setCellValue(+columnNumber, +rowNumber, cellValue);
+            });
         });
     }
 
@@ -390,7 +425,7 @@ export class Table extends SpreadsheetBaseComponent {
             const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
             this.tableSelection.selectSingleCell(nextCell);
         } else if (event.key === "Delete") {
-            this.observable.notify(EventNames.emptySelectedCells);
+            this.observable.notify(EventNames.clearSelectedCells);
         }
     }
 
@@ -399,8 +434,26 @@ export class Table extends SpreadsheetBaseComponent {
      */
     onInput(event) {
         const inputText = event.target.textContent.trim();
+
+        const selectedCell = this.tableSelection.currentSelectedCell;
+        const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
+        const selectedCellRowNumber = +selectedCell.data.cellRowNumber;
+        
+        this.store.dispatch(actions.changeCellContent(selectedCellColumnNumber, selectedCellRowNumber, inputText));
         
         this.observable.notify(EventNames.cellInput, inputText);
+    }
+
+    /**
+     * 
+     * @param {number} columnNumber
+     * @param {number} rowNumber
+     * @param {string} value
+     */
+    setCellValue(columnNumber, rowNumber, value) {
+        const r = $(this.$root.find(`[data-cell-column-number="${columnNumber}"][data-cell-row-number="${rowNumber}"]`));
+        if (r)
+            r.textContent = value;
     }
 
     /**

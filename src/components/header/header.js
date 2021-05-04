@@ -4,12 +4,13 @@ import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
  * 
  */
 export class Header extends SpreadsheetBaseComponent {
-    static className = "spreadsheet__header";
+    static componentName = "header";
+    static className = `spreadsheet__${Header.componentName}`;
 
     /**
      *
      * @param {DomWrapper} $root
-     * @param {{}} options
+     * @param {any} options
      */
     constructor($root, options) {
         super($root, options);
@@ -20,6 +21,14 @@ export class Header extends SpreadsheetBaseComponent {
      */
     loadState() {
         super.loadState();
+    }
+
+    /**
+     *
+     * @param {any} changes
+     */
+    storeChanged(changes) {
+        console.log('changes', changes);
     }
 
     /**

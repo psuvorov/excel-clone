@@ -1,19 +1,24 @@
 import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
 import {EventNames} from "@core/resources";
+import {changeCellContent} from "@/redux/actions";
 
 /**
  * 
  */
 export class Formula extends SpreadsheetBaseComponent {
-    static className = "spreadsheet__formula";
+    static componentName = "formula";
+    static className = `spreadsheet__${Formula.componentName}`;
 
+    static stateProperties = {
+        formulaBarText: 'formulaBarText',
+    };
+    
     /**
      *
      * @param {DomWrapper} $root
      * @param {any} options
      */
     constructor($root, options) {
-        options.name = "Formula";
         options.listeners = ["keydown", "input"];
         super($root, options);
     }
@@ -45,6 +50,15 @@ export class Formula extends SpreadsheetBaseComponent {
      */
     loadState() {
         super.loadState();
+    }
+
+
+    /**
+     * 
+     * @param {any} changes
+     */
+    storeChanged(changes) {
+        console.log('changes', changes);
     }
 
     /**

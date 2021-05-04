@@ -1,4 +1,4 @@
-import {COLUMN_RESIZE, ROW_RESIZE} from "@/redux/actions";
+import {COLUMN_RESIZE, ROW_RESIZE, CHANGE_CELL_CONTENT} from "@/redux/actions";
 
 /**
  * 
@@ -17,6 +17,14 @@ export function rootReducer(state, action) {
         case ROW_RESIZE: {
             const prevState = {...state};
             prevState.table.rowHeights[action.data.rowNumber] = action.data.newRowHeight;
+
+            return prevState;
+        }
+        case CHANGE_CELL_CONTENT: {
+            const prevState = {...state};
+            if (!prevState.table.cellContents[action.data.columnNumber])
+                prevState.table.cellContents[action.data.columnNumber] = {};
+            prevState.table.cellContents[action.data.columnNumber][action.data.rowNumber] = action.data.value;
 
             return prevState;
         }

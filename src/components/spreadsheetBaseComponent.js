@@ -13,6 +13,7 @@ export class SpreadsheetBaseComponent extends DomListener {
         super($root, options.listeners);
         this.name = options.name || '';
         this.observable = options.observable;
+        this.subscribedTo = options.subscribedTo || [];
         this.store = options.store;
         // TODO: make it accessible as a one single object 
         this.options = options;
@@ -38,6 +39,14 @@ export class SpreadsheetBaseComponent extends DomListener {
      * 
      */
     loadState() {
+        
+    }
+
+    /**
+     * 
+     * @param {any} changes
+     */
+    storeChanged(changes) {
         
     }
 

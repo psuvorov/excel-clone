@@ -4,7 +4,8 @@ import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
  * 
  */
 export class Toolbar extends SpreadsheetBaseComponent {
-    static className = "spreadsheet__toolbar";
+    static componentName = "toolbar";
+    static className = `spreadsheet__${Toolbar.componentName}`;
 
     /**
      *
@@ -12,7 +13,6 @@ export class Toolbar extends SpreadsheetBaseComponent {
      * @param {any} options
      */
     constructor($root, options) {
-        options.name = "Toolbar";
         options.listeners = ["click"];
         super($root, options);
     }
@@ -22,6 +22,14 @@ export class Toolbar extends SpreadsheetBaseComponent {
      */
     loadState() {
         super.loadState();
+    }
+
+    /**
+     *
+     * @param {any} changes
+     */
+    storeChanged(changes) {
+        console.log('changes', changes);
     }
 
     /**
