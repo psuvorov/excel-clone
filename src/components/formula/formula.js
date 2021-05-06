@@ -29,11 +29,11 @@ export class Formula extends SpreadsheetBaseComponent {
         super.init();
         const $inputBar = this.$root.find(".input");
         
-        this.observable.subscribe(EventNames.singleCellSelect, cellTextContent => {
-            if (cellTextContent === null)
-                cellTextContent = "";
+        this.observable.subscribe(EventNames.singleCellSelect, ({columnNumber, rowNumber, content}) => {
+            if (content === null)
+                content = "";
             
-            $inputBar.textContent = cellTextContent;
+            $inputBar.textContent = content;
         });
 
         this.observable.subscribe(EventNames.cellInput, cellTextContent => {
