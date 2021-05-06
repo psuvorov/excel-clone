@@ -38,10 +38,10 @@ export class Table extends SpreadsheetBaseComponent {
     init() {
         super.init();
         
-        const $cell = $(this.$root.find("[data-cell-column-number='1'][data-cell-row-number='1']"));
         this.tableSelection = new TableSelection(this.store, this.observable);
         
-        this.tableSelection.selectSingleCell($cell);
+        this.tableSelection.selectCells(1, 1, 1, 1);
+        this.tableSelection.initialMouseSelectedCell = null;
         
         this.observable.subscribe(EventNames.formulaInput, inputText => {
             this.tableSelection.currentSelectedCell.textContent = inputText;
@@ -54,7 +54,7 @@ export class Table extends SpreadsheetBaseComponent {
         this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
             const nextCell = this.getNextCell("Enter");
 
-            this.tableSelection.selectSingleCell(nextCell);
+            this.tableSelection.selectCells(+nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber, +nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber);
         });
         
         let lastScrollLeft = 0;
@@ -182,8 +182,9 @@ export class Table extends SpreadsheetBaseComponent {
                     +secondCell.data.cellColumnNumber, +secondCell.data.cellRowNumber);
             } else {
                 const cell = $(target);
-                this.tableSelection.selectSingleCell(cell);
-                this.tableSelection.initialMouseSelectedCell = cell;
+
+                this.tableSelection.selectCells(+cell.data.cellColumnNumber, +cell.data.cellRowNumber,
+                    +cell.data.cellColumnNumber, +cell.data.cellRowNumber);
             }
         }
 
@@ -390,6 +391,8 @@ export class Table extends SpreadsheetBaseComponent {
             const hoveredCell = $(event.target);
 
             const initialCell = this.tableSelection.initialMouseSelectedCell;
+            
+            // TODO: optimize this block
             this.tableSelection.selectCells(+initialCell.data.cellColumnNumber, +initialCell.data.cellRowNumber,
                 +hoveredCell.data.cellColumnNumber, +hoveredCell.data.cellRowNumber);
         }
@@ -414,7 +417,7 @@ export class Table extends SpreadsheetBaseComponent {
             event.preventDefault();
 
             const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
-            this.tableSelection.selectSingleCell(nextCell);
+            this.tableSelection.selectCells(+nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber, +nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber);
         } else if (event.key === "Delete") {
             this.observable.notify(EventNames.clearSelectedCells);
         }

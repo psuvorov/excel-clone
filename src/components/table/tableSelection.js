@@ -13,7 +13,7 @@ export class TableSelection {
      * 
      * @type {DomWrapper}
      */
-    initialMouseSelectedCell = null;
+    initialMouseSelectedCell = null; // TODO: try to name it more meaningfully 
 
     /**
      *
@@ -56,32 +56,6 @@ export class TableSelection {
 
     /**
      * 
-     * @param {DomWrapper} $cell
-     */
-    selectSingleCell($cell) {
-        if (!$cell)
-            return;
-        
-        this.clearSelection();
-        // If we select a single cell after selected row / column, unset Selected Pivot 
-        // in a sense we don't want to select the second row / column. 
-        this.selectedPivot = null;
-        
-        
-        this.currentSelectedCell = $cell;
-        $cell.focus().addClass(TableSelection.selectedCellClassName);
-
-        const selectedColumn = this.spreadsheetEl.querySelector(`.table-header .column[data-column-number="${$cell.data.cellColumnNumber}"]`);
-        const selectedRow = this.spreadsheetEl.querySelector(`.column-row-info .row-info[data-row-number="${$cell.data.cellRowNumber}"]`);
-
-        selectedColumn.classList.add("selected");
-        selectedRow.classList.add("selected");
-        
-        this.observable.notify(EventNames.singleCellSelect, $cell.textContent);
-    }
-
-    /**
-     * 
      */
     clearSelection() {
         if (this.currentSelectedCell) {
@@ -114,6 +88,28 @@ export class TableSelection {
      * @param {number} secondCellRowNumber
      */
     selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) {
+        if (firstCellColumnNumber === secondCellColumnNumber && firstCellRowNumber === secondCellRowNumber) {
+            this.clearSelection();
+            // If we select a single cell after selected row / column, unset Selected Pivot 
+            // in a sense we don't want to select the second row / column. 
+            this.selectedPivot = null;
+
+            const spreadsheetEl = document.querySelector(".spreadsheet__table");
+            const cell = $(spreadsheetEl.querySelector(`[data-cell-column-number="${firstCellColumnNumber}"][data-cell-row-number="${firstCellRowNumber}"]`));
+            
+            this.currentSelectedCell = cell;
+            cell.focus().addClass(TableSelection.selectedCellClassName);
+
+            this.observable.notify(EventNames.singleCellSelect, {
+                columnNumber: +cell.data.cellColumnNumber,
+                rowNumber: +cell.data.cellRowNumber,
+                content: cell.textContent
+            });
+
+            this.initialMouseSelectedCell = cell;
+        }
+        
+        
         // Deselect the previous group of cells
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
             currentCell.classList.remove(TableSelection.selectedCellClassName);
