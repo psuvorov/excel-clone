@@ -1,11 +1,14 @@
 /**
  * 
  */
-class DomWrapper {
+export class DomWrapper {
+    
+    public $nativeElement: any;
+    
     /**
      * @param {string | HTMLElement | EventTarget} queryObject
      */
-    constructor(queryObject) {
+    constructor(queryObject: any) {
         this.$nativeElement = typeof(queryObject) === "string" ? document.querySelector(queryObject) : queryObject;
     }
 
@@ -14,7 +17,7 @@ class DomWrapper {
      * @param {string} html
      * @return {DomWrapper}
      */
-    html(html ) {
+    html(html: string) {
         if (typeof(html) === "string") {
             this.$nativeElement.innerHTML = html;
             return this;
@@ -30,6 +33,7 @@ class DomWrapper {
      */
     clear() {
         this.html("");
+        
         return this;
     }
 
@@ -38,7 +42,7 @@ class DomWrapper {
      * @param {any} eventType
      * @param {any} callback
      */
-    on(eventType, callback) {
+    on(eventType: string, callback: Function) {
         this.$nativeElement.addEventListener(eventType, callback);
     }
 
@@ -47,7 +51,7 @@ class DomWrapper {
      * @param {any} eventType
      * @param {any} callback
      */
-    off(eventType, callback) {
+    off(eventType: string, callback: Function) {
         this.$nativeElement.removeEventListener(eventType, callback);
     }
 
@@ -56,7 +60,7 @@ class DomWrapper {
      * @param {DomWrapper} element
      * @return {DomWrapper}
      */
-    append(element) {
+    append(element: DomWrapper) {
         this.$nativeElement.append(element.$nativeElement);
         
         return this;
@@ -75,7 +79,7 @@ class DomWrapper {
      * @param {string} selector
      * @return {DomWrapper} 
      */
-    closest(selector) {
+    closest(selector: string) {
         return $(this.$nativeElement.closest(selector));
     }
 
@@ -84,7 +88,7 @@ class DomWrapper {
      * @param {string} selector
      * @return {Element}
      */
-    find(selector) {
+    find(selector: string) {
         return this.$nativeElement.querySelector(selector);
     }
 
@@ -92,7 +96,7 @@ class DomWrapper {
      * @param {string} selector
      * @return {NodeListOf<Element>}
      */
-    findAll(selector) {
+    findAll(selector: string) {
         return this.$nativeElement.querySelectorAll(selector);
     }
 
@@ -133,7 +137,7 @@ class DomWrapper {
      * 
      * @param {Object.<string, string>} styles
      */
-    css(styles) {
+    css(styles: any) {
         Object.keys(styles)
             .forEach(x => {
                 if (styles[x] === "") {
@@ -148,7 +152,7 @@ class DomWrapper {
      * 
      * @param {string} className
      */
-    addClass(className) {
+    addClass(className: string) {
         this.$nativeElement.classList.add(className);
     }
 
@@ -156,7 +160,7 @@ class DomWrapper {
      * 
      * @param {string} className
      */
-    removeClass(className) {
+    removeClass(className: string) {
         this.$nativeElement.classList.remove(className);
     }
 }
@@ -165,7 +169,7 @@ class DomWrapper {
  * @param {string | HTMLElement | EventTarget} queryObject
  * @return {DomWrapper}
  */
-export function $(queryObject) {
+export function $(queryObject: any) {
     if (!queryObject)
         return null;
     
@@ -178,7 +182,7 @@ export function $(queryObject) {
  * @param {string} classes
  * @return {DomWrapper}
  */
-$.create = (tagName, classes = "") => {
+$.create = (tagName: string, classes = "") => {
     const el = document.createElement(tagName);
     if (classes) {
         el.classList.add(classes);

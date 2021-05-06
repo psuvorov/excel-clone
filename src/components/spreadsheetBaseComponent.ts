@@ -1,19 +1,19 @@
-import {DomListener} from "@core/domListener";
+import {DomListener} from "../core/domListener";
 
 /**
  *
  */
 export class SpreadsheetBaseComponent extends DomListener {
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {{}} options
-     */
-    constructor($root, options= {}) {
+    protected observable: any;
+    protected store: any;
+    protected options: any;
+    
+    
+    constructor($root, options: any= {}) {
         super($root, options.listeners);
         this.name = options.name || '';
         this.observable = options.observable;
-        this.subscribedTo = options.subscribedTo || [];
+        //this.subscribedTo = options.subscribedTo || [];
         this.store = options.store;
         // TODO: make it accessible as a one single object 
         this.options = options;

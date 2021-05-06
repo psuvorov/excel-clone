@@ -7,39 +7,21 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isProd = process.env.NODE_ENV === "production";
 const isDev = !isProd;
 
-const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`;
-
-const jsLoaders = () => {
-    const loaders = [
-        {
-            loader: 'babel-loader',
-            options: {
-                presets: ['@babel/preset-env'],
-                plugins: ['@babel/plugin-proposal-class-properties']
-            }
-        }
-    ];
-    
-    if (isDev) {
-        loaders.push("eslint-loader");
-    }
-
-    return loaders;
-};
+const filename = ext => isDev ? `bundle.${ext}` : `bundle.[fiullhash].${ext}`;
 
 module.exports = {
     context: path.resolve(__dirname, "src"),
     mode: "development",
-    entry: ["@babel/polyfill", "./main.js"],
+    entry: ["./main.ts"],
     output: {
         filename: filename("js"),
         path: path.resolve(__dirname, "dist")
     },
     resolve: {
-        extensions: [".js"],
+        extensions: [".ts", ".js"],
         alias: {
-            "@": path.resolve(__dirname, "src"),
-            "@core": path.resolve(__dirname, "src/core")
+            // "@": path.resolve(__dirname, "src"),
+            // "@core": path.resolve(__dirname, "src/core")
         }
     },
     target: "web",
@@ -83,9 +65,9 @@ module.exports = {
                 ], 
             },
             {
-                test: /\.js$/,
+                test: /\.ts$/,
+                use: 'ts-loader',
                 exclude: /node_modules/,
-                use: jsLoaders()
             }
         ]
     }

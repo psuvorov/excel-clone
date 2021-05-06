@@ -2,17 +2,16 @@
  * 
  */
 export class DomListener {
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {[]} listeners
-     */
-    constructor($root, listeners= []) {
-        if (!$root)
+    
+    protected $root: any;
+    private listeners: any[];
+    protected name: string;
+    
+    constructor(root, listeners= []) {
+        if (!root)
             throw new Error("No $root provided for DomListener");
         
-        /** @type {DomWrapper} */
-        this.$root = $root;
+        this.$root = root;
         this.listeners = listeners;
     }
 

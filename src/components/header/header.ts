@@ -1,4 +1,5 @@
-import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
+import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
+
 
 /**
  * 

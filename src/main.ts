@@ -1,10 +1,10 @@
-import {Spreadsheet} from "@/core/spreadsheet";
-import {Header} from "@/components/header/header";
-import {Toolbar} from "@/components/toolbar/toolbar";
-import {Formula} from "@/components/formula/formula";
-import {Table} from "@/components/table/table";
+import {Spreadsheet} from "./core/spreadsheet";
+import {Header} from "./components/header/header";
+import {Toolbar} from "./components/toolbar/toolbar";
+import {Formula} from "./components/formula/formula";
+import {Table} from "./components/table/table";
 import {createStore} from "redux";
-import {rootReducer} from "@/redux/rootReducer";
+import {rootReducer} from "./redux/rootReducer";
 import "./scss/index.scss";
 
 const getApplicationState = () => {

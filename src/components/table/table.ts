@@ -1,11 +1,11 @@
-import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
-import {createTable} from "@/components/table/table.template";
-import {$} from "@core/domWrapper";
-import {TableSelection} from "@/components/table/tableSelection";
-import {EventNames} from "@core/resources";
-import * as actions from "@/redux/actions";
-import {Formula} from "@/components/formula/formula";
-import {changeCellContent} from "@/redux/actions";
+import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
+import {createTable} from "./table.template";
+import {$} from "../../core/domWrapper";
+import {TableSelection} from "./tableSelection";
+import {EventNames} from "../../core/resources";
+import * as actions from "../../redux/actions";
+import {Formula} from "../formula/formula";
+import {changeCellContent} from "../../redux/actions";
 
 /**
  * 
@@ -19,6 +19,9 @@ export class Table extends SpreadsheetBaseComponent {
         rowHeights: 'rowHeights',
         cellContents: 'cellContents',
     };
+    private tableSelection: TableSelection;
+    private rowCount: number;
+    private columnCount: number;
 
     /**
      *
@@ -144,8 +147,10 @@ export class Table extends SpreadsheetBaseComponent {
      * @return {string}
      */
     toHtml() {
+        // TODO: make it configurable
         this.rowCount = 100;
         this.columnCount = 30;
+        
         return createTable(this.rowCount, this.columnCount);
     }
 

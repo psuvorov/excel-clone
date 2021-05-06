@@ -1,5 +1,4 @@
-import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
-import {EventNames} from "@core/resources";
+import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 
 /**
  * 
@@ -105,11 +104,11 @@ export class Toolbar extends SpreadsheetBaseComponent {
         else if (buttonEl.classList.contains("format_underlined"))
             this.formatUnderlinedButtonClick();
         else if (buttonEl.classList.contains("align_vertical_top"))
-            this.alignVerticalTopButtonClick();
+            this.alignVerticalTopButtonClick(null);
         else if (buttonEl.classList.contains("align_vertical_center"))
-            this.alignVerticalCenterButtonClick();
+            this.alignVerticalCenterButtonClick(null);
         else if (buttonEl.classList.contains("align_vertical_bottom"))
-            this.alignVerticalBottomButtonClick();
+            this.alignVerticalBottomButtonClick(null);
         else if (buttonEl.classList.contains("format_align_left"))
             this.formatAlignLeftButtonClick();
         else if (buttonEl.classList.contains("format_align_center"))
@@ -118,103 +117,74 @@ export class Toolbar extends SpreadsheetBaseComponent {
             this.formatAlignRightButtonClick();
     }
 
-    /**
-     * 
-     */
-    undoButtonClick() {
+
+    private undoButtonClick() {
         console.log("undoButtonClick");
     }
 
-    /**
-     *
-     */
+
     redoButtonClick() {
         console.log("redoButtonClick");
     }
 
-    /**
-     *
-     */
+
     cutButtonClick() {
         console.log("cutButtonClick");
     }
 
-    /**
-     *
-     */
+
     copyButtonClick() {
         console.log("copyButtonClick");
     }
 
-    /**
-     *
-     */
+
     pasteButtonClick() {
         console.log("pasteButtonClick");
     }
 
-    /**
-     *
-     */
+
     formatBoldButtonClick() {
         console.log("formatBoldButtonClick");
     }
 
-    /**
-     *
-     */
+
     formatItalicButtonClick() {
         console.log("formatItalicButtonClick");
     }
 
-    /**
-     *
-     */
+
     formatUnderlinedButtonClick() {
         console.log("formatUnderlinedButtonClick");
     }
-
-    /**
-     * @param {HTMLElement} cellElem
-     */
-    alignVerticalTopButtonClick(cellElem) {
+    
+    alignVerticalTopButtonClick(cellElem: HTMLElement) {
         cellElem.classList.remove("align-vertical-center align-vertical-bottom");
         cellElem.classList.add("align-vertical-top");
     }
 
-    /**
-     * @param {HTMLElement} cellElem
-     */
-    alignVerticalCenterButtonClick(cellElem) {
+
+    alignVerticalCenterButtonClick(cellElem: HTMLElement) {
         cellElem.classList.remove("align-vertical-top align-vertical-bottom");
         cellElem.classList.add("align-vertical-center");
     }
 
-    /**
-     * @param {HTMLElement} cellElem
-     */
-    alignVerticalBottomButtonClick(cellElem) {
+ 
+    alignVerticalBottomButtonClick(cellElem: HTMLElement) {
         cellElem.classList.remove("align-vertical-top align-vertical-center");
         cellElem.classList.add("align-vertical-bottom");
     }
 
-    /**
-     *
-     */
+
     formatAlignLeftButtonClick() {
         console.log("formatAlignLeftButtonClick");
     }
 
-    /**
-     *
-     */
+
     formatAlignCenterButtonClick() {
         console.log("formatAlignCenterButtonClick");
     }
 
-    /**
-     *
-     */
+
     formatAlignRightButtonClick() {
         console.log("formatAlignRightButtonClick");
     }

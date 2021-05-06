@@ -1,10 +1,13 @@
-import {isAllowedEventName} from "@core/utils";
-import {ErrorMessages} from "@core/resources";
+import {isAllowedEventName} from "./utils";
+import {ErrorMessages} from "./resources";
 
 /**
  * 
  */
 export class Observable {
+    
+    private readonly handlers: any;
+    
     /**
      * 
      */
@@ -17,7 +20,7 @@ export class Observable {
      * @param {string} eventName
      * @param {Function} handler
      */
-    subscribe(eventName, handler) {
+    subscribe(eventName: string, handler: Function) {
         if (!isAllowedEventName(eventName))
             throw new Error(ErrorMessages.wrongEventType.toString());
         
@@ -29,7 +32,7 @@ export class Observable {
      * 
      * @param {string} eventName
      */
-    dispose(eventName) {
+    dispose(eventName: string) {
         if (!isAllowedEventName(eventName))
             throw new Error(ErrorMessages.wrongEventType.toString());
         
@@ -41,7 +44,7 @@ export class Observable {
      * @param {string} eventName
      * @param {any} eventData
      */
-    notify(eventName, eventData = null) {
+    notify(eventName: string, eventData: any = null) {
         if (!isAllowedEventName(eventName))
             throw new Error(ErrorMessages.wrongEventType.toString());
         

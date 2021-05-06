@@ -1,7 +1,6 @@
 export const COLUMN_RESIZE = 'COLUMN_RESIZE';
 export const ROW_RESIZE = 'ROW_RESIZE';
 export const CHANGE_CELL_CONTENT = 'CHANGE_CELL_CONTENT';
-export const CHANGE_FORMULA_BAR_TEXT = 'CHANGE_FORMULA_BAR_TEXT';
 
 /**
  *
@@ -9,7 +8,7 @@ export const CHANGE_FORMULA_BAR_TEXT = 'CHANGE_FORMULA_BAR_TEXT';
  * @param {number} newColumnWidth
  * @return {{}}
  */
-export function columnResize(columnNumber, newColumnWidth) {
+export function columnResize(columnNumber: number, newColumnWidth: number) {
     return {
         type: COLUMN_RESIZE,
         data: {
@@ -25,7 +24,7 @@ export function columnResize(columnNumber, newColumnWidth) {
  * @param {number} newRowHeight
  * @return {{}}
  */
-export function rowResize(rowNumber, newRowHeight) {
+export function rowResize(rowNumber: number, newRowHeight: number) {
     return {
         type: ROW_RESIZE,
         data: {
@@ -42,7 +41,7 @@ export function rowResize(rowNumber, newRowHeight) {
  * @param {string} value
  * @return {{}}
  */
-export function changeCellContent(columnNumber, rowNumber, value) {
+export function changeCellContent(columnNumber: number, rowNumber: number, value: string) {
     return {
         type: CHANGE_CELL_CONTENT,
         data: {

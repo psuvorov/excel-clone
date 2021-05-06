@@ -1,4 +1,4 @@
-import {COLUMN_RESIZE, ROW_RESIZE, CHANGE_CELL_CONTENT} from "@/redux/actions";
+import {COLUMN_RESIZE, ROW_RESIZE, CHANGE_CELL_CONTENT} from "./actions";
 
 /**
  * 
@@ -6,7 +6,7 @@ import {COLUMN_RESIZE, ROW_RESIZE, CHANGE_CELL_CONTENT} from "@/redux/actions";
  * @param {{}} action
  * @return {string|*}
  */
-export function rootReducer(state, action) {
+export function rootReducer(state: any, action: any) {
     switch (action.type) {
         case COLUMN_RESIZE: {
             const prevState = {...state};

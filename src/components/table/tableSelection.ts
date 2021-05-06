@@ -1,7 +1,7 @@
-import {$} from "@core/domWrapper";
-import {EventNames} from "@core/resources";
-import {Table} from "@/components/table/table";
-import {changeCellContent} from "@/redux/actions";
+import {$, DomWrapper} from "../../core/domWrapper";
+import {EventNames} from "../../core/resources";
+import {Table} from "./table";
+import {changeCellContent} from "../../redux/actions";
 
 /**
  * 
@@ -14,6 +14,12 @@ export class TableSelection {
      * @type {DomWrapper}
      */
     initialMouseSelectedCell = null; // TODO: try to name it more meaningfully 
+    private selectedRange: {row1: number, col2: number, row2: number, col1: number};
+    currentSelectedCell: DomWrapper;
+    selectedPivot: {type: string, number: number};
+    private spreadsheetEl: HTMLElement;
+    private observable: any;
+    private store: any;
 
     /**
      *
@@ -21,13 +27,8 @@ export class TableSelection {
      * @param {Observable} observable
      */
     constructor(store, observable) {
-        /**
-         * 
-         * @type {{row1: number, col2: number, row2: number, col1: number}}
-         */
         this.selectedRange = null;
 
-        /** @type {DomWrapper} */
         this.currentSelectedCell = null;
 
         /**
@@ -151,10 +152,10 @@ export class TableSelection {
         // TODO: Introduce data attribute for table element
         const spreadsheetEl = document.querySelector(".spreadsheet__table");
 
-        const startingColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col1}"]`);
-        const startingRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row1}"]`);
-        const endColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col2}"]`);
-        const endRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row2}"]`);
+        const startingColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col1}"]`) as HTMLElement;
+        const startingRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row1}"]`) as HTMLElement;
+        const endColumn = spreadsheetEl.querySelector(`[data-column-number="${this.selectedRange.col2}"]`) as HTMLElement;
+        const endRow = spreadsheetEl.querySelector(`[data-row-number="${this.selectedRange.row2}"]`) as HTMLElement;
 
         let currentRow = startingRow;
         while (currentRow && +currentRow.dataset.rowNumber <= +endRow.dataset.rowNumber) {
@@ -172,9 +173,9 @@ export class TableSelection {
                 const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`);
                 currentCellCb(currentCell);
                 
-                currentColumn = currentColumn.nextElementSibling;
+                currentColumn = currentColumn.nextElementSibling as HTMLElement;
             }
-            currentRow = currentRow.nextElementSibling;
+            currentRow = currentRow.nextElementSibling as HTMLElement;
         }
     }
 }

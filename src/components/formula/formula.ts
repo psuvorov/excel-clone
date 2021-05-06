@@ -1,5 +1,5 @@
-import {SpreadsheetBaseComponent} from "@/components/spreadsheetBaseComponent";
-import {EventNames} from "@core/resources";
+import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
+import {EventNames} from "../../core/resources";
 
 /**
  * 
