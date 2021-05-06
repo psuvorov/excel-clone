@@ -69,7 +69,7 @@ function createSingleRow(rowNumber, colCount) {
                         `;
     
     for (let i = 1; i <= colCount; i++) {
-        res += `<div class="cell" data-cell-row-number="${rowNumber}" data-cell-column-number="${i}" contenteditable="true"></div>`;
+        res += `<div class="cell align-vertical-bottom" data-cell-row-number="${rowNumber}" data-cell-column-number="${i}" contenteditable="true"></div>`;
     }
     res += `</div></div>`;
     

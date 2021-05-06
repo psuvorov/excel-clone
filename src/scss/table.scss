@@ -149,6 +149,7 @@
         }
 
         .cell {
+          display: flex;
           min-width: 40px;
           width: $cell-width;
           padding: 2px;
@@ -172,6 +173,31 @@
           * {
             display: inline;
           }
+          
+          &.align-vertical-top {
+            align-items: flex-start;
+          }
+
+          &.align-vertical-center {
+            align-items: center;
+          }
+
+          &.align-vertical-bottom {
+            align-items: flex-end;
+          }
+          
+          &.format_align_left {
+            justify-content: flex-start;
+          }
+
+          &.format_align_center {
+            justify-content: center;
+          }
+
+          &.format_align_right {
+            justify-content: flex-end;
+          }
+          
         }
       }
     }
