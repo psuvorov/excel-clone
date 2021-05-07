@@ -4,7 +4,6 @@ import {$, DomWrapper} from "../../core/domWrapper";
 import {TableSelection} from "./tableSelection";
 import {EventNames} from "../../core/resources";
 import * as actions from "../../redux/actions";
-import {Formula} from "../formula/formula";
 import {changeCellContent} from "../../redux/actions";
 
 /**
@@ -33,56 +32,12 @@ export class Table extends SpreadsheetBaseComponent {
 
     public init(): void {
         super.init();
-        
         this.tableSelection = new TableSelection(this.store, this.observable);
         
-        this.tableSelection.selectCells({
-            col1: 1,
-            row1: 1,
-            col2: 1,
-            row2: 1
-        });
-        this.tableSelection.initialMouseSelectedCell = null;
-        
-        this.observable.subscribe(EventNames.formulaInput, inputText => {
-            this.tableSelection.currentSelectedCell.textContent = inputText;
-            
-            const cellColumnNumber = +this.tableSelection.currentSelectedCell.data.cellColumnNumber;
-            const cellRowNumber = +this.tableSelection.currentSelectedCell.data.cellRowNumber;
-            this.options.store.dispatch(changeCellContent(cellColumnNumber, cellRowNumber, inputText));
-        });
-
-        this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
-            const nextCell = this.getNextCell("Enter");
-            
-            this.tableSelection.selectCells({
-                col1: +nextCell.data.cellColumnNumber, 
-                row1: +nextCell.data.cellRowNumber, 
-                col2: +nextCell.data.cellColumnNumber, 
-                row2: +nextCell.data.cellRowNumber
-            });
-        });
-        
-        let lastScrollLeft = 0;
-        let lastScrollTop = 0;
-        this.$root.find(".table-wrapper").addEventListener("scroll", (event) => {
-            // TODO: Needs to rework this fragment
-            const columnRowInfo = event.target.closest(".table-body").querySelector(".column-row-info");
-            const rowColumnInfo = this.$root.find(".table-header .row-data");
-            
-            const tableWrapperScrollLeft = event.target.scrollLeft;
-            const tableWrapperScrollTop = event.target.scrollTop;
-            if (lastScrollLeft !== tableWrapperScrollLeft) {
-                rowColumnInfo.style.marginLeft = (40 - tableWrapperScrollLeft) + "px";
-                lastScrollLeft = tableWrapperScrollLeft;
-            }
-            if (lastScrollTop !== tableWrapperScrollTop) {
-                columnRowInfo.style.marginTop = -tableWrapperScrollTop + "px";
-                lastScrollTop = tableWrapperScrollTop;
-            }
-        });
+        this.initFirstCellSelection();
+        this.initTableSubscriptions();
+        this.initTableScroll();
     }
-
     
     public loadState(): void {
         const appState = this.store.getState();
@@ -106,6 +61,96 @@ export class Table extends SpreadsheetBaseComponent {
         this.columnCount = 30;
         
         return createTable(this.rowCount, this.columnCount);
+    }
+
+    private initFirstCellSelection(): void {
+        this.tableSelection.selectCells({
+            col1: 1,
+            row1: 1,
+            col2: 1,
+            row2: 1
+        });
+        this.tableSelection.initialMouseSelectedCell = null;
+    }
+
+    private initTableSubscriptions(): void {
+        this.observable.subscribe(EventNames.formulaInput, inputText => {
+            this.tableSelection.currentSelectedCell.textContent = inputText;
+
+            const cellColumnNumber = +this.tableSelection.currentSelectedCell.data.cellColumnNumber;
+            const cellRowNumber = +this.tableSelection.currentSelectedCell.data.cellRowNumber;
+            this.options.store.dispatch(changeCellContent(cellColumnNumber, cellRowNumber, inputText));
+        });
+
+        this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
+            const nextCell = this.getNextCell("Enter");
+
+            this.tableSelection.selectCells({
+                col1: +nextCell.data.cellColumnNumber,
+                row1: +nextCell.data.cellRowNumber,
+                col2: +nextCell.data.cellColumnNumber,
+                row2: +nextCell.data.cellRowNumber
+            });
+        });
+        
+        this.observable.subscribe(EventNames.cut, () => {
+            console.log("Cut");
+        });
+        this.observable.subscribe(EventNames.copy, () => {
+            console.log("Copy");
+        });
+        this.observable.subscribe(EventNames.paste, () => {
+            console.log("Paste");
+        });
+        this.observable.subscribe(EventNames.formatBold, () => {
+            console.log("formatBold");
+        });
+        this.observable.subscribe(EventNames.formatItalic, () => {
+            console.log("formatItalic");
+        });
+        this.observable.subscribe(EventNames.formatUnderlined, () => {
+            console.log("formatUnderlined");
+        });
+        this.observable.subscribe(EventNames.alignVerticalTop, () => {
+            console.log("alignVerticalTop");
+        });
+        this.observable.subscribe(EventNames.alignVerticalCenter, () => {
+            console.log("alignVerticalCenter");
+        });
+        this.observable.subscribe(EventNames.alignVerticalBottom, () => {
+            console.log("alignVerticalTop");
+        });
+        this.observable.subscribe(EventNames.formatAlignLeft, () => {
+            console.log("formatAlignLeft");
+        });
+        this.observable.subscribe(EventNames.formatAlignCenter, () => {
+            console.log("formatAlignCenter");
+        });
+        this.observable.subscribe(EventNames.formatAlignRight, () => {
+            console.log("formatAlignRight");
+        });
+    }
+
+    // TODO: Implement horizontal scroll with Shift
+    private initTableScroll(): void {
+        let lastScrollLeft = 0;
+        let lastScrollTop = 0;
+        this.$root.find(".table-wrapper").addEventListener("scroll", (event) => {
+            // TODO: Needs to rework this fragment
+            const columnRowInfo = event.target.closest(".table-body").querySelector(".column-row-info");
+            const rowColumnInfo = this.$root.find(".table-header .row-data");
+
+            const tableWrapperScrollLeft = event.target.scrollLeft;
+            const tableWrapperScrollTop = event.target.scrollTop;
+            if (lastScrollLeft !== tableWrapperScrollLeft) {
+                rowColumnInfo.style.marginLeft = (40 - tableWrapperScrollLeft) + "px";
+                lastScrollLeft = tableWrapperScrollLeft;
+            }
+            if (lastScrollTop !== tableWrapperScrollTop) {
+                columnRowInfo.style.marginTop = -tableWrapperScrollTop + "px";
+                lastScrollTop = tableWrapperScrollTop;
+            }
+        });
     }
 
     private onMousedown(event: MouseEvent): void {

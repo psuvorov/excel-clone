@@ -1,8 +1,9 @@
 import {DomListener} from "../core/domListener";
+import {Observable} from "../core/observable";
 
 export abstract class SpreadsheetBaseComponent extends DomListener {
     
-    protected observable: any;
+    protected observable: Observable;
     protected store: any;
     protected options: any;
     

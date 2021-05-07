@@ -1,4 +1,5 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
+import {EventNames} from "../../core/resources";
 
 /**
  * 
@@ -85,11 +86,11 @@ export class Toolbar extends SpreadsheetBaseComponent {
         else if (buttonEl.classList.contains("format_underlined"))
             this.formatUnderlinedButtonClick();
         else if (buttonEl.classList.contains("align_vertical_top"))
-            this.alignVerticalTopButtonClick(null);
+            this.alignVerticalTopButtonClick();
         else if (buttonEl.classList.contains("align_vertical_center"))
-            this.alignVerticalCenterButtonClick(null);
+            this.alignVerticalCenterButtonClick();
         else if (buttonEl.classList.contains("align_vertical_bottom"))
-            this.alignVerticalBottomButtonClick(null);
+            this.alignVerticalBottomButtonClick();
         else if (buttonEl.classList.contains("format_align_left"))
             this.formatAlignLeftButtonClick();
         else if (buttonEl.classList.contains("format_align_center"))
@@ -107,53 +108,56 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private cutButtonClick(): void {
-        console.log("cutButtonClick");
+        this.observable.notify(EventNames.cut);
     }
 
     private copyButtonClick(): void{
-        console.log("copyButtonClick");
+        this.observable.notify(EventNames.copy);
     }
 
     private pasteButtonClick(): void {
-        console.log("pasteButtonClick");
+        this.observable.notify(EventNames.paste);
     }
 
     private formatBoldButtonClick(): void {
-        console.log("formatBoldButtonClick");
+        this.observable.notify(EventNames.formatBold);
     }
 
     private formatItalicButtonClick(): void {
-        console.log("formatItalicButtonClick");
+        this.observable.notify(EventNames.formatItalic);
     }
 
     private formatUnderlinedButtonClick(): void {
-        console.log("formatUnderlinedButtonClick");
+        this.observable.notify(EventNames.formatUnderlined);
     }
 
-    private alignVerticalTopButtonClick(cellElem: HTMLElement): void {
-        cellElem.classList.remove("align-vertical-center align-vertical-bottom");
-        cellElem.classList.add("align-vertical-top");
+    private alignVerticalTopButtonClick(): void {
+        this.observable.notify(EventNames.alignVerticalTop);
+        // cellElem.classList.remove("align-vertical-center align-vertical-bottom");
+        // cellElem.classList.add("align-vertical-top");
     }
 
-    private alignVerticalCenterButtonClick(cellElem: HTMLElement): void {
-        cellElem.classList.remove("align-vertical-top align-vertical-bottom");
-        cellElem.classList.add("align-vertical-center");
+    private alignVerticalCenterButtonClick(): void {
+        this.observable.notify(EventNames.alignVerticalCenter);
+        // cellElem.classList.remove("align-vertical-top align-vertical-bottom");
+        // cellElem.classList.add("align-vertical-center");
     }
 
-    private alignVerticalBottomButtonClick(cellElem: HTMLElement): void {
-        cellElem.classList.remove("align-vertical-top align-vertical-center");
-        cellElem.classList.add("align-vertical-bottom");
+    private alignVerticalBottomButtonClick(): void {
+        this.observable.notify(EventNames.alignVerticalBottom);
+        // cellElem.classList.remove("align-vertical-top align-vertical-center");
+        // cellElem.classList.add("align-vertical-bottom");
     }
 
     private formatAlignLeftButtonClick(): void {
-        console.log("formatAlignLeftButtonClick");
+        this.observable.notify(EventNames.formatAlignLeft);
     }
 
     private formatAlignCenterButtonClick(): void {
-        console.log("formatAlignCenterButtonClick");
+        this.observable.notify(EventNames.formatAlignCenter);
     }
 
     private formatAlignRightButtonClick(): void {
-        console.log("formatAlignRightButtonClick");
+        this.observable.notify(EventNames.formatAlignRight);
     }
 }
