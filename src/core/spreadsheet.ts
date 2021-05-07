@@ -11,11 +11,7 @@ export class Spreadsheet {
     private readonly options: any;
     private componentsRaw: any;
     private components: SpreadsheetBaseComponent[];
-    /**
-     * 
-     * @param {string} selector
-     * @param {any} options
-     */
+    
     constructor(selector: string, options: any) {
         this.$el = $(selector);
         this.options = options;
@@ -25,11 +21,8 @@ export class Spreadsheet {
         options.observable = new Observable();
     }
 
-    /**
-     * 
-     * @return {DomWrapper}
-     */
-    getRoot() {
+    
+    public getRoot(): DomWrapper {
         const $root = $.create("div", "spreadsheet");
         
         this.componentsRaw.forEach((Component: any) => {
@@ -45,18 +38,14 @@ export class Spreadsheet {
         return $root;
     }
 
-    /**
-     * 
-     */
-    render() {
+    
+    public render(): void {
         this.$el.append(this.getRoot());
         this.components.forEach(x => x.init());
     }
 
-    /**
-     * 
-     */
-    dispose() {
+    
+    public dispose(): void {
         this.components.forEach(x => x.dispose());
     }
 }

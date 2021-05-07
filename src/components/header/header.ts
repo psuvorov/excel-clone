@@ -1,34 +1,23 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
-
+import {DomWrapper} from "../../core/domWrapper";
 
 /**
  * 
  */
 export class Header extends SpreadsheetBaseComponent {
-    static componentName = "header";
-    static className = `spreadsheet__${Header.componentName}`;
+    
+    public static readonly componentName = "header";
+    public static readonly className = `spreadsheet__${Header.componentName}`;
 
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {any} options
-     */
-    constructor($root, options) {
+    constructor($root: DomWrapper, options: any) {
         super($root, options);
     }
 
-    /**
-     *
-     */
-    loadState() {
-        super.loadState();
+    public loadState(): void {
+        
     }
 
-    /**
-     *
-     * @return {string}
-     */
-    toHtml() {
+    public toHtml(): string {
         return `<input type="text" class="input" value="New spreadsheet" />
                 <div>
                     <div class="button">
@@ -40,11 +29,7 @@ export class Header extends SpreadsheetBaseComponent {
                 </div>`;
     }
 
-    /**
-     * 
-     * @param {{}} event
-     */
-    onClick(event) {
+    private onClick(event: Event): void {
         console.log("Header: onInput", event);
     }
 }

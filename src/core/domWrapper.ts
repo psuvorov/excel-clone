@@ -1,143 +1,80 @@
 /**
- * 
+ * TODO: add comments here 
  */
 export class DomWrapper {
     
     public $nativeElement: any;
     
-    /**
-     * @param {string | HTMLElement | EventTarget} queryObject
-     */
-    constructor(queryObject: any) {
+    constructor(queryObject: string | Element | HTMLElement) {
         this.$nativeElement = typeof(queryObject) === "string" ? document.querySelector(queryObject) : queryObject;
     }
 
-    /**
-     * 
-     * @param {string} html
-     * @return {DomWrapper}
-     */
-    html(html: string) {
+    public html(html: string): DomWrapper {
         if (typeof(html) === "string") {
             this.$nativeElement.innerHTML = html;
             return this;
         }
+        
         this.$nativeElement.outerHTML.trim();
         
         return this;
     }
 
-    /**
-     * 
-     * @return {DomWrapper}
-     */
-    clear() {
+    public clear(): DomWrapper {
         this.html("");
         
         return this;
     }
 
-    /**
-     * 
-     * @param {any} eventType
-     * @param {any} callback
-     */
-    on(eventType: string, callback: Function) {
+    public on(eventType: string, callback: Function): void {
         this.$nativeElement.addEventListener(eventType, callback);
     }
 
-    /**
-     * 
-     * @param {any} eventType
-     * @param {any} callback
-     */
-    off(eventType: string, callback: Function) {
+    public off(eventType: string, callback: Function): void {
         this.$nativeElement.removeEventListener(eventType, callback);
     }
 
-    /**
-     * 
-     * @param {DomWrapper} element
-     * @return {DomWrapper}
-     */
-    append(element: DomWrapper) {
+    public append(element: DomWrapper): DomWrapper {
         this.$nativeElement.append(element.$nativeElement);
         
         return this;
     }
 
-    /**
-     * 
-     * @return {DOMStringMap}
-     */
-    get data() {
+    public get data(): DOMStringMap {
         return this.$nativeElement.dataset;
     }
 
-    /**
-     * 
-     * @param {string} selector
-     * @return {DomWrapper} 
-     */
-    closest(selector: string) {
+    public closest(selector: string): DomWrapper {
         return $(this.$nativeElement.closest(selector));
     }
 
-    /**
-     * 
-     * @param {string} selector
-     * @return {Element}
-     */
-    find(selector: string) {
+    public find(selector: string): HTMLElement {
         return this.$nativeElement.querySelector(selector);
     }
 
-    /**
-     * @param {string} selector
-     * @return {NodeListOf<Element>}
-     */
-    findAll(selector: string) {
+    public findAll(selector: string): NodeListOf<HTMLElement> {
         return this.$nativeElement.querySelectorAll(selector);
     }
 
-    /**
-     * 
-     * @return {DomWrapper}
-     */
-    focus() {
+    public focus(): DomWrapper {
         this.$nativeElement.focus();
+        
         return this;
     }
 
-    /**
-     * 
-     * @param {string} text
-     */
-    set textContent(text) {
+    public set textContent(text) {
         this.$nativeElement.textContent = text;
     }
 
-    /**
-     * 
-     * @return {string}
-     */
-    get textContent() {
+    public get textContent(): string {
         return this.$nativeElement.textContent;
     }
 
-    /**
-     * 
-     * @return {DOMRect}
-     */
-    getCoords() {
+    public getCoords(): DOMRect {
         return this.$nativeElement.getBoundingClientRect();
     }
 
-    /**
-     * 
-     * @param {Object.<string, string>} styles
-     */
-    css(styles: any) {
+    public css(styles: any): void {
         Object.keys(styles)
             .forEach(x => {
                 if (styles[x] === "") {
@@ -148,41 +85,23 @@ export class DomWrapper {
             });
     }
 
-    /**
-     * 
-     * @param {string} className
-     */
-    addClass(className: string) {
+    public addClass(className: string): void {
         this.$nativeElement.classList.add(className);
     }
 
-    /**
-     * 
-     * @param {string} className
-     */
-    removeClass(className: string) {
+    public removeClass(className: string): void {
         this.$nativeElement.classList.remove(className);
     }
 }
 
-/**
- * @param {string | HTMLElement | EventTarget} queryObject
- * @return {DomWrapper}
- */
-export function $(queryObject: any) {
+export function $(queryObject: string | Element | HTMLElement): DomWrapper {
     if (!queryObject)
         return null;
     
     return new DomWrapper(queryObject);
 }
 
-/**
- * 
- * @param {string} tagName
- * @param {string} classes
- * @return {DomWrapper}
- */
-$.create = (tagName: string, classes = "") => {
+$.create = (tagName: string, classes = ""): DomWrapper => {
     const el = document.createElement(tagName);
     if (classes) {
         el.classList.add(classes);

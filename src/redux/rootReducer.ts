@@ -1,26 +1,21 @@
-import {COLUMN_RESIZE, ROW_RESIZE, CHANGE_CELL_CONTENT} from "./actions";
+import {ActionTypes} from "./actions";
 
-/**
- * 
- * @param {{}} state
- * @param {{}} action
- * @return {string|*}
- */
-export function rootReducer(state: any, action: any) {
+// TODO: bring ApplicationState class
+export function rootReducer(state: any, action: {type: string, data: any}): any {
     switch (action.type) {
-        case COLUMN_RESIZE: {
+        case ActionTypes.columnResize: {
             const prevState = {...state};
             prevState.table.columnWidths[action.data.columnNumber] = action.data.newColumnWidth;
             
             return prevState; 
         }
-        case ROW_RESIZE: {
+        case ActionTypes.rowResize: {
             const prevState = {...state};
             prevState.table.rowHeights[action.data.rowNumber] = action.data.newRowHeight;
 
             return prevState;
         }
-        case CHANGE_CELL_CONTENT: {
+        case ActionTypes.changeCellContent: {
             const prevState = {...state};
             if (!prevState.table.cellContents[action.data.columnNumber])
                 prevState.table.cellContents[action.data.columnNumber] = {};

@@ -7,28 +7,14 @@ export class Toolbar extends SpreadsheetBaseComponent {
     static componentName = "toolbar";
     static className = `spreadsheet__${Toolbar.componentName}`;
 
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {any} options
-     */
     constructor($root, options) {
         options.listeners = ["click"];
         super($root, options);
     }
 
-    /**
-     * 
-     */
-    loadState() {
-        super.loadState();
-    }
+    public loadState(): void {}
 
-    /**
-     *
-     * @return {string}
-     */
-    toHtml() {
+    public toHtml(): string {
         return `<div class="button undo">
                     <i class="material-icons">undo</i>
                 </div>
@@ -77,15 +63,10 @@ export class Toolbar extends SpreadsheetBaseComponent {
                 </div>`;
     }
 
-    /**
-     * 
-     * @param {PointerEvent} event
-     */
-    onClick(event) {
-        const buttonEl = event.target.closest(".button");
+    private onClick(event: PointerEvent): void {
+        const buttonEl = (event.target as HTMLElement).closest(".button");
         if (!buttonEl)
             return;
-        
         
         if (buttonEl.classList.contains("undo"))
             this.undoButtonClick();
@@ -117,75 +98,62 @@ export class Toolbar extends SpreadsheetBaseComponent {
             this.formatAlignRightButtonClick();
     }
 
-
-    private undoButtonClick() {
+    private undoButtonClick(): void {
         console.log("undoButtonClick");
     }
 
-
-    redoButtonClick() {
+    private redoButtonClick(): void {
         console.log("redoButtonClick");
     }
 
-
-    cutButtonClick() {
+    private cutButtonClick(): void {
         console.log("cutButtonClick");
     }
 
-
-    copyButtonClick() {
+    private copyButtonClick(): void{
         console.log("copyButtonClick");
     }
 
-
-    pasteButtonClick() {
+    private pasteButtonClick(): void {
         console.log("pasteButtonClick");
     }
 
-
-    formatBoldButtonClick() {
+    private formatBoldButtonClick(): void {
         console.log("formatBoldButtonClick");
     }
 
-
-    formatItalicButtonClick() {
+    private formatItalicButtonClick(): void {
         console.log("formatItalicButtonClick");
     }
 
-
-    formatUnderlinedButtonClick() {
+    private formatUnderlinedButtonClick(): void {
         console.log("formatUnderlinedButtonClick");
     }
-    
-    alignVerticalTopButtonClick(cellElem: HTMLElement) {
+
+    private alignVerticalTopButtonClick(cellElem: HTMLElement): void {
         cellElem.classList.remove("align-vertical-center align-vertical-bottom");
         cellElem.classList.add("align-vertical-top");
     }
 
-
-    alignVerticalCenterButtonClick(cellElem: HTMLElement) {
+    private alignVerticalCenterButtonClick(cellElem: HTMLElement): void {
         cellElem.classList.remove("align-vertical-top align-vertical-bottom");
         cellElem.classList.add("align-vertical-center");
     }
 
- 
-    alignVerticalBottomButtonClick(cellElem: HTMLElement) {
+    private alignVerticalBottomButtonClick(cellElem: HTMLElement): void {
         cellElem.classList.remove("align-vertical-top align-vertical-center");
         cellElem.classList.add("align-vertical-bottom");
     }
 
-
-    formatAlignLeftButtonClick() {
+    private formatAlignLeftButtonClick(): void {
         console.log("formatAlignLeftButtonClick");
     }
 
-
-    formatAlignCenterButtonClick() {
+    private formatAlignCenterButtonClick(): void {
         console.log("formatAlignCenterButtonClick");
     }
 
-
-    formatAlignRightButtonClick() {
+    private formatAlignRightButtonClick(): void {
         console.log("formatAlignRightButtonClick");
     }
 }

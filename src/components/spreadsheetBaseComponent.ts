@@ -1,16 +1,14 @@
 import {DomListener} from "../core/domListener";
 
-/**
- *
- */
-export class SpreadsheetBaseComponent extends DomListener {
+export abstract class SpreadsheetBaseComponent extends DomListener {
+    
     protected observable: any;
     protected store: any;
     protected options: any;
     
-    
-    constructor($root, options: any= {}) {
+    protected constructor($root, options: any= {}) {
         super($root, options.listeners);
+        
         this.name = options.name || '';
         this.observable = options.observable;
         //this.subscribedTo = options.subscribedTo || [];
@@ -19,33 +17,16 @@ export class SpreadsheetBaseComponent extends DomListener {
         this.options = options;
     }
 
-    /**
-     * 
-     * @return {string}
-     */
-    toHtml() {
-        return "";
-    }
+    protected abstract toHtml(): string;
 
-    /**
-     * 
-     */
-    init() {
+    public init(): void {
         this.initDomListeners();
         this.loadState();
     }
 
-    /**
-     * 
-     */
-    loadState() {
-        
-    }
+    protected abstract loadState(): void
 
-    /**
-     * 
-     */
-    dispose() {
+    public dispose(): void {
        this.removeDomListeners();
     }
 }

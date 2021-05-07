@@ -3,8 +3,10 @@
  */
 export class DomListener {
     
-    protected $root: any;
     private listeners: any[];
+    
+    protected $root: any;
+    
     protected name: string;
     
     constructor(root, listeners= []) {
@@ -15,10 +17,7 @@ export class DomListener {
         this.listeners = listeners;
     }
 
-    /**
-     * 
-     */
-    initDomListeners() {
+    public initDomListeners(): void {
         this.listeners.forEach(listener => {
             const method = getEventMethodName(listener);
             if (!this[method])
@@ -29,10 +28,7 @@ export class DomListener {
         });
     }
 
-    /**
-     * 
-     */
-    removeDomListeners() {
+    public removeDomListeners(): void {
         this.listeners.forEach(listener => {
             const method = getEventMethodName(listener);
             if (!this[method])
@@ -43,10 +39,5 @@ export class DomListener {
     }
 }
 
-
-/**
- * 
- * @param {string} eventName
- * @return {string}
- */
-const getEventMethodName = eventName => "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1, eventName.length);
+const getEventMethodName = (eventName: string): string => 
+    "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1, eventName.length);

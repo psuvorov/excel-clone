@@ -1,6 +1,6 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {createTable} from "./table.template";
-import {$} from "../../core/domWrapper";
+import {$, DomWrapper} from "../../core/domWrapper";
 import {TableSelection} from "./tableSelection";
 import {EventNames} from "../../core/resources";
 import * as actions from "../../redux/actions";
@@ -11,34 +11,27 @@ import {changeCellContent} from "../../redux/actions";
  * 
  */
 export class Table extends SpreadsheetBaseComponent {
-    static componentName = "table";
-    static className = `spreadsheet__${Table.componentName}`;
+    public static readonly componentName = "table";
+    public static readonly className = `spreadsheet__${Table.componentName}`;
     
-    static stateProperties = {
+    public static readonly stateProperties = {
         columnWidths: 'columnWidths',
         rowHeights: 'rowHeights',
         cellContents: 'cellContents',
     };
+    
     private tableSelection: TableSelection;
     private rowCount: number;
     private columnCount: number;
 
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {any} options
-     */
-    constructor($root, options) {
-        options.subscribedTo = [Formula.stateProperties.formulaBarText];
+    constructor($root: DomWrapper, options: any) {
+        // options.subscribedTo = [Formula.stateProperties.formulaBarText];
         options.listeners = ["mousedown", "mousemove", "mouseup", "keydown", "input"];
         super($root, options);
         this.store = options.store;
     }
 
-    /**
-     * 
-     */
-    init() {
+    public init(): void {
         super.init();
         
         this.tableSelection = new TableSelection(this.store, this.observable);
@@ -80,10 +73,8 @@ export class Table extends SpreadsheetBaseComponent {
         });
     }
 
-    /**
-     * 
-     */
-    loadState() {
+    
+    public loadState(): void {
         const appState = this.store.getState();
         
         const tableState = appState[Table.componentName];
@@ -91,62 +82,15 @@ export class Table extends SpreadsheetBaseComponent {
         this.restoreRowHeights(tableState);
         this.restoreTableContent(tableState);
     }
-
-    /**
-     * 
-     * @param {{}} tableState
-     */
-    restoreColumnWidths(tableState) {
-        Object.keys(tableState.columnWidths).forEach(columnNumber => {
-            const columnElement = $(this.$root.find(`.table-header [data-column-number="${columnNumber}"]`));
-            const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
-            const columnWidth = tableState.columnWidths[columnNumber];
-
-            this.setColumnWidth(columnElement, columnCellToResizeEls, columnWidth);
-        });
-    }
-
-    /**
-     * 
-     * @param {{}} tableState
-     */
-    restoreRowHeights(tableState) {
-        Object.keys(tableState.rowHeights).forEach(rowNumber => {
-            const rowElement = $(this.$root.find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
-            const rowHeight = tableState.rowHeights[rowNumber];
-            this.setRowHeight(rowElement, rowHeight);
-        });
-    }
-
-    /**
-     * 
-     * @param {{}} tableState
-     */
-    restoreTableContent(tableState) {
-        Object.keys(tableState.cellContents).forEach(columnNumber => {
-            Object.keys(tableState.cellContents[columnNumber]).forEach(rowNumber => {
-                const cellValue = tableState.cellContents[columnNumber][rowNumber];
-                if (cellValue)
-                    this.setCellValue(+columnNumber, +rowNumber, cellValue);
-            });
-        });
-    }
-
-    /**
-     * 
-     */
-    dispose() {
+    
+    public dispose(): void {
         super.dispose();
         
         this.observable.dispose(EventNames.formulaInput);
         this.observable.dispose(EventNames.selectNextCellAfterFormulaInput);
     }
 
-    /**
-     *
-     * @return {string}
-     */
-    toHtml() {
+    public toHtml(): string {
         // TODO: make it configurable
         this.rowCount = 100;
         this.columnCount = 30;
@@ -154,16 +98,12 @@ export class Table extends SpreadsheetBaseComponent {
         return createTable(this.rowCount, this.columnCount);
     }
 
-    /**
-     * 
-     * @param {MouseEvent} event
-     */
-    onMousedown(event) {
-        const target = event.target;
+    private onMousedown(event: MouseEvent): void {
+        const target = event.target as HTMLElement;
         
         // Resize columns and rows
         if (target.dataset.resize) {
-            const $resizer = $(event.target);
+            const $resizer = $(target);
             const resizerType = $resizer.data.resize;
             
             if (resizerType === "col") {
@@ -232,9 +172,9 @@ export class Table extends SpreadsheetBaseComponent {
         }; 
         
         // Select whole row(s)
-        const rowInfoEl = target.closest(".row-info");
+        const rowInfoEl = target.closest(".row-info") as HTMLElement;
         if (rowInfoEl && rowInfoEl.childElementCount > 0) {
-            const $row = $(rowInfoEl.closest(".table-body")).find(`.table-wrapper .row[data-row-number="${rowInfoEl.dataset.rowNumber}"]`); // $(rowInfoEl.closest(".row"));
+            const $row = $(rowInfoEl.closest(".table-body")).find(`.table-wrapper .row[data-row-number="${rowInfoEl.dataset.rowNumber}"]`);
             const $rowData = $row.querySelector(".row-data");
             const firstCell = $($rowData.firstElementChild);
             const lastCell = $($rowData.lastElementChild);
@@ -260,12 +200,8 @@ export class Table extends SpreadsheetBaseComponent {
         }
     }
     
-    /**
-     *
-     * @param {DomWrapper} columnElement
-     * @param {DomWrapper} resizer
-     */
-    resizeColumn(columnElement, resizer) {
+    // TODO: try to name it more meaningfully
+    private resizeColumn(columnElement: DomWrapper, resizer: DomWrapper): void {
         const columnElementCoords = columnElement.getCoords();
         const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
 
@@ -304,28 +240,19 @@ export class Table extends SpreadsheetBaseComponent {
         }, {once: true});
     }
 
-    /**
-     * 
-     * @param {DomWrapper} columnElement
-     * @param {NodeListOf<Element>} columnCellToResizeEls
-     * @param {number} width
-     */
-    setColumnWidth(columnElement, columnCellToResizeEls, width) {
+    private setColumnWidth(columnElement: DomWrapper, columnCellToResizeEls: NodeListOf<HTMLElement>, width: number): void {
         columnElement.css({"width": width + "px"});
 
-        columnCellToResizeEls.forEach(/** @param {HTMLElement} cellEl */ cellEl => {
+        columnCellToResizeEls.forEach(cellEl => {
             cellEl.style.width = width + "px";
         });
 
-        this.store.dispatch(actions.columnResize(columnElement.data.columnNumber, width));
+        this.store.dispatch(actions.columnResize(+columnElement.data.columnNumber, width));
     }
 
-    /**
-     *
-     * @param {DomWrapper} rowElement
-     * @param {DomWrapper} resizer
-     */
-    resizeRow(rowElement, resizer) {
+    // TODO: try to name it more meaningfully
+    // TODO: consider merging these two similar methods
+    private resizeRow(rowElement: DomWrapper, resizer: DomWrapper): void {
         const resizableElementCoords = rowElement.getCoords();
 
         resizer.css({"width": "100%"});
@@ -365,35 +292,24 @@ export class Table extends SpreadsheetBaseComponent {
         }, {once: true});
     }
 
-    /**
-     * 
-     * @param {DomWrapper} rowElement
-     * @param {number} height
-     */
-    setRowHeight(rowElement, height) {
+    private setRowHeight(rowElement: DomWrapper, height: number): void {
         const rowNumber = rowElement.data.rowNumber;
         rowElement.css({"height": height + "px"});
         const rowInfo = $(rowElement.closest(".table-body").find(`.column-row-info .row-info[data-row-number="${rowNumber}"]`));
         rowInfo.css({"height": height + "px"});
 
-        this.store.dispatch(actions.rowResize(rowElement.data.rowNumber, height));
+        this.store.dispatch(actions.rowResize(+rowElement.data.rowNumber, height));
     }
 
-    /**
-     * 
-     * @param {MouseEvent} event
-     */
-    onMouseup(event) {
+    private onMouseup(event: MouseEvent): void {
         if (this.tableSelection.initialMouseSelectedCell)
             this.tableSelection.initialMouseSelectedCell = null;
     }
 
-    /**
-     * @param {MouseEvent} event
-     */
-    onMousemove(event) {
-        if (this.tableSelection.initialMouseSelectedCell && event.target.classList.contains("cell")) {
-            const hoveredCell = $(event.target);
+    private onMousemove(event: MouseEvent): void {
+        const target = event.target as HTMLElement;
+        if (this.tableSelection.initialMouseSelectedCell && target.classList.contains("cell")) {
+            const hoveredCell = $(target);
 
             const initialCell = this.tableSelection.initialMouseSelectedCell;
             
@@ -403,11 +319,7 @@ export class Table extends SpreadsheetBaseComponent {
         }
     }
 
-    /**
-     * 
-     * @param {KeyboardEvent} event
-     */
-    onKeydown(event) {
+    private onKeydown(event: KeyboardEvent): void {
         const allowedKeys = [
             "Enter",
             "Tab",
@@ -428,11 +340,8 @@ export class Table extends SpreadsheetBaseComponent {
         }
     }
 
-    /**
-     * @param {InputEvent} event
-     */
-    onInput(event) {
-        const inputText = event.target.textContent.trim();
+    private onInput(event: InputEvent): void {
+        const inputText = (event.target as HTMLElement).textContent.trim();
 
         const selectedCell = this.tableSelection.currentSelectedCell;
         const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
@@ -443,26 +352,41 @@ export class Table extends SpreadsheetBaseComponent {
         this.observable.notify(EventNames.cellInput, inputText);
     }
 
-    /**
-     * 
-     * @param {number} columnNumber
-     * @param {number} rowNumber
-     * @param {string} value
-     */
-    setCellValue(columnNumber, rowNumber, value) {
+    private setCellValue(columnNumber: number, rowNumber: number, value: string): void {
         const r = $(this.$root.find(`[data-cell-column-number="${columnNumber}"][data-cell-row-number="${rowNumber}"]`));
         if (r)
             r.textContent = value;
     }
 
-    /**
-     *
-     * @param {string} key
-     * @param {boolean} shiftPressed
-     * @param {boolean} ctrlPressed
-     * @return {DomWrapper}
-     */
-    getNextCell(key, shiftPressed= false, ctrlPressed= false) {
+    private restoreColumnWidths(tableState: any): void {
+        Object.keys(tableState.columnWidths).forEach(columnNumber => {
+            const columnElement = $(this.$root.find(`.table-header [data-column-number="${columnNumber}"]`));
+            const columnCellToResizeEls = this.$root.findAll(`[data-cell-column-number="${columnElement.data.columnNumber}"]`);
+            const columnWidth = tableState.columnWidths[columnNumber];
+
+            this.setColumnWidth(columnElement, columnCellToResizeEls, columnWidth);
+        });
+    }
+
+    private restoreRowHeights(tableState: any): void {
+        Object.keys(tableState.rowHeights).forEach(rowNumber => {
+            const rowElement = $(this.$root.find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
+            const rowHeight = tableState.rowHeights[rowNumber];
+            this.setRowHeight(rowElement, rowHeight);
+        });
+    }
+
+    private restoreTableContent(tableState: any): void {
+        Object.keys(tableState.cellContents).forEach(columnNumber => {
+            Object.keys(tableState.cellContents[columnNumber]).forEach(rowNumber => {
+                const cellValue = tableState.cellContents[columnNumber][rowNumber];
+                if (cellValue)
+                    this.setCellValue(+columnNumber, +rowNumber, cellValue);
+            });
+        });
+    }
+
+    private getNextCell(key: string, shiftPressed: boolean = false, ctrlPressed: boolean = false): DomWrapper {
         const selectedCell = this.tableSelection.currentSelectedCell;
         const selectedCellColumnNumber = +selectedCell.data.cellColumnNumber;
         const selectedCellRowNumber = +selectedCell.data.cellRowNumber;

@@ -1,6 +1,8 @@
-export const COLUMN_RESIZE = 'COLUMN_RESIZE';
-export const ROW_RESIZE = 'ROW_RESIZE';
-export const CHANGE_CELL_CONTENT = 'CHANGE_CELL_CONTENT';
+export enum ActionTypes {
+    columnResize = "columnResize",
+    rowResize = "rowResize",
+    changeCellContent = "changeCellContent"
+}
 
 /**
  *
@@ -10,7 +12,7 @@ export const CHANGE_CELL_CONTENT = 'CHANGE_CELL_CONTENT';
  */
 export function columnResize(columnNumber: number, newColumnWidth: number) {
     return {
-        type: COLUMN_RESIZE,
+        type: ActionTypes.columnResize,
         data: {
             columnNumber,
             newColumnWidth
@@ -26,7 +28,7 @@ export function columnResize(columnNumber: number, newColumnWidth: number) {
  */
 export function rowResize(rowNumber: number, newRowHeight: number) {
     return {
-        type: ROW_RESIZE,
+        type: ActionTypes.rowResize,
         data: {
             rowNumber,
             newRowHeight
@@ -43,7 +45,7 @@ export function rowResize(rowNumber: number, newRowHeight: number) {
  */
 export function changeCellContent(columnNumber: number, rowNumber: number, value: string) {
     return {
-        type: CHANGE_CELL_CONTENT,
+        type: ActionTypes.changeCellContent,
         data: {
             columnNumber,
             rowNumber,

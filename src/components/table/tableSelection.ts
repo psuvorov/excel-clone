@@ -4,39 +4,20 @@ import {Table} from "./table";
 import {changeCellContent} from "../../redux/actions";
 
 /**
- * 
+ * TODO: add comments 
  */
 export class TableSelection {
-    static selectedCellClassName = "selected";
+    public static readonly selectedCellClassName = "selected";
 
-    /**
-     * 
-     * @type {DomWrapper}
-     */
-    initialMouseSelectedCell = null; // TODO: try to name it more meaningfully 
-    private selectedRange: {row1: number, col2: number, row2: number, col1: number};
-    currentSelectedCell: DomWrapper;
-    selectedPivot: {type: string, number: number};
+    public initialMouseSelectedCell: DomWrapper; // TODO: try to name it more meaningfully 
+    private selectedRange: SelectedRange;
+    public currentSelectedCell: DomWrapper;
+    public selectedPivot: {type: string, number: number}; // TODO: check this out
     private spreadsheetEl: HTMLElement;
     private observable: any;
     private store: any;
 
-    /**
-     *
-     * @param {any} store
-     * @param {Observable} observable
-     */
-    constructor(store, observable) {
-        this.selectedRange = null;
-
-        this.currentSelectedCell = null;
-
-        /**
-         * 
-         * @type {{type: string, number: number}}
-         */
-        this.selectedPivot = null;
-
+    constructor(store: any, observable: any) {
         // TODO: Introduce data attribute for table element
         this.spreadsheetEl = document.querySelector(`.spreadsheet__${Table.componentName}`);
 
@@ -57,38 +38,12 @@ export class TableSelection {
 
     /**
      * 
-     */
-    clearSelection() {
-        if (this.currentSelectedCell) {
-            const selectedColumn = this.spreadsheetEl.querySelector(`.table-header .column[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
-            const selectedRow = this.spreadsheetEl.querySelector(`.column-row-info .row-info[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
-
-            selectedColumn.classList.remove("selected");
-            selectedRow.classList.remove("selected");
-
-            this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
-            this.currentSelectedCell = null;
-        }
-        if (this.selectedRange) {
-            this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
-                currentCell.classList.remove(TableSelection.selectedCellClassName);
-            }, (/** @type {HTMLElement} */currentRow) => {
-                currentRow.classList.remove("selected");
-            }, (/** @type {HTMLElement} */currentColumn) => {
-                currentColumn.classList.remove("selected");
-            });
-            this.selectedRange = null;
-        }
-    }
-
-    /**
-     * 
      * @param {number} firstCellColumnNumber
      * @param {number} firstCellRowNumber
      * @param {number} secondCellColumnNumber
      * @param {number} secondCellRowNumber
      */
-    selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) {
+    public selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) {
         if (firstCellColumnNumber === secondCellColumnNumber && firstCellRowNumber === secondCellRowNumber) {
             this.clearSelection();
             // If we select a single cell after selected row / column, unset Selected Pivot 
@@ -109,7 +64,6 @@ export class TableSelection {
 
             this.initialMouseSelectedCell = cell;
         }
-        
         
         // Deselect the previous group of cells
         this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
@@ -139,13 +93,7 @@ export class TableSelection {
         });
     }
 
-    /**
-     *
-     * @param {Function} currentCellCb
-     * @param {Function} currentRowCb
-     * @param {Function} currentColumnCb
-     */
-    iterateOverSelectedCells(currentCellCb, currentRowCb = null, currentColumnCb = null) {
+    private iterateOverSelectedCells(currentCellCb: Function, currentRowCb: Function = null, currentColumnCb: Function = null) {
         if (!this.selectedRange)
             return;
         
@@ -178,4 +126,31 @@ export class TableSelection {
             currentRow = currentRow.nextElementSibling as HTMLElement;
         }
     }
+
+    public clearSelection(): void {
+        // TODO: break it down into two local functions
+        if (this.currentSelectedCell) {
+            const selectedColumn = this.spreadsheetEl.querySelector(`.table-header .column[data-column-number="${this.currentSelectedCell.data.cellColumnNumber}"]`);
+            const selectedRow = this.spreadsheetEl.querySelector(`.column-row-info .row-info[data-row-number="${this.currentSelectedCell.data.cellRowNumber}"]`);
+
+            selectedColumn.classList.remove("selected");
+            selectedRow.classList.remove("selected");
+
+            this.currentSelectedCell.removeClass(TableSelection.selectedCellClassName);
+            this.currentSelectedCell = null;
+        }
+
+        if (this.selectedRange) {
+            this.iterateOverSelectedCells((/** @type {HTMLElement} */currentCell) => {
+                currentCell.classList.remove(TableSelection.selectedCellClassName);
+            }, (/** @type {HTMLElement} */currentRow) => {
+                currentRow.classList.remove("selected");
+            }, (/** @type {HTMLElement} */currentColumn) => {
+                currentColumn.classList.remove("selected");
+            });
+            this.selectedRange = null;
+        }
+    }
 }
+
+type SelectedRange = {row1: number, col2: number, row2: number, col1: number};

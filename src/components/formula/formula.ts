@@ -1,31 +1,24 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {EventNames} from "../../core/resources";
+import {DomWrapper} from "../../core/domWrapper";
 
 /**
  * 
  */
 export class Formula extends SpreadsheetBaseComponent {
-    static componentName = "formula";
-    static className = `spreadsheet__${Formula.componentName}`;
+    public static readonly componentName = "formula";
+    public static readonly className = `spreadsheet__${Formula.componentName}`;
 
     static stateProperties = {
         formulaBarText: 'formulaBarText',
     };
     
-    /**
-     *
-     * @param {DomWrapper} $root
-     * @param {any} options
-     */
-    constructor($root, options) {
+    constructor($root: DomWrapper, options: any) {
         options.listeners = ["keydown", "input"];
         super($root, options);
     }
-
-    /**
-     * 
-     */
-    init() {
+    
+    public init(): void {
         super.init();
         const $inputBar = this.$root.find(".input");
         
@@ -44,52 +37,34 @@ export class Formula extends SpreadsheetBaseComponent {
         });
     }
 
-    /**
-     *
-     */
-    loadState() {
-        super.loadState();
+    public loadState(): void {
+        
     }
 
-    /**
-     * 
-     */
-    dispose() {
+    public dispose(): void {
         super.dispose();
         
         this.observable.dispose(EventNames.singleCellSelect);
         this.observable.dispose(EventNames.cellInput);
     }
 
-    /**
-     * 
-     * @return {string}
-     */
-    toHtml() {
+    public toHtml(): string {
         return `<div class="info">f</div>
                 <div class="input" contenteditable="true" spellcheck="false"></div>`;
     }
 
-    /**
-     * 
-     * @param {InputEvent} event
-     */
-    onInput(event) {
+    private onInput(event: InputEvent): void {
         if (event.data === null) {
             event.preventDefault();
             return;
         }
         
-        const inputText = event.target.textContent.trim();
+        const inputText = (event.target as HTMLElement).textContent.trim();
         
         this.observable.notify(EventNames.formulaInput, inputText);
     }
 
-    /**
-     * 
-     * @param {KeyboardEvent} event
-     */
-    onKeydown(event) {
+    private onKeydown(event: KeyboardEvent): void {
         if (event.key === "Enter") {
             this.observable.notify(EventNames.selectNextCellAfterFormulaInput);
         }

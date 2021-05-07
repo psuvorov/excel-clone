@@ -1,9 +1,5 @@
-/**
- * @param {number} rowCount
- * @param {number} colCount
- * @return {string}
- */
-export function createTable(rowCount, colCount) {
+
+export function createTable(rowCount: number, colCount: number): string {
     let res = `<div class="table-header">${createTableHeader(colCount)}</div>
                 <div class="table-body"><div class="column-row-info-container"><div class="column-row-info">`;
 
@@ -21,12 +17,7 @@ export function createTable(rowCount, colCount) {
     return res;
 }
 
-/**
- * 
- * @param {number} colCount
- * @return {string}
- */
-function createTableHeader(colCount) {
+function createTableHeader(colCount: number): string {
     let res = `<div class="row">                    
                     <div class="row-info"></div>
                         <div class="row-data">`;
@@ -40,12 +31,7 @@ function createTableHeader(colCount) {
     return res;
 }
 
-/**
- * 
- * @param {number} columnNumber
- * @return {string}
- */
-function getColumnTitle(columnNumber) {
+function getColumnTitle(columnNumber: number): string {
     const res = [];
     
     while (columnNumber > 0) {
@@ -57,13 +43,7 @@ function getColumnTitle(columnNumber) {
     return res.reverse().join('');
 }
 
-/**
- *
- * @param {number} rowNumber
- * @param {number} colCount
- * @return {string}
- */
-function createSingleRow(rowNumber, colCount) {
+function createSingleRow(rowNumber: number, colCount: number): string {
     let res = `<div class="row" data-row-number="${rowNumber}" data-resizable="true">
                     <div class="row-data">
                         `;
