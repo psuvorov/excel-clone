@@ -4,12 +4,6 @@ export enum ActionTypes {
     changeCellContent = "changeCellContent"
 }
 
-/**
- *
- * @param {string} columnNumber
- * @param {number} newColumnWidth
- * @return {{}}
- */
 export function columnResize(columnNumber: number, newColumnWidth: number) {
     return {
         type: ActionTypes.columnResize,
@@ -20,12 +14,6 @@ export function columnResize(columnNumber: number, newColumnWidth: number) {
     };
 }
 
-/**
- *
- * @param {string} rowNumber
- * @param {number} newRowHeight
- * @return {{}}
- */
 export function rowResize(rowNumber: number, newRowHeight: number) {
     return {
         type: ActionTypes.rowResize,
@@ -36,13 +24,6 @@ export function rowResize(rowNumber: number, newRowHeight: number) {
     };
 }
 
-/**
- * 
- * @param {number} columnNumber
- * @param {number} rowNumber
- * @param {string} value
- * @return {{}}
- */
 export function changeCellContent(columnNumber: number, rowNumber: number, value: string) {
     return {
         type: ActionTypes.changeCellContent,

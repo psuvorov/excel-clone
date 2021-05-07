@@ -36,7 +36,12 @@ export class Table extends SpreadsheetBaseComponent {
         
         this.tableSelection = new TableSelection(this.store, this.observable);
         
-        this.tableSelection.selectCells(1, 1, 1, 1);
+        this.tableSelection.selectCells({
+            col1: 1,
+            row1: 1,
+            col2: 1,
+            row2: 1
+        });
         this.tableSelection.initialMouseSelectedCell = null;
         
         this.observable.subscribe(EventNames.formulaInput, inputText => {
@@ -49,8 +54,13 @@ export class Table extends SpreadsheetBaseComponent {
 
         this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
             const nextCell = this.getNextCell("Enter");
-
-            this.tableSelection.selectCells(+nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber, +nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber);
+            
+            this.tableSelection.selectCells({
+                col1: +nextCell.data.cellColumnNumber, 
+                row1: +nextCell.data.cellRowNumber, 
+                col2: +nextCell.data.cellColumnNumber, 
+                row2: +nextCell.data.cellRowNumber
+            });
         });
         
         let lastScrollLeft = 0;
@@ -123,23 +133,24 @@ export class Table extends SpreadsheetBaseComponent {
 
             if (event.shiftKey && firstCell) {
                 const secondCell = $(target);
-                this.tableSelection.selectCells(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
-                    +secondCell.data.cellColumnNumber, +secondCell.data.cellRowNumber);
+                this.tableSelection.selectCells({
+                    col1: +firstCell.data.cellColumnNumber, 
+                    row1: +firstCell.data.cellRowNumber,
+                    col2: +secondCell.data.cellColumnNumber, 
+                    row2: +secondCell.data.cellRowNumber
+                });
             } else {
                 const cell = $(target);
 
-                this.tableSelection.selectCells(+cell.data.cellColumnNumber, +cell.data.cellRowNumber,
-                    +cell.data.cellColumnNumber, +cell.data.cellRowNumber);
+                this.tableSelection.selectCells({
+                    col1: +cell.data.cellColumnNumber, 
+                    row1: +cell.data.cellRowNumber,
+                    col2: +cell.data.cellColumnNumber, 
+                    row2: +cell.data.cellRowNumber
+                });
             }
         }
 
-        /**
-         *
-         * @param {number} firstCellColumnNumber
-         * @param {number} firstCellRowNumber
-         * @param {number} secondCellColumnNumber
-         * @param {number} secondCellRowNumber
-         */
         const selectRowOrColumn = (firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) => {
             let selectionType;
             let selectableColumn;
@@ -168,7 +179,12 @@ export class Table extends SpreadsheetBaseComponent {
             }
 
             this.tableSelection.clearSelection();
-            this.tableSelection.selectCells(firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber);
+            this.tableSelection.selectCells({
+                col1: firstCellColumnNumber, 
+                row1: firstCellRowNumber, 
+                col2: secondCellColumnNumber, 
+                row2: secondCellRowNumber
+            });
         }; 
         
         // Select whole row(s)
@@ -314,8 +330,12 @@ export class Table extends SpreadsheetBaseComponent {
             const initialCell = this.tableSelection.initialMouseSelectedCell;
             
             // TODO: optimize this block
-            this.tableSelection.selectCells(+initialCell.data.cellColumnNumber, +initialCell.data.cellRowNumber,
-                +hoveredCell.data.cellColumnNumber, +hoveredCell.data.cellRowNumber);
+            this.tableSelection.selectCells({
+                col1: +initialCell.data.cellColumnNumber, 
+                row1: +initialCell.data.cellRowNumber,
+                col2: +hoveredCell.data.cellColumnNumber, 
+                row2: +hoveredCell.data.cellRowNumber
+            });
         }
     }
 
@@ -334,7 +354,12 @@ export class Table extends SpreadsheetBaseComponent {
             event.preventDefault();
 
             const nextCell = this.getNextCell(event.key, event.shiftKey, event.ctrlKey);
-            this.tableSelection.selectCells(+nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber, +nextCell.data.cellColumnNumber, +nextCell.data.cellRowNumber);
+            this.tableSelection.selectCells({
+                col1: +nextCell.data.cellColumnNumber, 
+                row1: +nextCell.data.cellRowNumber, 
+                col2: +nextCell.data.cellColumnNumber, 
+                row2: +nextCell.data.cellRowNumber
+            });
         } else if (event.key === "Delete") {
             this.observable.notify(EventNames.clearSelectedCells);
         }

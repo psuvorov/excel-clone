@@ -4,8 +4,8 @@ import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
  * 
  */
 export class Toolbar extends SpreadsheetBaseComponent {
-    static componentName = "toolbar";
-    static className = `spreadsheet__${Toolbar.componentName}`;
+    public static readonly componentName = "toolbar";
+    public static readonly className = `spreadsheet__${Toolbar.componentName}`;
 
     constructor($root, options) {
         options.listeners = ["click"];
