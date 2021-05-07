@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isProd = process.env.NODE_ENV === "production";
 const isDev = !isProd;
 
-const filename = ext => isDev ? `bundle.${ext}` : `bundle.[fiullhash].${ext}`;
+const filename = ext => isDev ? `bundle.${ext}` : `bundle.[fullhash].${ext}`;
 
 module.exports = {
     context: path.resolve(__dirname, "src"),
