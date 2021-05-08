@@ -1,10 +1,21 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {createTable} from "./table.template";
 import {$, DomWrapper} from "../../core/domWrapper";
-import {TableSelection} from "./tableSelection";
+import {SelectionRange, TableSelection} from "./tableSelection";
 import {EventNames} from "../../core/resources";
 import * as actions from "../../redux/actions";
-import {changeCellContent} from "../../redux/actions";
+import {changeCellContent, changeCellStyle} from "../../redux/actions";
+import {
+    ApplicationState,
+    CellContentHorizontalAlignment,
+    CellContentVerticalAlignment,
+    TableCell,
+    TableCellStyle
+} from "../../core/applicationState";
+import {
+    getClassNameForHorizontalAlignment,
+    getClassNameForVerticalAlignment, isInit
+} from "../../core/utils";
 
 /**
  * 
@@ -32,6 +43,7 @@ export class Table extends SpreadsheetBaseComponent {
 
     public init(): void {
         super.init();
+        
         this.tableSelection = new TableSelection(this.store, this.observable);
         
         this.initFirstCellSelection();
@@ -40,7 +52,7 @@ export class Table extends SpreadsheetBaseComponent {
     }
     
     public loadState(): void {
-        const appState = this.store.getState();
+        const appState: ApplicationState = this.store.getState();
         
         const tableState = appState[Table.componentName];
         this.restoreColumnWidths(tableState);
@@ -51,8 +63,8 @@ export class Table extends SpreadsheetBaseComponent {
     public dispose(): void {
         super.dispose();
         
-        this.observable.dispose(EventNames.formulaInput);
-        this.observable.dispose(EventNames.selectNextCellAfterFormulaInput);
+        this.observable.dispose(EventNames.FormulaInput);
+        this.observable.dispose(EventNames.NextCellSelectionRequested);
     }
 
     public toHtml(): string {
@@ -74,7 +86,7 @@ export class Table extends SpreadsheetBaseComponent {
     }
 
     private initTableSubscriptions(): void {
-        this.observable.subscribe(EventNames.formulaInput, inputText => {
+        this.observable.subscribe(EventNames.FormulaInput, inputText => {
             this.tableSelection.currentSelectedCell.textContent = inputText;
 
             const cellColumnNumber = +this.tableSelection.currentSelectedCell.data.cellColumnNumber;
@@ -82,7 +94,7 @@ export class Table extends SpreadsheetBaseComponent {
             this.options.store.dispatch(changeCellContent(cellColumnNumber, cellRowNumber, inputText));
         });
 
-        this.observable.subscribe(EventNames.selectNextCellAfterFormulaInput, () => {
+        this.observable.subscribe(EventNames.NextCellSelectionRequested, () => {
             const nextCell = this.getNextCell("Enter");
 
             this.tableSelection.selectCells({
@@ -93,42 +105,73 @@ export class Table extends SpreadsheetBaseComponent {
             });
         });
         
-        this.observable.subscribe(EventNames.cut, () => {
+        this.observable.subscribe(EventNames.CutButtonClicked, () => {
             console.log("Cut");
         });
-        this.observable.subscribe(EventNames.copy, () => {
+        this.observable.subscribe(EventNames.CopyButtonClicked, () => {
             console.log("Copy");
         });
-        this.observable.subscribe(EventNames.paste, () => {
+        this.observable.subscribe(EventNames.PasteButtonClicked, () => {
             console.log("Paste");
         });
-        this.observable.subscribe(EventNames.formatBold, () => {
-            console.log("formatBold");
+        this.observable.subscribe(EventNames.FormatBoldButtonClicked, () => {
+            this.tableSelection.applyCssClassToSelectedCells("bold");
+            this.setCellStyle({bold: true});
         });
-        this.observable.subscribe(EventNames.formatItalic, () => {
-            console.log("formatItalic");
+        this.observable.subscribe(EventNames.FormatItalicButtonClicked, () => {
+            this.tableSelection.applyCssClassToSelectedCells("italic");
+            this.setCellStyle({italic: true});
         });
-        this.observable.subscribe(EventNames.formatUnderlined, () => {
-            console.log("formatUnderlined");
+        this.observable.subscribe(EventNames.FormatUnderlinedButtonClicked, () => {
+            this.tableSelection.applyCssClassToSelectedCells("underlined");
+            this.setCellStyle({underlined: true});
         });
-        this.observable.subscribe(EventNames.alignVerticalTop, () => {
-            console.log("alignVerticalTop");
+        this.observable.subscribe(EventNames.AlignVerticalTopButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("align-vertical-center", "align-vertical-bottom");
+            
+            this.tableSelection.applyCssClassToSelectedCells("align-vertical-top");
+            this.setCellStyle({verticalAlignment: CellContentVerticalAlignment.Top});
+            
         });
-        this.observable.subscribe(EventNames.alignVerticalCenter, () => {
-            console.log("alignVerticalCenter");
+        this.observable.subscribe(EventNames.AlignVerticalCenterButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("align-vertical-top", "align-vertical-bottom");
+            
+            this.tableSelection.applyCssClassToSelectedCells("align-vertical-center");
+            this.setCellStyle({verticalAlignment: CellContentVerticalAlignment.Center});
         });
-        this.observable.subscribe(EventNames.alignVerticalBottom, () => {
-            console.log("alignVerticalTop");
+        this.observable.subscribe(EventNames.AlignVerticalBottomButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("align-vertical-top", "align-vertical-center");
+            
+            this.tableSelection.applyCssClassToSelectedCells("align-vertical-bottom");
+            this.setCellStyle({verticalAlignment: CellContentVerticalAlignment.Bottom});
         });
-        this.observable.subscribe(EventNames.formatAlignLeft, () => {
-            console.log("formatAlignLeft");
+        this.observable.subscribe(EventNames.FormatAlignLeftButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("format-align-center", "format-align-right");
+            
+            this.tableSelection.applyCssClassToSelectedCells("format-align-left");
+            this.setCellStyle({horizontalAlignment: CellContentHorizontalAlignment.Left});
         });
-        this.observable.subscribe(EventNames.formatAlignCenter, () => {
-            console.log("formatAlignCenter");
+        this.observable.subscribe(EventNames.FormatAlignCenterButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("format-align-left", "format-align-right");
+            
+            this.tableSelection.applyCssClassToSelectedCells("format-align-center");
+            this.setCellStyle({horizontalAlignment: CellContentHorizontalAlignment.Center});
         });
-        this.observable.subscribe(EventNames.formatAlignRight, () => {
-            console.log("formatAlignRight");
+        this.observable.subscribe(EventNames.FormatAlignRightButtonClicked, () => {
+            this.tableSelection.removeCssClassFromSelectedCells("format-align-left", "format-align-center");
+            
+            this.tableSelection.applyCssClassToSelectedCells("format-align-right");
+            this.setCellStyle({horizontalAlignment: CellContentHorizontalAlignment.Right});
         });
+    }
+    
+    private setCellStyle(cellStyle: TableCellStyle): void {
+        const selectionRange = this.tableSelection.getSelectionRange();
+        for (let i = selectionRange.col1; i <= selectionRange.col2; i++) {
+            for (let j = selectionRange.row1; j <= selectionRange.row2; j++) {
+                this.options.store.dispatch(changeCellStyle(i, j, cellStyle));
+            }
+        }
     }
 
     // TODO: Implement horizontal scroll with Shift
@@ -137,11 +180,13 @@ export class Table extends SpreadsheetBaseComponent {
         let lastScrollTop = 0;
         this.$root.find(".table-wrapper").addEventListener("scroll", (event) => {
             // TODO: Needs to rework this fragment
-            const columnRowInfo = event.target.closest(".table-body").querySelector(".column-row-info");
+            
+            const target = event.target as HTMLElement;
+            const columnRowInfo = target.closest(".table-body").querySelector(".column-row-info") as HTMLElement;
             const rowColumnInfo = this.$root.find(".table-header .row-data");
 
-            const tableWrapperScrollLeft = event.target.scrollLeft;
-            const tableWrapperScrollTop = event.target.scrollTop;
+            const tableWrapperScrollLeft = target.scrollLeft;
+            const tableWrapperScrollTop = target.scrollTop;
             if (lastScrollLeft !== tableWrapperScrollLeft) {
                 rowColumnInfo.style.marginLeft = (40 - tableWrapperScrollLeft) + "px";
                 lastScrollLeft = tableWrapperScrollLeft;
@@ -178,6 +223,7 @@ export class Table extends SpreadsheetBaseComponent {
 
             if (event.shiftKey && firstCell) {
                 const secondCell = $(target);
+                console.log("onMousedown");
                 this.tableSelection.selectCells({
                     col1: +firstCell.data.cellColumnNumber, 
                     row1: +firstCell.data.cellRowNumber,
@@ -187,6 +233,7 @@ export class Table extends SpreadsheetBaseComponent {
             } else {
                 const cell = $(target);
 
+                console.log("onMousedown");
                 this.tableSelection.selectCells({
                     col1: +cell.data.cellColumnNumber, 
                     row1: +cell.data.cellRowNumber,
@@ -223,6 +270,7 @@ export class Table extends SpreadsheetBaseComponent {
                 this.tableSelection.selectedPivot = {type: selectionType, number: selectionType === "column" ? selectableColumn : selectableRow};
             }
 
+            console.log("onMousedown");
             this.tableSelection.clearSelection();
             this.tableSelection.selectCells({
                 col1: firstCellColumnNumber, 
@@ -373,8 +421,12 @@ export class Table extends SpreadsheetBaseComponent {
             const hoveredCell = $(target);
 
             const initialCell = this.tableSelection.initialMouseSelectedCell;
+
+            let selectionRange: SelectionRange = this.tableSelection.getSelectionRange();
+            if (selectionRange.col1 === +initialCell.data.cellColumnNumber && selectionRange.row1 === +initialCell.data.cellRowNumber &&
+                selectionRange.col2 === +hoveredCell.data.cellColumnNumber && selectionRange.row2 === +hoveredCell.data.cellRowNumber)
+                return;
             
-            // TODO: optimize this block
             this.tableSelection.selectCells({
                 col1: +initialCell.data.cellColumnNumber, 
                 row1: +initialCell.data.cellRowNumber,
@@ -406,7 +458,7 @@ export class Table extends SpreadsheetBaseComponent {
                 row2: +nextCell.data.cellRowNumber
             });
         } else if (event.key === "Delete") {
-            this.observable.notify(EventNames.clearSelectedCells);
+            this.observable.notify(EventNames.CellsDeselectionRequested);
         }
     }
 
@@ -419,13 +471,7 @@ export class Table extends SpreadsheetBaseComponent {
         
         this.store.dispatch(actions.changeCellContent(selectedCellColumnNumber, selectedCellRowNumber, inputText));
         
-        this.observable.notify(EventNames.cellInput, inputText);
-    }
-
-    private setCellValue(columnNumber: number, rowNumber: number, value: string): void {
-        const r = $(this.$root.find(`[data-cell-column-number="${columnNumber}"][data-cell-row-number="${rowNumber}"]`));
-        if (r)
-            r.textContent = value;
+        this.observable.notify(EventNames.CellInput, inputText);
     }
 
     private restoreColumnWidths(tableState: any): void {
@@ -449,9 +495,35 @@ export class Table extends SpreadsheetBaseComponent {
     private restoreTableContent(tableState: any): void {
         Object.keys(tableState.cellContents).forEach(columnNumber => {
             Object.keys(tableState.cellContents[columnNumber]).forEach(rowNumber => {
-                const cellValue = tableState.cellContents[columnNumber][rowNumber];
-                if (cellValue)
-                    this.setCellValue(+columnNumber, +rowNumber, cellValue);
+                const tableCell: TableCell = tableState.cellContents[columnNumber][rowNumber];
+                if (tableCell) {
+                    const $tableCellElem = $(this.$root.find(`[data-cell-column-number="${columnNumber}"][data-cell-row-number="${rowNumber}"]`));
+                    if ($tableCellElem) {
+                        $tableCellElem.textContent = tableCell.value;
+                        
+                        if (!isInit(tableCell.tableCellStyle))
+                            return;
+                        
+                        // TODO: rework reassigning cell format classes
+                        if (isInit(tableCell.tableCellStyle.bold)) {
+                            $tableCellElem.addClass("bold");
+                        }
+                        if (isInit(tableCell.tableCellStyle.italic)) {
+                            $tableCellElem.addClass("italic");
+                        }
+                        if (isInit(tableCell.tableCellStyle.underlined)) {
+                            $tableCellElem.addClass("underlined");
+                        }
+                        if (isInit(tableCell.tableCellStyle.verticalAlignment)) {
+                            $tableCellElem.removeClass("align-vertical-top", "align-vertical-center", "align-vertical-bottom");
+                            $tableCellElem.addClass(getClassNameForVerticalAlignment(tableCell.tableCellStyle.verticalAlignment));
+                        }
+                        if (isInit(tableCell.tableCellStyle.horizontalAlignment)) {
+                            $tableCellElem.removeClass("format-align-left", "format-align-center", "format-align-right");
+                            $tableCellElem.addClass(getClassNameForHorizontalAlignment(tableCell.tableCellStyle.horizontalAlignment));
+                        }
+                    }
+                }
             });
         });
     }
@@ -493,3 +565,5 @@ export class Table extends SpreadsheetBaseComponent {
         return $(this.$root.find(`[data-cell-column-number="${nextCellCoords[0]}"][data-cell-row-number="${nextCellCoords[1]}"]`));
     }
 }
+
+

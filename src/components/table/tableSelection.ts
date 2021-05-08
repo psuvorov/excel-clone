@@ -2,6 +2,8 @@ import {$, DomWrapper} from "../../core/domWrapper";
 import {EventNames} from "../../core/resources";
 import {Table} from "./table";
 import {changeCellContent} from "../../redux/actions";
+import {Observable} from "../../core/observable";
+import {Store} from "redux";
 
 /**
  * TODO: add comments 
@@ -14,17 +16,17 @@ export class TableSelection {
     public currentSelectedCell: DomWrapper; // TODO: WTF
     public selectedPivot: {type: string, number: number}; // TODO: check this out
     private spreadsheetEl: HTMLElement;
-    private observable: any;
-    private store: any;
+    private observable: Observable;
+    private store: Store<any, { type: string; data: any }>;
 
-    constructor(store: any, observable: any) {
+    constructor(store: Store<any, { type: string; data: any }>, observable: Observable) {
         // TODO: Introduce data attribute for table element
         this.spreadsheetEl = document.querySelector(`.${Table.className}`);
 
         this.observable = observable;
         this.store = store;
 
-        this.observable.subscribe(EventNames.clearSelectedCells, () => {
+        this.observable.subscribe(EventNames.CellsDeselectionRequested, () => {
             this.iterateOverSelectedCells((currentCellEl) => {
                 const currentCell = $(currentCellEl);
                 currentCell.textContent = "";
@@ -33,8 +35,12 @@ export class TableSelection {
             
             this.currentSelectedCell.textContent = "";
             this.store.dispatch(changeCellContent(+this.currentSelectedCell.data.cellColumnNumber, +this.currentSelectedCell.data.cellRowNumber, ""));
-            this.observable.notify(EventNames.cellInput, "");
+            this.observable.notify(EventNames.CellInput, "");
         });
+    }
+
+    public getSelectionRange(): SelectionRange {
+        return Object.freeze(this.currentSelectionRange);
     }
 
     public selectCells(selectionRange: SelectionRange) {
@@ -51,8 +57,10 @@ export class TableSelection {
             
             this.currentSelectedCell = cell;
             cell.focus().addClass(TableSelection.selectedCellClassName);
-
-            this.observable.notify(EventNames.singleCellSelect, {
+            
+            console.log("+++++++++++");
+            
+            this.observable.notify(EventNames.SingleCellSelected, {
                 columnNumber: +cell.data.cellColumnNumber,
                 rowNumber: +cell.data.cellRowNumber,
                 content: cell.textContent
@@ -92,7 +100,19 @@ export class TableSelection {
             this.currentSelectionRange = null;
         }
     }
-
+    
+    public applyCssClassToSelectedCells(...cssClasses: string[]): void {
+        this.iterateOverSelectedCells((cell: HTMLElement) => {
+            $(cell).addClass(cssClasses.join(" "));
+        });
+    }
+    
+    public removeCssClassFromSelectedCells(...cssClasses: string[]): void {
+        this.iterateOverSelectedCells((cell: HTMLElement) => {
+            $(cell).removeClass(cssClasses.join(" "));
+        });
+    }
+    
     private highlightSelectedCells(): void {
         // Select a new group of cells
         this.iterateOverSelectedCells((currentCell) => {
@@ -114,7 +134,7 @@ export class TableSelection {
         });
     }
 
-    private iterateOverSelectedCells(currentCellCb: Function, currentRowCb: Function = null, currentColumnCb: Function = null) {
+    private iterateOverSelectedCells(currentCellCb: (cell: HTMLElement) => void, currentRowCb: (row: HTMLElement) => void = null, currentColumnCb: (column: HTMLElement) => void = null) {
         if (!this.currentSelectionRange)
             return;
 
@@ -139,7 +159,8 @@ export class TableSelection {
                     currentColumnCb(currentColumn);
 
                 const currentColumnNumber = currentColumn.dataset.columnNumber;
-                const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`);
+                // TODO: super costly operation, consider accessing cells by indices
+                const currentCell = spreadsheetEl.querySelector(`[data-cell-column-number="${currentColumnNumber}"][data-cell-row-number="${currentRowNumber}"]`) as HTMLElement;
                 currentCellCb(currentCell);
 
                 currentColumn = currentColumn.nextElementSibling as HTMLElement;

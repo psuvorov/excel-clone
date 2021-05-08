@@ -13,6 +13,10 @@ export class Header extends SpreadsheetBaseComponent {
         super($root, options);
     }
 
+    init() {
+        super.init();
+    }
+
     public loadState(): void {
         
     }

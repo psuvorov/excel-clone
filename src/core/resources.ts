@@ -1,25 +1,25 @@
 
 // TODO: revise events
 export enum EventNames {
-    formulaInput,
-    cellInput,
-    singleCellSelect,
-    selectNextCellAfterFormulaInput,
-    clearSelectedCells,
+    FormulaInput,
+    CellInput,
+    SingleCellSelected,
+    NextCellSelectionRequested,
+    CellsDeselectionRequested,
     
-    cut,
-    copy,
-    paste,
+    CutButtonClicked,
+    CopyButtonClicked,
+    PasteButtonClicked,
     
-    formatBold,
-    formatItalic,
-    formatUnderlined,
+    FormatBoldButtonClicked,
+    FormatItalicButtonClicked,
+    FormatUnderlinedButtonClicked,
 
-    alignVerticalTop,
-    alignVerticalCenter,
-    alignVerticalBottom,
+    AlignVerticalTopButtonClicked,
+    AlignVerticalCenterButtonClicked,
+    AlignVerticalBottomButtonClicked,
 
-    formatAlignLeft,
-    formatAlignCenter,
-    formatAlignRight
+    FormatAlignLeftButtonClicked,
+    FormatAlignCenterButtonClicked,
+    FormatAlignRightButtonClicked
 }

@@ -1,7 +1,10 @@
+import {TableCell, TableCellStyle} from "../core/applicationState";
+
 export enum ActionTypes {
     columnResize = "columnResize",
     rowResize = "rowResize",
-    changeCellContent = "changeCellContent"
+    changeCellContent = "changeCellContent",
+    changeCellStyle = "changeCellStyle"
 }
 
 export function columnResize(columnNumber: number, newColumnWidth: number) {
@@ -31,6 +34,17 @@ export function changeCellContent(columnNumber: number, rowNumber: number, value
             columnNumber,
             rowNumber,
             value
+        }
+    };
+}
+
+export function changeCellStyle(columnNumber: number, rowNumber: number, cellStyle: TableCellStyle) {
+    return {
+        type: ActionTypes.changeCellStyle,
+        data: {
+            columnNumber,
+            rowNumber,
+            cellStyle
         }
     };
 }

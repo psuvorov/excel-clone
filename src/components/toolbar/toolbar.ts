@@ -1,5 +1,8 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {EventNames} from "../../core/resources";
+import {isInit} from "../../core/utils";
+import {ApplicationState, TableCell} from "../../core/applicationState";
+import {$} from "../../core/domWrapper";
 
 /**
  * 
@@ -11,6 +14,43 @@ export class Toolbar extends SpreadsheetBaseComponent {
     constructor($root, options) {
         options.listeners = ["click"];
         super($root, options);
+    }
+
+    init() {
+        super.init();
+        
+        const toolbarElem = this.$root;
+        const buttons = {
+            boldButton: $(toolbarElem.find(".format_bold"))
+        }
+        
+        this.observable.subscribe(EventNames.SingleCellSelected, ({columnNumber, rowNumber}) => {
+            console.log(columnNumber + " / " + rowNumber);
+            let appState: ApplicationState = this.store.getState();
+            if (isInit(appState.table.cellContents[columnNumber]) && appState.table.cellContents[columnNumber][rowNumber]) {
+                let cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
+                if (!isInit(cellContent) || !isInit(cellContent.tableCellStyle)) {
+                    buttons["boldButton"].removeClass("active");
+                    //
+                    //
+                    //
+                    return;
+                }
+                    
+                
+                if (isInit(cellContent.tableCellStyle.bold) && cellContent.tableCellStyle.bold === true) {
+                    buttons["boldButton"].addClass("active");
+                } else {
+                    buttons["boldButton"].removeClass("active");
+                }
+                
+            } else {
+                buttons["boldButton"].removeClass("active");
+                //
+                //
+                //
+            }
+        });
     }
 
     public loadState(): void {}
@@ -108,56 +148,56 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private cutButtonClick(): void {
-        this.observable.notify(EventNames.cut);
+        this.observable.notify(EventNames.CutButtonClicked);
     }
 
     private copyButtonClick(): void{
-        this.observable.notify(EventNames.copy);
+        this.observable.notify(EventNames.CopyButtonClicked);
     }
 
     private pasteButtonClick(): void {
-        this.observable.notify(EventNames.paste);
+        this.observable.notify(EventNames.PasteButtonClicked);
     }
 
     private formatBoldButtonClick(): void {
-        this.observable.notify(EventNames.formatBold);
+        this.observable.notify(EventNames.FormatBoldButtonClicked);
     }
 
     private formatItalicButtonClick(): void {
-        this.observable.notify(EventNames.formatItalic);
+        this.observable.notify(EventNames.FormatItalicButtonClicked);
     }
 
     private formatUnderlinedButtonClick(): void {
-        this.observable.notify(EventNames.formatUnderlined);
+        this.observable.notify(EventNames.FormatUnderlinedButtonClicked);
     }
 
     private alignVerticalTopButtonClick(): void {
-        this.observable.notify(EventNames.alignVerticalTop);
+        this.observable.notify(EventNames.AlignVerticalTopButtonClicked);
         // cellElem.classList.remove("align-vertical-center align-vertical-bottom");
         // cellElem.classList.add("align-vertical-top");
     }
 
     private alignVerticalCenterButtonClick(): void {
-        this.observable.notify(EventNames.alignVerticalCenter);
+        this.observable.notify(EventNames.AlignVerticalCenterButtonClicked);
         // cellElem.classList.remove("align-vertical-top align-vertical-bottom");
         // cellElem.classList.add("align-vertical-center");
     }
 
     private alignVerticalBottomButtonClick(): void {
-        this.observable.notify(EventNames.alignVerticalBottom);
+        this.observable.notify(EventNames.AlignVerticalBottomButtonClicked);
         // cellElem.classList.remove("align-vertical-top align-vertical-center");
         // cellElem.classList.add("align-vertical-bottom");
     }
 
     private formatAlignLeftButtonClick(): void {
-        this.observable.notify(EventNames.formatAlignLeft);
+        this.observable.notify(EventNames.FormatAlignLeftButtonClicked);
     }
 
     private formatAlignCenterButtonClick(): void {
-        this.observable.notify(EventNames.formatAlignCenter);
+        this.observable.notify(EventNames.FormatAlignCenterButtonClicked);
     }
 
     private formatAlignRightButtonClick(): void {
-        this.observable.notify(EventNames.formatAlignRight);
+        this.observable.notify(EventNames.FormatAlignRightButtonClicked);
     }
 }

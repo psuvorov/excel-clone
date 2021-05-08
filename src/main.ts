@@ -3,34 +3,31 @@ import {Header} from "./components/header/header";
 import {Toolbar} from "./components/toolbar/toolbar";
 import {Formula} from "./components/formula/formula";
 import {Table} from "./components/table/table";
-import {createStore} from "redux";
+import {createStore, Store} from "redux";
 import {rootReducer} from "./redux/rootReducer";
 import "./scss/index.scss";
+import {ApplicationState} from "./core/applicationState";
 
-const getApplicationState = () => {
-    const state = localStorage.getItem("appState");
-    if (state)
-        return JSON.parse(state);
-
+const getApplicationState = (): ApplicationState => {
+    const stateRaw = localStorage.getItem("appState");
+    if (stateRaw)
+        return JSON.parse(stateRaw) as ApplicationState;
+    
     return {
-        [`${Header.componentName}`]: {
-            
-        },
-        [`${Toolbar.componentName}`]: {
-            
-        },
-        [`${Table.componentName}`]: {
-            [`${Table.stateProperties.columnWidths}`]: {},
-            [`${Table.stateProperties.rowHeights}`]: {},
-            [`${Table.stateProperties.cellContents}`]: {}
+        header: {},
+        toolbar: {},
+        table: {
+            columnWidths: {},
+            rowHeights: {},
+            cellContents: {}
         }
     };
 };
 
-const store = createStore(rootReducer, getApplicationState());
+const store: Store<any, { type: string; data: any }> = createStore(rootReducer, getApplicationState());
 
 store.subscribe(() => {
-    const appState = store.getState();
+    const appState: ApplicationState = store.getState();
     localStorage.setItem("appState", JSON.stringify(appState));
 });
 

@@ -1,15 +1,17 @@
 /**
  * 
  */
+import {DomWrapper} from "./domWrapper";
+
 export class DomListener {
     
     private listeners: any[];
     
-    protected $root: any;
+    protected $root: DomWrapper;
     
     protected name: string;
     
-    constructor(root, listeners= []) {
+    constructor(root: DomWrapper, listeners= []) {
         if (!root)
             throw new Error("No $root provided for DomListener");
         

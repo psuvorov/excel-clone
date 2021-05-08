@@ -1,10 +1,11 @@
 import {DomListener} from "../core/domListener";
 import {Observable} from "../core/observable";
+import {Store} from "redux";
 
 export abstract class SpreadsheetBaseComponent extends DomListener {
     
     protected observable: Observable;
-    protected store: any;
+    protected store: Store<any, { type: string; data: any }>;
     protected options: any;
     
     protected constructor($root, options: any= {}) {

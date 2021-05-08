@@ -85,12 +85,12 @@ export class DomWrapper {
             });
     }
 
-    public addClass(className: string): void {
-        this.$nativeElement.classList.add(className);
+    public addClass(...classNames: string[]): void {
+        this.$nativeElement.classList.add(...classNames);
     }
 
-    public removeClass(className: string): void {
-        this.$nativeElement.classList.remove(className);
+    public removeClass(...classNames: string[]): void {
+        this.$nativeElement.classList.remove(...classNames);
     }
 }
 

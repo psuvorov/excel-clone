@@ -174,28 +174,40 @@
             display: inline;
           }
           
+          &.bold {
+            font-weight: bold;
+          }
+          
+          &.italic {
+            font-style: italic;
+          }
+          
+          &.underlined {
+            text-decoration: underline;
+          }
+          
           &.align-vertical-top {
-            align-items: flex-start;
+            align-items: flex-start !important;
           }
 
           &.align-vertical-center {
-            align-items: center;
+            align-items: center !important;
           }
 
           &.align-vertical-bottom {
-            align-items: flex-end;
+            align-items: flex-end !important;
           }
           
-          &.format_align_left {
-            justify-content: flex-start;
+          &.format-align-left {
+            justify-content: flex-start !important;
           }
 
-          &.format_align_center {
-            justify-content: center;
+          &.format-align-center {
+            justify-content: center !important;
           }
 
-          &.format_align_right {
-            justify-content: flex-end;
+          &.format-align-right {
+            justify-content: flex-end !important;
           }
           
         }

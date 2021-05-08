@@ -15,7 +15,7 @@
     color: $color;
   }
   
-  &:hover {
+  &:hover, &.active {
     background-color: #eee;
     cursor: pointer;
   }
