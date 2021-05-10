@@ -92,6 +92,10 @@ export class DomWrapper {
     public removeClass(...classNames: string[]): void {
         this.$nativeElement.classList.remove(...classNames);
     }
+
+    public toggleClass(className: string): void {
+        this.$nativeElement.classList.toggle(className);
+    }
 }
 
 export function $(queryObject: string | Element | HTMLElement): DomWrapper {

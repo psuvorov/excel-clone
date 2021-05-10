@@ -115,16 +115,55 @@ export class Table extends SpreadsheetBaseComponent {
             console.log("Paste");
         });
         this.observable.subscribe(EventNames.FormatBoldButtonClicked, () => {
-            this.tableSelection.applyCssClassToSelectedCells("bold");
-            this.setCellStyle({bold: true});
+            let selectionRange = this.tableSelection.getSelectionRange();
+            if (selectionRange.col1 !== selectionRange.col2 && selectionRange.row1 !== selectionRange.row2) {
+                return;
+            }
+
+            const appState: ApplicationState = this.store.getState();
+            let tableCell = appState.table.cellContents[selectionRange.col1][selectionRange.row1];
+            
+            if (isInit(tableCell) && isInit(tableCell.tableCellStyle) && isInit(tableCell.tableCellStyle.bold) && tableCell.tableCellStyle.bold === true) {
+                this.tableSelection.removeCssClassFromSelectedCells("bold");
+                this.setCellStyle({bold: false});
+            } else {
+                this.tableSelection.applyCssClassToSelectedCells("bold");
+                this.setCellStyle({bold: true});
+            }
         });
         this.observable.subscribe(EventNames.FormatItalicButtonClicked, () => {
-            this.tableSelection.applyCssClassToSelectedCells("italic");
-            this.setCellStyle({italic: true});
+            let selectionRange = this.tableSelection.getSelectionRange();
+            if (selectionRange.col1 !== selectionRange.col2 && selectionRange.row1 !== selectionRange.row2) {
+                return;
+            }
+
+            const appState: ApplicationState = this.store.getState();
+            let tableCell = appState.table.cellContents[selectionRange.col1][selectionRange.row1];
+
+            if (isInit(tableCell) && isInit(tableCell.tableCellStyle) && isInit(tableCell.tableCellStyle.italic) && tableCell.tableCellStyle.italic === true) {
+                this.tableSelection.removeCssClassFromSelectedCells("italic");
+                this.setCellStyle({italic: false});
+            } else {
+                this.tableSelection.applyCssClassToSelectedCells("italic");
+                this.setCellStyle({italic: true});
+            }
         });
         this.observable.subscribe(EventNames.FormatUnderlinedButtonClicked, () => {
-            this.tableSelection.applyCssClassToSelectedCells("underlined");
-            this.setCellStyle({underlined: true});
+            let selectionRange = this.tableSelection.getSelectionRange();
+            if (selectionRange.col1 !== selectionRange.col2 && selectionRange.row1 !== selectionRange.row2) {
+                return;
+            }
+
+            const appState: ApplicationState = this.store.getState();
+            let tableCell = appState.table.cellContents[selectionRange.col1][selectionRange.row1];
+
+            if (isInit(tableCell) && isInit(tableCell.tableCellStyle) && isInit(tableCell.tableCellStyle.underlined) && tableCell.tableCellStyle.underlined === true) {
+                this.tableSelection.removeCssClassFromSelectedCells("underlined");
+                this.setCellStyle({underlined: false});
+            } else {
+                this.tableSelection.applyCssClassToSelectedCells("underlined");
+                this.setCellStyle({underlined: true});
+            }
         });
         this.observable.subscribe(EventNames.AlignVerticalTopButtonClicked, () => {
             this.tableSelection.removeCssClassFromSelectedCells("align-vertical-center", "align-vertical-bottom");
@@ -505,13 +544,13 @@ export class Table extends SpreadsheetBaseComponent {
                             return;
                         
                         // TODO: rework reassigning cell format classes
-                        if (isInit(tableCell.tableCellStyle.bold)) {
+                        if (tableCell.tableCellStyle.bold === true) {
                             $tableCellElem.addClass("bold");
                         }
-                        if (isInit(tableCell.tableCellStyle.italic)) {
+                        if (tableCell.tableCellStyle.italic === true) {
                             $tableCellElem.addClass("italic");
                         }
-                        if (isInit(tableCell.tableCellStyle.underlined)) {
+                        if (tableCell.tableCellStyle.underlined === true) {
                             $tableCellElem.addClass("underlined");
                         }
                         if (isInit(tableCell.tableCellStyle.verticalAlignment)) {

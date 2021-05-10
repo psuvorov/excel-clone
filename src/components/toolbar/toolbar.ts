@@ -1,8 +1,8 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {EventNames} from "../../core/resources";
 import {isInit} from "../../core/utils";
-import {ApplicationState, TableCell} from "../../core/applicationState";
-import {$} from "../../core/domWrapper";
+import {ApplicationState, TableCell, TableCellStyle} from "../../core/applicationState";
+import {$, DomWrapper} from "../../core/domWrapper";
 
 /**
  * 
@@ -10,6 +10,19 @@ import {$} from "../../core/domWrapper";
 export class Toolbar extends SpreadsheetBaseComponent {
     public static readonly componentName = "toolbar";
     public static readonly className = `spreadsheet__${Toolbar.componentName}`;
+
+    private currentTableCellStyle: TableCellStyle;
+    private buttons: { 
+        boldButton: DomWrapper,
+        italicButton: DomWrapper,
+        underlinedButton: DomWrapper,
+        alignVerticalTopButton: DomWrapper,
+        alignVerticalCenterButton: DomWrapper,
+        alignVerticalBottomButton: DomWrapper,
+        formatAlignLeftButton: DomWrapper,
+        formatAlignCenterButton: DomWrapper,
+        formatAlignRightButton: DomWrapper
+    };
 
     constructor($root, options) {
         options.listeners = ["click"];
@@ -20,36 +33,88 @@ export class Toolbar extends SpreadsheetBaseComponent {
         super.init();
         
         const toolbarElem = this.$root;
-        const buttons = {
-            boldButton: $(toolbarElem.find(".format_bold"))
+        this.buttons = {
+            boldButton: $(toolbarElem.find(".format_bold")),
+            italicButton: $(toolbarElem.find(".format_italic")),
+            underlinedButton: $(toolbarElem.find(".format_underlined")),
+            alignVerticalTopButton: $(toolbarElem.find(".align_vertical_top")),
+            alignVerticalCenterButton: $(toolbarElem.find(".align_vertical_center")),
+            alignVerticalBottomButton: $(toolbarElem.find(".align_vertical_bottom")),
+            formatAlignLeftButton: $(toolbarElem.find(".format_align_left")),
+            formatAlignCenterButton: $(toolbarElem.find(".format_align_center")),
+            formatAlignRightButton: $(toolbarElem.find(".format_align_right"))
         }
         
         this.observable.subscribe(EventNames.SingleCellSelected, ({columnNumber, rowNumber}) => {
-            console.log(columnNumber + " / " + rowNumber);
             let appState: ApplicationState = this.store.getState();
-            if (isInit(appState.table.cellContents[columnNumber]) && appState.table.cellContents[columnNumber][rowNumber]) {
-                let cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
-                if (!isInit(cellContent) || !isInit(cellContent.tableCellStyle)) {
-                    buttons["boldButton"].removeClass("active");
-                    //
-                    //
-                    //
-                    return;
-                }
-                    
-                
-                if (isInit(cellContent.tableCellStyle.bold) && cellContent.tableCellStyle.bold === true) {
-                    buttons["boldButton"].addClass("active");
-                } else {
-                    buttons["boldButton"].removeClass("active");
-                }
-                
-            } else {
-                buttons["boldButton"].removeClass("active");
-                //
-                //
-                //
+            
+            const resetCellStyleButtons = () => {
+                this.buttons["boldButton"].removeClass("active");
+                this.buttons["italicButton"].removeClass("active");
+                this.buttons["underlinedButton"].removeClass("active");
+                this.buttons["alignVerticalTopButton"].removeClass("active");
+                this.buttons["alignVerticalCenterButton"].removeClass("active");
+                this.buttons["alignVerticalBottomButton"].addClass("active");
+                this.buttons["formatAlignLeftButton"].removeClass("active");
+                this.buttons["formatAlignCenterButton"].removeClass("active");
+                this.buttons["formatAlignRightButton"].removeClass("active");
+            };
+            
+            if (!isInit(appState.table.cellContents[columnNumber]) || !isInit(appState.table.cellContents[columnNumber][rowNumber])) {
+                resetCellStyleButtons();
+                return;
             }
+
+            const cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
+            if (!isInit(cellContent.tableCellStyle)) {
+                resetCellStyleButtons();
+                return;
+            }
+                
+
+            if (cellContent.tableCellStyle.bold === true)
+                this.buttons["boldButton"].addClass("active");
+            else
+                this.buttons["boldButton"].removeClass("active");
+            
+            if (cellContent.tableCellStyle.italic === true)
+                this.buttons["italicButton"].addClass("active");
+            else
+                this.buttons["italicButton"].removeClass("active");
+            
+            if (cellContent.tableCellStyle.underlined === true)
+                this.buttons["underlinedButton"].addClass("active");
+            else
+                this.buttons["underlinedButton"].removeClass("active");
+            
+            
+            
+            // if (isInit(appState.table.cellContents[columnNumber]) && ) {
+            //     let cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
+            //     if (!isInit(cellContent) || !isInit(cellContent.tableCellStyle)) {
+            //         this.buttons["boldButton"].removeClass("active");
+            //         //
+            //         //
+            //         //
+            //         return;
+            //     }
+            //    
+            //     this.currentTableCellStyle = cellContent.tableCellStyle;
+            //    
+            //     if (isInit(cellContent.tableCellStyle.bold) && cellContent.tableCellStyle.bold === true) {
+            //         this.buttons["boldButton"].addClass("active");
+            //     } else {
+            //         this.buttons["boldButton"].removeClass("active");
+            //     }
+            //    
+            // } else {
+            //     this.buttons["boldButton"].removeClass("active");
+            //     this.buttons["italicButton"].removeClass("active");
+            //     this.buttons["underlinedButton"].removeClass("active");
+            //     //
+            //     //
+            //     //
+            // }
         });
     }
 
@@ -160,14 +225,17 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private formatBoldButtonClick(): void {
+        this.buttons["boldButton"].toggleClass("active");
         this.observable.notify(EventNames.FormatBoldButtonClicked);
     }
 
     private formatItalicButtonClick(): void {
+        this.buttons["italicButton"].toggleClass("active");
         this.observable.notify(EventNames.FormatItalicButtonClicked);
     }
 
     private formatUnderlinedButtonClick(): void {
+        this.buttons["underlinedButton"].toggleClass("active");
         this.observable.notify(EventNames.FormatUnderlinedButtonClicked);
     }
 
