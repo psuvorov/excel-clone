@@ -1,7 +1,13 @@
 import {SpreadsheetBaseComponent} from "../spreadsheetBaseComponent";
 import {EventNames} from "../../core/resources";
 import {isInit} from "../../core/utils";
-import {ApplicationState, TableCell, TableCellStyle} from "../../core/applicationState";
+import {
+    ApplicationState,
+    CellContentHorizontalAlignment,
+    CellContentVerticalAlignment,
+    TableCell,
+    TableCellStyle
+} from "../../core/applicationState";
 import {$, DomWrapper} from "../../core/domWrapper";
 
 /**
@@ -11,7 +17,6 @@ export class Toolbar extends SpreadsheetBaseComponent {
     public static readonly componentName = "toolbar";
     public static readonly className = `spreadsheet__${Toolbar.componentName}`;
 
-    private currentTableCellStyle: TableCellStyle;
     private buttons: { 
         boldButton: DomWrapper,
         italicButton: DomWrapper,
@@ -48,29 +53,28 @@ export class Toolbar extends SpreadsheetBaseComponent {
         this.observable.subscribe(EventNames.SingleCellSelected, ({columnNumber, rowNumber}) => {
             let appState: ApplicationState = this.store.getState();
             
-            const resetCellStyleButtons = () => {
+            const resetDefaultCellStyleButtons = () => {
                 this.buttons["boldButton"].removeClass("active");
                 this.buttons["italicButton"].removeClass("active");
                 this.buttons["underlinedButton"].removeClass("active");
                 this.buttons["alignVerticalTopButton"].removeClass("active");
                 this.buttons["alignVerticalCenterButton"].removeClass("active");
                 this.buttons["alignVerticalBottomButton"].addClass("active");
-                this.buttons["formatAlignLeftButton"].removeClass("active");
+                this.buttons["formatAlignLeftButton"].addClass("active");
                 this.buttons["formatAlignCenterButton"].removeClass("active");
                 this.buttons["formatAlignRightButton"].removeClass("active");
             };
             
             if (!isInit(appState.table.cellContents[columnNumber]) || !isInit(appState.table.cellContents[columnNumber][rowNumber])) {
-                resetCellStyleButtons();
+                resetDefaultCellStyleButtons();
                 return;
             }
 
             const cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
             if (!isInit(cellContent.tableCellStyle)) {
-                resetCellStyleButtons();
+                resetDefaultCellStyleButtons();
                 return;
             }
-                
 
             if (cellContent.tableCellStyle.bold === true)
                 this.buttons["boldButton"].addClass("active");
@@ -87,34 +91,34 @@ export class Toolbar extends SpreadsheetBaseComponent {
             else
                 this.buttons["underlinedButton"].removeClass("active");
             
-            
-            
-            // if (isInit(appState.table.cellContents[columnNumber]) && ) {
-            //     let cellContent: TableCell = appState.table.cellContents[columnNumber][rowNumber];
-            //     if (!isInit(cellContent) || !isInit(cellContent.tableCellStyle)) {
-            //         this.buttons["boldButton"].removeClass("active");
-            //         //
-            //         //
-            //         //
-            //         return;
-            //     }
-            //    
-            //     this.currentTableCellStyle = cellContent.tableCellStyle;
-            //    
-            //     if (isInit(cellContent.tableCellStyle.bold) && cellContent.tableCellStyle.bold === true) {
-            //         this.buttons["boldButton"].addClass("active");
-            //     } else {
-            //         this.buttons["boldButton"].removeClass("active");
-            //     }
-            //    
-            // } else {
-            //     this.buttons["boldButton"].removeClass("active");
-            //     this.buttons["italicButton"].removeClass("active");
-            //     this.buttons["underlinedButton"].removeClass("active");
-            //     //
-            //     //
-            //     //
-            // }
+            if (cellContent.tableCellStyle.verticalAlignment === CellContentVerticalAlignment.Top) {
+                this.buttons["alignVerticalTopButton"].addClass("active");
+                this.buttons["alignVerticalCenterButton"].removeClass("active");
+                this.buttons["alignVerticalBottomButton"].removeClass("active");
+            } else if (cellContent.tableCellStyle.verticalAlignment === CellContentVerticalAlignment.Center) {
+                this.buttons["alignVerticalTopButton"].removeClass("active");
+                this.buttons["alignVerticalCenterButton"].addClass("active");
+                this.buttons["alignVerticalBottomButton"].removeClass("active");
+            } else {
+                this.buttons["alignVerticalTopButton"].removeClass("active");
+                this.buttons["alignVerticalCenterButton"].removeClass("active");
+                this.buttons["alignVerticalBottomButton"].addClass("active");
+            }
+                
+            if (cellContent.tableCellStyle.horizontalAlignment === CellContentHorizontalAlignment.Center) {
+                this.buttons["formatAlignLeftButton"].removeClass("active");
+                this.buttons["formatAlignCenterButton"].addClass("active");
+                this.buttons["formatAlignRightButton"].removeClass("active");
+            } else if (cellContent.tableCellStyle.horizontalAlignment === CellContentHorizontalAlignment.Right) {
+                this.buttons["formatAlignLeftButton"].removeClass("active");
+                this.buttons["formatAlignCenterButton"].removeClass("active");
+                this.buttons["formatAlignRightButton"].addClass("active");
+            } else {
+                this.buttons["formatAlignLeftButton"].addClass("active");
+                this.buttons["formatAlignCenterButton"].removeClass("active");
+                this.buttons["formatAlignRightButton"].removeClass("active");
+            }
+                
         });
     }
 
@@ -240,32 +244,50 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private alignVerticalTopButtonClick(): void {
+        this.buttons["alignVerticalTopButton"].addClass("active");
+        this.buttons["alignVerticalCenterButton"].removeClass("active");
+        this.buttons["alignVerticalBottomButton"].removeClass("active");
+        
         this.observable.notify(EventNames.AlignVerticalTopButtonClicked);
-        // cellElem.classList.remove("align-vertical-center align-vertical-bottom");
-        // cellElem.classList.add("align-vertical-top");
     }
 
     private alignVerticalCenterButtonClick(): void {
+        this.buttons["alignVerticalTopButton"].removeClass("active");
+        this.buttons["alignVerticalCenterButton"].addClass("active");
+        this.buttons["alignVerticalBottomButton"].removeClass("active");
+        
         this.observable.notify(EventNames.AlignVerticalCenterButtonClicked);
-        // cellElem.classList.remove("align-vertical-top align-vertical-bottom");
-        // cellElem.classList.add("align-vertical-center");
     }
 
     private alignVerticalBottomButtonClick(): void {
+        this.buttons["alignVerticalTopButton"].removeClass("active");
+        this.buttons["alignVerticalCenterButton"].removeClass("active");
+        this.buttons["alignVerticalBottomButton"].addClass("active");
+        
         this.observable.notify(EventNames.AlignVerticalBottomButtonClicked);
-        // cellElem.classList.remove("align-vertical-top align-vertical-center");
-        // cellElem.classList.add("align-vertical-bottom");
     }
 
     private formatAlignLeftButtonClick(): void {
+        this.buttons["formatAlignLeftButton"].addClass("active");
+        this.buttons["formatAlignCenterButton"].removeClass("active");
+        this.buttons["formatAlignRightButton"].removeClass("active");
+        
         this.observable.notify(EventNames.FormatAlignLeftButtonClicked);
     }
 
     private formatAlignCenterButtonClick(): void {
+        this.buttons["formatAlignLeftButton"].removeClass("active");
+        this.buttons["formatAlignCenterButton"].addClass("active");
+        this.buttons["formatAlignRightButton"].removeClass("active");
+        
         this.observable.notify(EventNames.FormatAlignCenterButtonClicked);
     }
 
     private formatAlignRightButtonClick(): void {
+        this.buttons["formatAlignLeftButton"].removeClass("active");
+        this.buttons["formatAlignCenterButton"].removeClass("active");
+        this.buttons["formatAlignRightButton"].addClass("active");
+        
         this.observable.notify(EventNames.FormatAlignRightButtonClicked);
     }
 }

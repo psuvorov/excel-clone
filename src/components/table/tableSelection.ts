@@ -103,13 +103,13 @@ export class TableSelection {
     
     public applyCssClassToSelectedCells(...cssClasses: string[]): void {
         this.iterateOverSelectedCells((cell: HTMLElement) => {
-            $(cell).addClass(cssClasses.join(" "));
+            $(cell).addClass(...cssClasses);
         });
     }
     
     public removeCssClassFromSelectedCells(...cssClasses: string[]): void {
         this.iterateOverSelectedCells((cell: HTMLElement) => {
-            $(cell).removeClass(cssClasses.join(" "));
+            $(cell).removeClass(...cssClasses);
         });
     }
     
