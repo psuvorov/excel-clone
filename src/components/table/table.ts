@@ -241,45 +241,11 @@ export class Table extends SpreadsheetBaseComponent {
         const target = event.target as HTMLElement;
         
         // Resize columns and rows
-        if (target.dataset.resize) {
-            const $resizer = $(target);
-            const resizerType = $resizer.data.resize;
-            
-            if (resizerType === "col") {
-                const $column = $resizer.closest('[data-resizable="true"]');
-                this.resizeColumn($column, $resizer);
-            } else {
-                const rowNumber = $resizer.closest(".row-info").data.rowNumber;
-                const $row = $($resizer.closest(".table-body").find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
-                this.resizeRow($row, $resizer);
-            }
-            return;
-        } 
+        this.performColumnOrRowResizing(target);
         
         // Cell(s) selection
-        if (target.classList.contains("cell")) {
-            const firstCell = this.tableSelection.currentSelectedCell;
-
-            if (event.shiftKey && firstCell) {
-                const secondCell = $(target);
-                this.tableSelection.selectCells({
-                    col1: +firstCell.data.cellColumnNumber, 
-                    row1: +firstCell.data.cellRowNumber,
-                    col2: +secondCell.data.cellColumnNumber, 
-                    row2: +secondCell.data.cellRowNumber
-                });
-            } else {
-                const cell = $(target);
-
-                this.tableSelection.selectCells({
-                    col1: +cell.data.cellColumnNumber, 
-                    row1: +cell.data.cellRowNumber,
-                    col2: +cell.data.cellColumnNumber, 
-                    row2: +cell.data.cellRowNumber
-                });
-            }
-        }
-
+        this.performCellSelection(target, event.shiftKey);
+        
         const selectRowOrColumn = (firstCellColumnNumber, firstCellRowNumber, secondCellColumnNumber, secondCellRowNumber) => {
             let selectionType;
             let selectableColumn;
@@ -317,32 +283,81 @@ export class Table extends SpreadsheetBaseComponent {
         }; 
         
         // Select whole row(s)
-        const rowInfoEl = target.closest(".row-info") as HTMLElement;
+        this.performWholeRowsSelection(target.closest(".row-info"), selectRowOrColumn);
+        
+        // Select whole column(s)
+        this.performWholeColumnsSelection(target.closest(".column"), selectRowOrColumn);
+    }
+    
+    private performColumnOrRowResizing(resizer: HTMLElement): void {
+        if (resizer.dataset.resize) {
+            const $resizer = $(resizer);
+            const resizerType = $resizer.data.resize;
+
+            if (resizerType === "col") {
+                const $column = $resizer.closest('[data-resizable="true"]');
+                this.resizeColumn($column, $resizer);
+            } else {
+                const rowNumber = $resizer.closest(".row-info").data.rowNumber;
+                const $row = $($resizer.closest(".table-body").find(`.table-wrapper .row[data-row-number="${rowNumber}"]`));
+                this.resizeRow($row, $resizer);
+            }
+            return;
+        }
+    }
+    
+    private performCellSelection(cellElem: HTMLElement, shiftKey: boolean): void {
+        if (cellElem.classList.contains("cell")) {
+            const firstCell = this.tableSelection.currentSelectedCell;
+
+            if (shiftKey && firstCell) {
+                const secondCell = $(cellElem);
+                this.tableSelection.selectCells({
+                    col1: +firstCell.data.cellColumnNumber,
+                    row1: +firstCell.data.cellRowNumber,
+                    col2: +secondCell.data.cellColumnNumber,
+                    row2: +secondCell.data.cellRowNumber
+                });
+            } else {
+                const cell = $(cellElem);
+
+                this.tableSelection.selectCells({
+                    col1: +cell.data.cellColumnNumber,
+                    row1: +cell.data.cellRowNumber,
+                    col2: +cell.data.cellColumnNumber,
+                    row2: +cell.data.cellRowNumber
+                });
+            }
+        }
+    }
+    
+    private performWholeRowsSelection(rowInfoEl, selectRowOrColumn: Function): void {
         if (rowInfoEl && rowInfoEl.childElementCount > 0) {
             const $row = $(rowInfoEl.closest(".table-body")).find(`.table-wrapper .row[data-row-number="${rowInfoEl.dataset.rowNumber}"]`);
             const $rowData = $row.querySelector(".row-data");
             const firstCell = $($rowData.firstElementChild);
             const lastCell = $($rowData.lastElementChild);
 
-            selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber, 
+            selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber,
                 +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
         } else if (rowInfoEl && rowInfoEl.childElementCount === 0) {
             selectRowOrColumn(1, 1,
                 this.columnCount, this.rowCount);
         }
-        
-        // Select whole column(s)
-        const columnEl = target.closest(".column");
-        if (columnEl) {
-            const columnNumber = $(columnEl).data.columnNumber;
-            const cells = this.$root.findAll(`.cell[data-cell-column-number="${columnNumber}"]`);
+    }
+    
+    private performWholeColumnsSelection(columnEl, selectRowOrColumn: Function): void {
+        if (!isInit(columnEl))
+            return;
 
-            const firstCell = $(cells[0]);
-            const lastCell = $(cells[cells.length - 1]);
+        const columnNumber = $(columnEl).data.columnNumber;
+        const cells = this.$root.findAll(`.cell[data-cell-column-number="${columnNumber}"]`);
 
-            selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber,
-                +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
-        }
+        const firstCell = $(cells[0]);
+        const lastCell = $(cells[cells.length - 1]);
+
+        selectRowOrColumn(+firstCell.data.cellColumnNumber, +firstCell.data.cellRowNumber,
+            +lastCell.data.cellColumnNumber, +lastCell.data.cellRowNumber);
     }
     
     // TODO: try to name it more meaningfully
