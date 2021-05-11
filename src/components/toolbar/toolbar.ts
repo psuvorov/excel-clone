@@ -5,8 +5,7 @@ import {
     ApplicationState,
     CellContentHorizontalAlignment,
     CellContentVerticalAlignment,
-    TableCell,
-    TableCellStyle
+    TableCell
 } from "../../core/applicationState";
 import {$, DomWrapper} from "../../core/domWrapper";
 
@@ -91,34 +90,8 @@ export class Toolbar extends SpreadsheetBaseComponent {
             else
                 this.buttons["underlinedButton"].removeClass("active");
             
-            if (cellContent.tableCellStyle.verticalAlignment === CellContentVerticalAlignment.Top) {
-                this.buttons["alignVerticalTopButton"].addClass("active");
-                this.buttons["alignVerticalCenterButton"].removeClass("active");
-                this.buttons["alignVerticalBottomButton"].removeClass("active");
-            } else if (cellContent.tableCellStyle.verticalAlignment === CellContentVerticalAlignment.Center) {
-                this.buttons["alignVerticalTopButton"].removeClass("active");
-                this.buttons["alignVerticalCenterButton"].addClass("active");
-                this.buttons["alignVerticalBottomButton"].removeClass("active");
-            } else {
-                this.buttons["alignVerticalTopButton"].removeClass("active");
-                this.buttons["alignVerticalCenterButton"].removeClass("active");
-                this.buttons["alignVerticalBottomButton"].addClass("active");
-            }
-                
-            if (cellContent.tableCellStyle.horizontalAlignment === CellContentHorizontalAlignment.Center) {
-                this.buttons["formatAlignLeftButton"].removeClass("active");
-                this.buttons["formatAlignCenterButton"].addClass("active");
-                this.buttons["formatAlignRightButton"].removeClass("active");
-            } else if (cellContent.tableCellStyle.horizontalAlignment === CellContentHorizontalAlignment.Right) {
-                this.buttons["formatAlignLeftButton"].removeClass("active");
-                this.buttons["formatAlignCenterButton"].removeClass("active");
-                this.buttons["formatAlignRightButton"].addClass("active");
-            } else {
-                this.buttons["formatAlignLeftButton"].addClass("active");
-                this.buttons["formatAlignCenterButton"].removeClass("active");
-                this.buttons["formatAlignRightButton"].removeClass("active");
-            }
-                
+            this.setVerticalAlignment(cellContent.tableCellStyle.verticalAlignment);
+            this.setHorizontalAlignment(cellContent.tableCellStyle.horizontalAlignment);
         });
     }
 
@@ -244,50 +217,65 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private alignVerticalTopButtonClick(): void {
-        this.buttons["alignVerticalTopButton"].addClass("active");
-        this.buttons["alignVerticalCenterButton"].removeClass("active");
-        this.buttons["alignVerticalBottomButton"].removeClass("active");
-        
+        this.setVerticalAlignment(CellContentVerticalAlignment.Top);
         this.observable.notify(EventNames.AlignVerticalTopButtonClicked);
     }
 
     private alignVerticalCenterButtonClick(): void {
-        this.buttons["alignVerticalTopButton"].removeClass("active");
-        this.buttons["alignVerticalCenterButton"].addClass("active");
-        this.buttons["alignVerticalBottomButton"].removeClass("active");
-        
+        this.setVerticalAlignment(CellContentVerticalAlignment.Center);
         this.observable.notify(EventNames.AlignVerticalCenterButtonClicked);
     }
 
     private alignVerticalBottomButtonClick(): void {
-        this.buttons["alignVerticalTopButton"].removeClass("active");
-        this.buttons["alignVerticalCenterButton"].removeClass("active");
-        this.buttons["alignVerticalBottomButton"].addClass("active");
-        
+        this.setVerticalAlignment(CellContentVerticalAlignment.Bottom);
         this.observable.notify(EventNames.AlignVerticalBottomButtonClicked);
     }
 
     private formatAlignLeftButtonClick(): void {
-        this.buttons["formatAlignLeftButton"].addClass("active");
-        this.buttons["formatAlignCenterButton"].removeClass("active");
-        this.buttons["formatAlignRightButton"].removeClass("active");
-        
+        this.setHorizontalAlignment(CellContentHorizontalAlignment.Left);
         this.observable.notify(EventNames.FormatAlignLeftButtonClicked);
     }
 
     private formatAlignCenterButtonClick(): void {
-        this.buttons["formatAlignLeftButton"].removeClass("active");
-        this.buttons["formatAlignCenterButton"].addClass("active");
-        this.buttons["formatAlignRightButton"].removeClass("active");
-        
+        this.setHorizontalAlignment(CellContentHorizontalAlignment.Center);
         this.observable.notify(EventNames.FormatAlignCenterButtonClicked);
     }
 
     private formatAlignRightButtonClick(): void {
-        this.buttons["formatAlignLeftButton"].removeClass("active");
-        this.buttons["formatAlignCenterButton"].removeClass("active");
-        this.buttons["formatAlignRightButton"].addClass("active");
-        
+        this.setHorizontalAlignment(CellContentHorizontalAlignment.Right);
         this.observable.notify(EventNames.FormatAlignRightButtonClicked);
     }
+    
+    private setHorizontalAlignment(horizontalAlignment: CellContentHorizontalAlignment): void {
+        if (horizontalAlignment === CellContentHorizontalAlignment.Center) {
+            this.buttons["formatAlignLeftButton"].removeClass("active");
+            this.buttons["formatAlignCenterButton"].addClass("active");
+            this.buttons["formatAlignRightButton"].removeClass("active");
+        } else if (horizontalAlignment === CellContentHorizontalAlignment.Right) {
+            this.buttons["formatAlignLeftButton"].removeClass("active");
+            this.buttons["formatAlignCenterButton"].removeClass("active");
+            this.buttons["formatAlignRightButton"].addClass("active");
+        } else {
+            this.buttons["formatAlignLeftButton"].addClass("active");
+            this.buttons["formatAlignCenterButton"].removeClass("active");
+            this.buttons["formatAlignRightButton"].removeClass("active");
+        }
+    }
+    
+    private setVerticalAlignment(verticalAlignment: CellContentVerticalAlignment): void {
+        if (verticalAlignment === CellContentVerticalAlignment.Top) {
+            this.buttons["alignVerticalTopButton"].addClass("active");
+            this.buttons["alignVerticalCenterButton"].removeClass("active");
+            this.buttons["alignVerticalBottomButton"].removeClass("active");
+        } else if (verticalAlignment === CellContentVerticalAlignment.Center) {
+            this.buttons["alignVerticalTopButton"].removeClass("active");
+            this.buttons["alignVerticalCenterButton"].addClass("active");
+            this.buttons["alignVerticalBottomButton"].removeClass("active");
+        } else {
+            this.buttons["alignVerticalTopButton"].removeClass("active");
+            this.buttons["alignVerticalCenterButton"].removeClass("active");
+            this.buttons["alignVerticalBottomButton"].addClass("active");
+        }
+    }
+    
 }

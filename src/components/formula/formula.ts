@@ -25,8 +25,6 @@ export class Formula extends SpreadsheetBaseComponent {
         const $inputBar = this.$root.find(".input");
         
         this.observable.subscribe(EventNames.SingleCellSelected, ({content}) => {
-            console.log(content);
-            
             if (!isInit(content))
                 content = "";
             

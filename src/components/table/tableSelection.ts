@@ -58,8 +58,6 @@ export class TableSelection {
             this.currentSelectedCell = cell;
             cell.focus().addClass(TableSelection.selectedCellClassName);
             
-            console.log("+++++++++++");
-            
             this.observable.notify(EventNames.SingleCellSelected, {
                 columnNumber: +cell.data.cellColumnNumber,
                 rowNumber: +cell.data.cellRowNumber,

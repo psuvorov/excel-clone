@@ -262,7 +262,6 @@ export class Table extends SpreadsheetBaseComponent {
 
             if (event.shiftKey && firstCell) {
                 const secondCell = $(target);
-                console.log("onMousedown");
                 this.tableSelection.selectCells({
                     col1: +firstCell.data.cellColumnNumber, 
                     row1: +firstCell.data.cellRowNumber,
@@ -272,7 +271,6 @@ export class Table extends SpreadsheetBaseComponent {
             } else {
                 const cell = $(target);
 
-                console.log("onMousedown");
                 this.tableSelection.selectCells({
                     col1: +cell.data.cellColumnNumber, 
                     row1: +cell.data.cellRowNumber,
@@ -309,7 +307,6 @@ export class Table extends SpreadsheetBaseComponent {
                 this.tableSelection.selectedPivot = {type: selectionType, number: selectionType === "column" ? selectableColumn : selectableRow};
             }
 
-            console.log("onMousedown");
             this.tableSelection.clearSelection();
             this.tableSelection.selectCells({
                 col1: firstCellColumnNumber, 
