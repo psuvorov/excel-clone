@@ -508,6 +508,7 @@ export class Table extends SpreadsheetBaseComponent {
                 col2: +nextCell.data.cellColumnNumber, 
                 row2: +nextCell.data.cellRowNumber
             });
+            this.tableSelection.initialMouseSelectedCell = null;
         } else if (event.key === "Delete") {
             this.observable.notify(EventNames.CellsDeselectionRequested);
         }
