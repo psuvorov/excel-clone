@@ -7,9 +7,9 @@ export enum EventNames {
     NextCellSelectionRequested,
     CellsDeselectionRequested,
     
-    CutButtonClicked,
-    CopyButtonClicked,
-    PasteButtonClicked,
+    CutCellsRequested,
+    CopyCellsRequested,
+    PasteCellsRequested,
     
     FormatBoldButtonClicked,
     FormatItalicButtonClicked,

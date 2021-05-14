@@ -105,14 +105,32 @@ export class Table extends SpreadsheetBaseComponent {
             });
         });
         
-        this.observable.subscribe(EventNames.CutButtonClicked, () => {
-            console.log("Cut");
+        this.observable.subscribe(EventNames.CutCellsRequested, () => {
+            // Get selected range
+            let selectionRange = this.tableSelection.getSelectionRange();
+            
+            // Remove selected cells from UI
+            
+            // Do not touch app state
+            
+            // TODO: consider moving copy-paste stuff to the separate class
+            
+            
         });
-        this.observable.subscribe(EventNames.CopyButtonClicked, () => {
-            console.log("Copy");
+        this.observable.subscribe(EventNames.CopyCellsRequested, () => {
+            // Get selected range
+            let selectionRange = this.tableSelection.getSelectionRange();
+            
+            
+            
         });
-        this.observable.subscribe(EventNames.PasteButtonClicked, () => {
-            console.log("Paste");
+        this.observable.subscribe(EventNames.PasteCellsRequested, () => {
+            // Get TableCell data
+            let selectedCells = this.tableSelection.getSelectedCells();
+            
+            
+            
+            
         });
         this.observable.subscribe(EventNames.FormatBoldButtonClicked, () => {
             let selectionRange = this.tableSelection.getSelectionRange();
@@ -616,6 +634,10 @@ export class Table extends SpreadsheetBaseComponent {
 
         return $(this.$root.find(`[data-cell-column-number="${nextCellCoords[0]}"][data-cell-row-number="${nextCellCoords[1]}"]`));
     }
+}
+
+export type SelectedCells = {
+    [columnNumber: number]: {[rowNumber: number]: TableCell}
 }
 
 

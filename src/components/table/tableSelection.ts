@@ -1,15 +1,26 @@
 import {$, DomWrapper} from "../../core/domWrapper";
 import {EventNames} from "../../core/resources";
-import {Table} from "./table";
+import {SelectedCells, Table} from "./table";
 import {changeCellContent} from "../../redux/actions";
 import {Observable} from "../../core/observable";
 import {Store} from "redux";
+import {ApplicationState} from "../../core/applicationState";
 
 /**
  * TODO: add comments 
  */
 export class TableSelection {
     private static readonly selectedCellClassName = "selected";
+    
+    private static readonly topLeftCorner = "top-left-corner";
+    private static readonly topRightCorner = "top-right-corner";
+    private static readonly bottomLeftCorner = "bottom-left-corner";
+    private static readonly bottomRightCorner = "bottom-right-corner";
+    private static readonly topBorder = "top-border";
+    private static readonly rightBorder = "right-border";
+    private static readonly bottomBorder = "bottom-border";
+    private static readonly leftBorder = "left-border";
+    
 
     public initialMouseSelectedCell: DomWrapper; // TODO: try to name it more meaningfully 
     private currentSelectionRange: SelectionRange;
@@ -80,6 +91,24 @@ export class TableSelection {
         this.highlightSelectedCells();
     }
     
+    public getSelectedCells(): SelectedCells {
+        let res = {} as SelectedCells;
+
+        for (let i = Math.min(this.currentSelectionRange.col1, this.currentSelectionRange.col2); i <= Math.max(this.currentSelectionRange.col1, this.currentSelectionRange.col2); i++) {
+            res[i] = {};
+        }
+        
+        let state = this.store.getState() as ApplicationState;
+        this.iterateOverSelectedCells((cell: HTMLElement) => {
+            const col = +cell.dataset.cellColumnNumber;
+            const row = +cell.dataset.cellRowNumber;
+            
+            res[col][row] = state.table.cellContents[col][row];
+        });
+        
+        return res;
+    }
+    
     public clearSelection(): void {
         // TODO: break it down into two local functions
         if (this.currentSelectedCell) {
@@ -115,16 +144,63 @@ export class TableSelection {
         // Select a new group of cells
         this.iterateOverSelectedCells((currentCell) => {
             currentCell.classList.add(TableSelection.selectedCellClassName);
+            
+            const currCol = +currentCell.dataset.cellColumnNumber;
+            const currRow = +currentCell.dataset.cellRowNumber;
+            
+            if (this.currentSelectionRange.row1 === currRow) {
+                if (this.currentSelectionRange.col1 === currCol) {
+                    // Top Left corner
+                    currentCell.classList.add(TableSelection.topLeftCorner);
+                } else if (this.currentSelectionRange.col2 === currCol) {
+                    // Top Right corner
+                    currentCell.classList.add(TableSelection.topRightCorner);
+                } else {
+                    // Top border
+                    currentCell.classList.add(TableSelection.topBorder);
+                }
+            }  if (this.currentSelectionRange.row2 === currRow) {
+                if (this.currentSelectionRange.col1 === currCol) {
+                    // Bottom Left corner
+                    currentCell.classList.add(TableSelection.bottomLeftCorner);
+                } else if (this.currentSelectionRange.col2 === currCol) {
+                    // Bottom Right corner
+                    currentCell.classList.add(TableSelection.bottomRightCorner);
+                } else {
+                    // Bottom border
+                    currentCell.classList.add(TableSelection.bottomBorder);
+                }
+            }  if (this.currentSelectionRange.col1 === currCol) {
+                // Left border
+                currentCell.classList.add(TableSelection.leftBorder);
+            }  if (this.currentSelectionRange.col2 === currCol) {
+                // Right border
+                currentCell.classList.add(TableSelection.rightBorder);
+            }
+            
         }, (currentRow) => {
-            currentRow.classList.add(TableSelection.selectedCellClassName);
+            if (this.currentSelectionRange.col1 !== 1)
+                currentRow.classList.add(TableSelection.selectedCellClassName);
         }, (currentColumn) => {
-            currentColumn.classList.add(TableSelection.selectedCellClassName);
+            if (this.currentSelectionRange.row1 !== 1)
+                currentColumn.classList.add(TableSelection.selectedCellClassName);
         });
     }
 
     private deselectPreviousSelection(): void {
         this.iterateOverSelectedCells((currentCell) => {
-            currentCell.classList.remove(TableSelection.selectedCellClassName);
+            currentCell.classList.remove(
+                TableSelection.selectedCellClassName,
+                TableSelection.topLeftCorner,
+                TableSelection.topRightCorner,
+                TableSelection.bottomLeftCorner,
+                TableSelection.bottomRightCorner,
+                TableSelection.topBorder,
+                TableSelection.rightBorder,
+                TableSelection.bottomBorder,
+                TableSelection.leftBorder
+            );
+            
         }, (currentRow) => {
             currentRow.classList.remove(TableSelection.selectedCellClassName);
         }, (currentColumn) => {

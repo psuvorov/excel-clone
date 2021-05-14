@@ -190,15 +190,15 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private cutButtonClick(): void {
-        this.observable.notify(EventNames.CutButtonClicked);
+        this.observable.notify(EventNames.CutCellsRequested);
     }
 
     private copyButtonClick(): void{
-        this.observable.notify(EventNames.CopyButtonClicked);
+        this.observable.notify(EventNames.CopyCellsRequested);
     }
 
     private pasteButtonClick(): void {
-        this.observable.notify(EventNames.PasteButtonClicked);
+        this.observable.notify(EventNames.PasteCellsRequested);
     }
 
     private formatBoldButtonClick(): void {
