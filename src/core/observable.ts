@@ -1,4 +1,5 @@
 import {EventNames} from "./resources";
+import {isInit} from "./utils";
 
 
 export class Observable {
@@ -20,7 +21,7 @@ export class Observable {
 
     public notify(eventName: EventNames, eventData: any = null): void {
         const eventHandlers = this.handlers[eventName];
-        if (!eventHandlers)
+        if (!isInit(eventHandlers))
             return;
         
         for (const handler of eventHandlers) {

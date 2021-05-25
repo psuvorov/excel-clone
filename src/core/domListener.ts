@@ -2,6 +2,7 @@
  * 
  */
 import {DomWrapper} from "./domWrapper";
+import {isInit} from "./utils";
 
 export class DomListener {
     
@@ -12,7 +13,7 @@ export class DomListener {
     protected name: string;
     
     constructor(root: DomWrapper, listeners= []) {
-        if (!root)
+        if (!isInit(root))
             throw new Error("No $root provided for DomListener");
         
         this.$root = root;
@@ -22,7 +23,7 @@ export class DomListener {
     public initDomListeners(): void {
         this.listeners.forEach(listener => {
             const method = getEventMethodName(listener);
-            if (!this[method])
+            if (!isInit(this[method]))
                 throw new Error(`Method ${method} is not implemented in ${this.name || ''} component.`);
 
             this[method] = this[method].bind(this);
@@ -33,7 +34,7 @@ export class DomListener {
     public removeDomListeners(): void {
         this.listeners.forEach(listener => {
             const method = getEventMethodName(listener);
-            if (!this[method])
+            if (!isInit(this[method]))
                 throw new Error(`Method ${method} is not implemented in ${this.name || ''} component.`);
             
             this.$root.off(listener, this[method]);

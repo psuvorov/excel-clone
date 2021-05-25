@@ -19,7 +19,7 @@ export function rootReducer(state: any, action: {type: string, data: any}): any 
         }
         case ActionTypes.changeCellContent: {
             const prevState = {...state};
-            if (!prevState.table.cellContents[action.data.columnNumber])
+            if (!isInit(prevState.table.cellContents[action.data.columnNumber]))
                 prevState.table.cellContents[action.data.columnNumber] = {};
 
             let tableCell = prevState.table.cellContents[action.data.columnNumber][action.data.rowNumber] as TableCell;
@@ -34,15 +34,15 @@ export function rootReducer(state: any, action: {type: string, data: any}): any 
         }
         case ActionTypes.changeCellStyle: {
             const prevState = {...state};
-            if (!prevState.table.cellContents[action.data.columnNumber])
+            if (!isInit(prevState.table.cellContents[action.data.columnNumber]))
                 prevState.table.cellContents[action.data.columnNumber] = {};
             const newTableCellStyle = action.data.cellStyle as TableCellStyle;
 
             let oldTableCell = prevState.table.cellContents[action.data.columnNumber][action.data.rowNumber] as TableCell;
-            if (!oldTableCell) {
+            if (!isInit(oldTableCell)) {
                 oldTableCell = {tableCellStyle: {}};
             }
-            if (!oldTableCell.tableCellStyle) {
+            if (!isInit(oldTableCell.tableCellStyle)) {
                 oldTableCell.tableCellStyle = {};
             }
             

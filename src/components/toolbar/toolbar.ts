@@ -148,7 +148,7 @@ export class Toolbar extends SpreadsheetBaseComponent {
 
     private onClick(event: PointerEvent): void {
         const buttonEl = (event.target as HTMLElement).closest(".button");
-        if (!buttonEl)
+        if (!isInit(buttonEl))
             return;
         
         if (buttonEl.classList.contains("undo"))
@@ -182,11 +182,11 @@ export class Toolbar extends SpreadsheetBaseComponent {
     }
 
     private undoButtonClick(): void {
-        console.log("undoButtonClick");
+        alert("Not implemented");
     }
 
     private redoButtonClick(): void {
-        console.log("redoButtonClick");
+        alert("Not implemented");
     }
 
     private cutButtonClick(): void {

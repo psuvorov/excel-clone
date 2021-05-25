@@ -1,6 +1,8 @@
 /**
  * TODO: add comments here 
  */
+import {isInit} from "./utils";
+
 export class DomWrapper {
     
     public $nativeElement: any;
@@ -99,7 +101,7 @@ export class DomWrapper {
 }
 
 export function $(queryObject: string | Element | HTMLElement): DomWrapper {
-    if (!queryObject)
+    if (!isInit(queryObject))
         return null;
     
     return new DomWrapper(queryObject);
